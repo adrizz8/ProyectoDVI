@@ -2,7 +2,11 @@ Basic information
 Title (tentative):
 ---
 Brief synopsis: (Se le puede meter un rollo más cómico)
-Eres un estudiante de primer año de la Facultad de Informática que debe sobrevivir a los exámenes, trabajos en grupo y profesores para obtener su título. Si sacarse la carrera ya es complicado imagina si los profesores se transforman en criaturas debido a […]. Para aprobar cada asignatura, deberás adentrarte en dungeons académicas llenas de retos, puzles y combates, y derrotar al profesor final para ganar los créditos y avanzar hacia el último desafío: el Proyecto Fin de Carrera.Fin de Carrera.
+Eres un estudiante de primer año de la Facultad de Informática que debe sobrevivir a los exámenes, 
+trabajos en grupo y profesores para obtener su título. Si sacarse la carrera ya es complicado 
+imagina si los profesores se transforman en criaturas debido a […]. Para aprobar cada asignatura, 
+deberás adentrarte en dungeons académicas llenas de retos, puzles y combates, y derrotar al profesor 
+final para ganar los créditos y avanzar hacia el último desafío: el Trabajo de Fin de Grado.
 Genre:
 RPG por turnos con progresión de personaje, exploración y dungeons.
 Age range:
@@ -14,8 +18,12 @@ Jugadores casuales y fans de los RPG clásicos con humor, especialmente estudian
 
 Lore and context
 Description of the game world:
-El juego se sitúa en una versión satírica de la Facultad de Informática. Aunque todo comienza de forma normal, el protagonista descubre que, para aprobar, debe superar retos mentales y físicos dentro de dungeons generadas por las asignaturas.
-Cada dungeon representa el “mundo interior” del profesor: laberintos de código, pasillos llenos de bugs, servidores en ruinas, o bases de datos vivientes. En ellas habitan enemigos simbólicos como Errores de Compilación, Variables Perdidas o Procrastinadores Fantasma.
+El juego se sitúa en una versión satírica de la Facultad de Informática. Aunque todo comienza de forma normal, 
+el protagonista descubre que, para aprobar, debe superar retos mentales y físicos dentro de dungeons generadas 
+por las asignaturas.
+Cada dungeon representa el “mundo interior” del profesor: laberintos de código, pasillos llenos de bugs, 
+servidores en ruinas, o bases de datos vivientes. En ellas habitan enemigos simbólicos como Errores de Compilación, 
+Variables Perdidas o Procrastinadores Fantasma.
 Los pasillos cotidianos del campus se convierten en centros de descanso, mejora y socialización, mientras las aulas sirven de portales hacia las mazmorras.
 
 Core Loop
@@ -36,6 +44,7 @@ Ganas experiencia, créditos (ECTS), objetos y nuevos ataques.
 Desbloqueas acceso al siguiente curso o asignatura.
 
 Mechanics, Dynamics and Aesthetics (MDA)
+
 Mechanics (Reglas del juego):
 Combates por turnos con tres aliados máximos.
 Gestión de energía, estrés y conocimiento.
@@ -65,41 +74,28 @@ Backspace o clic derecho
 Cambiar objetivo
 Flechas izquierda/derecha
 
+Ataques: barra que se cargue para ejecutar una habilidad especial (de cada personaje).
+
 
 Tables and Data
 Ejemplo de tabla de personajes iniciales
-Personaje
-Rol
-Ataques
-User
-Protagonista
+Personaje       Rol                 Ataques      Defensa/Estado       Habilidad especial
+User            Protagonista
+P1              Soporte
+P2              Daño físico
+P3              Estratega
 
-
-P1
-Soporte
-
-
-P2
-Daño físico
-
-
-P3
-Estratega
-
-
+Objetos
+Nombre          Efecto
+Apuntes
+Tinto
+Cafe                  
 
 
 Ejemplo de enemigos (profesores-monstruo)
-Profesor
-Curso
-Asignatura
-Ataques 
-Ambientación/forma
-Lanchares
-1
-Computadores
+Profesor        Curso       Asignatura          Ataques             Ambientación/forma
+Lanchares       1           Computadores                            Rugby
 
 
-Rugby
-
-
+Movimiento solo o todos?
+Tiempo de juego?
