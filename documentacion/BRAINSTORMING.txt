@@ -1,0 +1,210 @@
+Personaje principal:
+3 vidas - dejas la carrera si pierdes? Pagar segunda matricula?
+Atributos: 
+ - Energía mental (vida)
+ - Energía física (necesaria para realizar ataques, recuperable con bebidas/comidas etc )
+ - Estrés (empieza en 0 te puede hacer que no realices x ataques o que hagas ataques más fuertes, "No puedo concentrarme" -
+           falla un ataque, "Ansiedad" - pierdes turno o te autoinfliers daño mental, "Corregir código" - reduce tu energía física porque te pones a codificar sin parar).
+
+Menu:
+ - Mochila
+ - Perfil
+ - Estadisticas
+
+
+
+Estadisticas:
+- Razonamiento
+- Concentración
+- Creatividad
+- Comunicación
+- Paciencia
+
+
+Acciones de combate del usuario: (Combates dobles)
+● Ataque:
+Copia al compañero
+Pregunta a chatgpt
+Codigo facil
+Pregunto una duda
+Entrego un trabajo- critico si es de ultima hora
+Funciona en mi ordenador
+Correo vacío por error
+Proyecto documentado - tiene que cargar
+Practicas en wuolah
+
+
+------
+Asentir sin entender
+Me carrilean otro proyecto
+Bajo a la cafeteria
+Siesta en clase
+Juegos en clase
+Sentarse atras
+Academia
+Salir a la pizarra
+
+
+
+● Objetos (Ataque X): (algunos te los encuentras algunos los compras en la cafeteria)
+Tinto
+Pincho de tortilla
+Cafe
+Cerveza
+Cigarro (reduce el estrés)
+Monster
+Palmera de chocolate
+Placa base
+Cables
+Apuntes de varias cosas
+USB (mas almacenamiento como la mochila en minecraft)
+salchipapas
+
+
+Rivales:
+- Pita
+- Lanchares
+- Bascones
+- Marta software
+- Bekaesh
+- Margarita bradley
+- Cesar el de AM
+- Marcos
+- Profes dvi (Personajes que te sirven de guia en el juego? / boss casi final)
+- Victor Lavin (Se ha ido a grabar un video para youtube)
+
+Otros:
+- Los de la cafe
+- Rugby
+- Secretaria
+
+Lugares/Pantallas/Flujo del juego:
+Empezar el juego diciendo "joder he perdido el U ahora me toca esperar no se cuanto para el siguiente, bueno pues me voy a la cafeteria mientras" y empieza el juego  
+Facultad 3 pisos + cafeteria + biblio info
+Pantalla de Carga: Que salgan mensajes tipo "Instalando dependencias innecesarias...", "Buscando el punto y coma que falta...", "Ignorando 458 warnings...","Convenciendo al compilador de que no eres tonto..."
+"Ignorando el hecho de que no has hecho pull antes de push en Git..." , "preguntando a ChatGpt..".
+
+Asignaturas:
+MDL
+FAL
+Calculo/Algebra
+
+IS (para ganar tienes que ganar al aburrimiento de la clase consume energia mental)
+TP
+TOC
+AM
+
+Aplicaciones Web (luchar contra php )
+Redes
+SO/ASOR
+AC
+Etica
+
+Creditos extracurriculares? (se pueden ganar haciendo misiones) 
+
+DVI
+TFG (boss final, Tienes que vencer a 3 profesores seguidos (Tribunal))
+
+Eventos:
+Invasion de los de ADE+Info
+Rugby buscando nuevos jugadores
+Fotos de graduacion
+Revision de un examen
+Jubilacion
+Disfraces de halloween
+Los de ética haciendo un trabajo
+Sangriada
+El Alumno de 9º Año: Un NPC legendario que vive en la biblioteca. Si le llevas un "Monster de Oro", te enseña un ataque definitivo: "Compilación sin Errores" (ignora la defensa del Boss)
+La Wi-Fi de la Facu: Un enemigo invisible. A veces aparece en combate y te hace perder el turno porque "se ha caído la conexión".
+Torneo de mus
+
+Como mejoramos las estadisticas del jugador durante la historia?
+Creditos de la carrera para avanzar? Puedes avanzar sin superar el curso completo?
+3 vidas y dejas la carrera?
+Boss final tfg? Cuatro rivales?
+Aprendemos muchos ataques y siempre disponibles?
+
+
+Ideas consolidadas:
+- Llegas a la facultad y tienes que elegir la carrera (Software, informatica y computadores) - Diferentes stats y bosses en funcion de la carrera
+- 4 bosses uno por año + boss final tfg
+- Flujo del juego:
+    - Entras en una sala donde está el profe o alguien que te manda tareas y al completarlas se ddesboquea el examen
+- Eventos que bloqueen el paso
+
+
+----------------------------------------------------
+OTRAS IDEAS
+----------------------------------------------------
+----------------------------------------------------
+PERSONAJES JUGABLES
+----------------------------------------------------
+-4 personajes jugables en el grupo (uno por cada curso de la uni)
+
+-Al primero le conoces segun empiezas el juego en tu primer dia de universidad, al resto despues
+
+-Podrian tener cargos importantes o destacados en la facultad (Presidente/a del consejo estudiantil, 
+Capitan del equipo de deportes, delegacion...)
+
+-Cada uno tiene una habilidad pasiva diferente que le otorga algun tipo de mecanica o bonificacion en combate
+----------------------------------------------------
+HISTORIA
+----------------------------------------------------
+-El juego empieza con el jugador matriculandose en la carrera, ahi se puede aprovechar para que el jugador
+ponga su nombre, elija su tipo de personalidad (para la distribucion de estadisticas) y que elija una carrera
+de las tres disponibles en la facultad(informatica, computadores o software), algunos bosses, dialogos, npcs y Eventos
+cambiaran en funcion de la carrera elegida
+
+-La historia empieza en el primer dia de universidad del protagonista, este llega a la facultad y tiene sus primeras
+clases con normalidad y un combate tutorial y tambien conoce al primer personaje que se unirá al grupo 
+
+-Aqui es donde viene un posible toque para darle mas fantasia al juego a la vez que realismo y representacion de las cosas
+de la facultad
+
+-Resulta que por algun motivo (ya nos inventaremos como) las clases ya no son normales y los profesores se han vuelto
+locos o algo por el estilo, habria que darle vueltas al lore.
+
+-Ahora cada profesor tiene una dungeon o mini dungeon(mazmorra) personalizada, y para conseguir el aprobado en la
+asignatura, el jugador debera superar la mazmorra y llegar al boss final(que es el profe)
+
+-Cada dungeon sera personalizada para cada profesor y tendra sus propios puzzles y lore. Por ejemplo, para Lanchares,
+como da fundamentos de computadores, su dungeon podria ser el interior de un ordenador y los puzzles podrian involucrar
+puertas lógicas, placas y componentes etc. Para una posible dungeon de fp1 podria ser por ejemplo unos puzzles en donde
+el jugador deba escribir sentencias de codigo para abrir puertas o resolver problemas o retos, todo esto obviamente
+con base en los combates
+
+-Tambien molaria darles un diseño mas fantasioso a los profes para hacerlos mas bosses que diseño normal y corriente
+
+-En cada dungeon los minions o encuentros serán alumnos u otra gente o cosas relacionadas
+
+-El boss final será el tribunal del tfg y su dungeon
+
+-La facultad actua como Hub o base donde se pueden comprar objetos, explorar, realizar misiones secundarias y explorar
+----------------------------------------------------
+COMBATES
+----------------------------------------------------
+
+-Los personajes tienen diferentes estadisticas que les haran diferentes en combate y hará que cumplan roles diferentes
+-En el combate se puede: 
+-atacar (ataque normal que no usa puntos de magia)
+-usar una habilidad(usan puntos de magia y son de todo tipo, de daño directo, de curacion, de buffos o debuffos etc)
+-usar un objeto(de curacion de vida/estados o de daño directo al enemigo, o buffos a atributos de los personajes)
+-protegerse(reduce el daño recibido del ataque a la mitad)
+
+-Se podria introducir alguna mecanica extra como la del doble turno si hacemos los enemigos con debilidades, criticos...
+
+----------------------------------------------------
+MENU Y OPCIONES
+----------------------------------------------------
+
+-El menu tendrá las siguientes opciones:
+
+-Grupo o reoorganizar: donde se ven las estadisticas, el nivel y habilidades de cada personaje
+-Equipamiento: donde se equipan objetos y equipamiento a los personajes
+-Mochila u objetos: lista con los objetos que tiene el jugador, divididos por categorias(consumibles, equipamiento y objetos claves)
+-Opciones: configuraciones, accesibilidad, cambio de dificultad, configuracion de sonido etc
+-Mapa: actual o para viaje rapido a algun sitio
+
+Extra: Apartado donde se resuma la historia u otras cosas
+
+
