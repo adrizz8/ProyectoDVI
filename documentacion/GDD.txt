@@ -1,0 +1,105 @@
+Basic information
+Title (tentative):
+---
+Brief synopsis: (Se le puede meter un rollo más cómico)
+Eres un estudiante de primer año de la Facultad de Informática que debe sobrevivir a los exámenes, trabajos en grupo y profesores para obtener su título. Si sacarse la carrera ya es complicado imagina si los profesores se transforman en criaturas debido a […]. Para aprobar cada asignatura, deberás adentrarte en dungeons académicas llenas de retos, puzles y combates, y derrotar al profesor final para ganar los créditos y avanzar hacia el último desafío: el Proyecto Fin de Carrera.Fin de Carrera.
+Genre:
+RPG por turnos con progresión de personaje, exploración y dungeons.
+Age range:
+---
+PEGI info:
+[…] – Contiene humor, sátira universitaria, lenguaje informal ocasional y combates no realistas.
+Target audience:
+Jugadores casuales y fans de los RPG clásicos con humor, especialmente estudiantes universitarios o exalumnos de la facultad de informática.
+
+Lore and context
+Description of the game world:
+El juego se sitúa en una versión satírica de la Facultad de Informática. Aunque todo comienza de forma normal, el protagonista descubre que, para aprobar, debe superar retos mentales y físicos dentro de dungeons generadas por las asignaturas.
+Cada dungeon representa el “mundo interior” del profesor: laberintos de código, pasillos llenos de bugs, servidores en ruinas, o bases de datos vivientes. En ellas habitan enemigos simbólicos como Errores de Compilación, Variables Perdidas o Procrastinadores Fantasma.
+Los pasillos cotidianos del campus se convierten en centros de descanso, mejora y socialización, mientras las aulas sirven de portales hacia las mazmorras.
+
+Core Loop
+Prepare → Challenge → Reward
+Prepare:
+Explora el campus, consigue materiales (apuntes, café, gadgets).
+Mejora tus personajes.
+Forma equipo con otros estudiantes y planifica tus asignaturas.
+Challenge:
+Entra en una dungeon (asignatura).
+Enfrenta retos como:
+Puzles lógicos o de programación.
+Combates por turnos contra “enemigos del temario”.
+Mini-misiones (buscar referencias, resolver un bug, presentar un trabajo).
+Finaliza con un combate contra el profesor-monstruo.
+Reward:
+Ganas experiencia, créditos (ECTS), objetos y nuevos ataques.
+Desbloqueas acceso al siguiente curso o asignatura.
+
+Mechanics, Dynamics and Aesthetics (MDA)
+Mechanics (Reglas del juego):
+Combates por turnos con tres aliados máximos.
+Gestión de energía, estrés y conocimiento.
+Sistema de equipamiento: apuntes, gadgets, comida.
+Sistema de progreso por niveles (de 1º a 4º curso).
+Dynamics (Comportamientos emergentes):
+---
+Aesthetics (Experiencia del jugador):
+Humor y sátira sobre la vida universitaria.
+Nostalgia por los RPG clásicos.
+Sensación de progreso académico y superación.
+Identificación con el estrés y las situaciones absurdas del entorno educativo.
+
+Controls
+Acción
+Teclado/ratón
+Movimiento
+WASD 
+Interactuar / hablar
+E 
+Menú
+X
+Confirmar / atacar
+Enter o clic izquierdo
+Cancelar / volver
+Backspace o clic derecho
+Cambiar objetivo
+Flechas izquierda/derecha
+
+
+Tables and Data
+Ejemplo de tabla de personajes iniciales
+Personaje
+Rol
+Ataques
+User
+Protagonista
+
+
+P1
+Soporte
+
+
+P2
+Daño físico
+
+
+P3
+Estratega
+
+
+
+
+Ejemplo de enemigos (profesores-monstruo)
+Profesor
+Curso
+Asignatura
+Ataques 
+Ambientación/forma
+Lanchares
+1
+Computadores
+
+
+Rugby
+
+
