@@ -99,3 +99,42 @@ Lanchares       1           Computadores                            Rugby
 
 Movimiento solo o todos?
 Tiempo de juego?
+
+----------LORE---------
+
+Todo comenzó un lunes a las 8:00 AM. La Facultad de Informática iba a estrenar el nuevo sistema de gestión académica: 
+"automatrícula 2.0". Prometían que nunca más se caería la web para matricularte... Mentira.
+A pesar de todo por suerte o por desgracia conseguí inscribirme en la carrera: 
+
+(Elegir Ingeniería Informática, de Software, de Computadores)
+
+...(Pantalla en negro y apareces en la parte de afuera de la facultad para el primer combate )
+El juego comienza con el personaje principal llegando tarde a la facultad, entra por los caminos de atras de la parte de fuera
+y aparece un alumno de 4º año cortandote el paso con los ojos inyectados en sangre y rodeado de un aura de error (glitches) corre hacia ti gritando: "¡No me carga el repositorio, no me cargaaaa!". 
+Es un combate tutorial rápido donde aprendes a "Atacar".
+
+Ataque único del rival: "Spam de commits".
+A mitad del combate, cuando vas a perder, aparece un mensaje en pantalla: SYSTEM_MESSAGE: Iniciando protocolo de ayuda... y escuchas la voz de los profes de DVI dándote instrucciones para ganar.
+
+Al acabar el combate salen Carlos e Ismael los profesores de DVI: 
+-Carlos: "¡Eh, tú! ¡El novato de la mochila! Menos mal, un humano que todavía no tiene el cerebro en la nube."
+-Ismael: "Escucha bien. La facultad ha sido infectada por una IA de corrección masiva. Los demás profes se han vuelto locos; creen que sois bugs que hay que borrar."
+-Carlos: "Hemos hackeado el sistema de la planta para crear una instancia segura desde DVI. Es un refugio, pero el servidor central sigue infectado por la IA."
+- Ismael: "Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando,
+vuestro HUD y vuestra voz en el pinganillo... pero la implementación final os toca a vosotros"
+Te hemos instalado un módulo de combate en tu mochila. No es un bug, es una feature. Úsalo contra los conserjes que bloquean la salida."
+Carlos: "¡Y no te olvides de recoger ese Pincho de Tortilla! En este motor de juego, la grasa es el combustible del héroe. ¡Suerte, Beta Tester!"
+
+
+Ahora entras a la cafeteria y esta llena de NPC asustados, si andas por alli y te acercas a la barra a hablar
+Andrés te dara un pincho de tortilla por ser novato en tu primer día, 
+
+Los NPCs no paran de moverse y solo hay una persona sentada tranquila que será uno de tus comapñeros de videojuego (P1 el repetidor)
+Te sientas a hablar con el: 
+Tú: "¡Oye! ¡La facultad se ha vuelto loca, hay que salir!"
+P1: "Bah, otro lunes normal. Ese Conserje mutante de la puerta es solo un Cortafuegos Físico. Ya intenté salir, pero mi velocidad de bus no da para esquivarlo."
+Ismael: "¡P1! Sigues vivo. Novato, P1 tiene la mochila reforzada con placas base y la paciencia de quien ha repetido Computadores cuatro veces. Él absorberá los golpes."
+P1: "Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?"
+
+MISION 1 ESCAPAR DE LA CAFETERÍA
+Os dirigis a la salida y aparece el Conserje que sirve de tutorial para un combate con tu compañero 
