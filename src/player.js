@@ -13,7 +13,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
      * @param {number} y Coordenada Y
      */
     constructor(scene, x, y) {
-        super(scene, x, y, 'player');	
+        super(scene, x, y);	
         this.score = 0;
 	
         this.scene.add.existing(this);
@@ -21,11 +21,21 @@ export default class Player extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.body.setCollideWorldBounds();
         this.speed = 300;
-        this.jumpSpeed = -400;
+        this.jumpSpeed = 700;
         // Esta label es la UI en la que pondremos la puntuación del jugador
         this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.updateScore();
+
+        this.scene.anims.create({
+                key:'walk',
+                frames:this.scene.anims.generateFrameNames('player',{start:0,ends:20}),
+                frameRate:10,
+                repeat:-1
+           }
+        )
+
+        this.play('walk');
     }
 
     /**
@@ -52,17 +62,24 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if (this.cursors.up.isDown && this.body.onFloor()) {
-            this.body.setVelocityY(this.jumpSpeed);
+        if (this.cursors.up.isDown) {
+            this.body.setVelocityY(-this.speed);
+            this.body.setVelocityX(0);
         }
-        if (this.cursors.left.isDown) {
+        else if (this.cursors.left.isDown) {
             this.body.setVelocityX(-this.speed);
+            this.body.setVelocityY(0);
         }
         else if (this.cursors.right.isDown) {
             this.body.setVelocityX(this.speed);
+            this.body.setVelocityY(0);
         }
-        else {
+        else if (this.cursors.down.isDown) {
+            this.body.setVelocityY(this.speed);
             this.body.setVelocityX(0);
+        } else {
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
         }
     }
 

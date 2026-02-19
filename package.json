@@ -13,10 +13,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cleongh/plantillaphaser.git"
+        "url": "https://github.com/adrizz8/ProyectoDVI.git"
     },
     "keywords": [],
-    "author": "Carlos León <cleon@ucm.es>",
+    "author": "Azazel Cabello Gómez <azacabel>, Ismael Lucas Parada <ismaluca>, Carla Acebes Montalvillo <cactm4>, Adrián Rodríguez Margalló <adrizz8>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/cleongh/plantillaphaser/issues"
