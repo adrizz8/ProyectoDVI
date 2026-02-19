@@ -137,4 +137,84 @@ Ismael: "¡P1! Sigues vivo. Novato, P1 tiene la mochila reforzada con placas bas
 P1: "Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?"
 
 MISION 1 ESCAPAR DE LA CAFETERÍA
-Os dirigis a la salida y aparece el Conserje que sirve de tutorial para un combate con tu compañero 
+Tras aceptar a P1 en tu grupo de prácticas, os dirigís a la salida principal. De repente, las persianas metálicas se cierran y aparece
+el conserje loco (Es un guarda de seguridad conuna porra que es un cable de alta tensión que suelta chispas.)
+P1: Novato, quédate detrás. Este tipo pega como un examen de junio, pero yo tengo la piel curtida a base de suspensos
+Combate: 
+Turno 1: El Seguridad ataca primero (porque P1 es muy lento). Lanza un golpe de porra.
+Carlos (Desde una pantalla de menú): — ¡No te lo pienses! ¡Suelta un 'Código Fácil'! Rompe su secuencia antes de que se recupere.
+
+(Atacas al Seguridad, dejándolo aturdido).
+
+P1: — ¡Mierda, va a entrar en Kernel Panic! Escúchame: voy a puentear el panel de la puerta, pero necesito dos turnos. ¡No dejes que me toque o nos formatean a los dos!
+dos turnos igual con los mismos ataques
+
+(Tras resistir el envite, el Seguridad cae desactivado. Aparece un panel pidiendo un código: 1011)
+
+P1: Puerta bloqueada. La IA ha metido un cerrojo de 4 bits. Rápido, pasadlo a decimal o el reboot del sistema nos pillará aquí dentro. (tienes que meter un 11)
+
+Ya pueden salir de la cafeteria por toda la planta 1
+Objeto: "Llave de la Planta 1" (permite entrar en las aulas).
+
+XP: Suficiente para que tú y P1 subáis al Nivel 2.
+
+Nuevo Ataque para P1: "Lanzar Hardware viejo " (Lanza lanza una placa base oxidada, reduce vida del enemigo).
+Nuevo ataque para el Prota: "Inyección de script" (Clava un USB con codigo malicioso en el enemigo, reduce la vida del enemigo)
+
+Carlos : "Habéis desbloqueado el acceso a la Planta 1, pero para poder liberar esta planta completa tendreis que derrotar a 
+Lanchares que ha sellado el aula 1. Para entrar, necesitáis una 'Llave Maestra de Hardware' que él mismo ha fragmentado. Y un consejo: con vosotros dos no basta.
+Buscad a otros alumnos que no hayan sido asimilados por la IA; necesitaréis un equipo completo para el examen final."
+
+Ismael: "Antes del Glitch, Lanchares era una leyenda en la facultad. No solo por sus clases de Computadores, sino por su pasión por el Rugby y sus famosas tertulias con sus "camaradas" en el bar de la esquina, 
+arreglando el mundo entre jarras y risas.
+Sin embargo, la IA ha retorcido esa mentalidad. Ahora, Lanchares ve la Planta 1 como su propio campo de juego. Para él, los estudiantes ya no son personas, sino un equipo rival que no tiene "físico" para aguantar el partido. 
+Se ha blindado con una armadura de placas base y cables de cobre.
+Lanchares ha cerrado el tercer tiempo. Se ha encerrado en su aula y dice que solo los que tengan 'espíritu de melé' pueden pasar.
+Si no le derrotáis, la planta seguirá bloqueada por su muro de silicio."
+
+[ahora pueden moverse libre por la planta 1 y habar con varios NPCS que existen en la planta]
+
+NPC1: "Lanchares era nuestro mejor capitán. Ahora intenta hacernos placajes binarios cada vez que pasamos por su pasillo. ¡Dice que nuestra formación es un error de sintaxis!"
+NPC2(CALCULO):"He intentado calcular el límite de mi paciencia cuando tiende a infinito, pero me sale una indeterminación. Toma esto, lo necesitarás para derivar la atención del enemigo."
+    -OBTIENES Regla de L'Hôpital (sirve para cuando te aturden para quitarte un turno de ataque)
+
+NPC3(MDL2): "P implica Q... pero la IA dice que P es falso. Si la premisa es falsa, ¡todo este pasillo es una mentira lógica! ¡Socorro!"
+NPC4(FP):"¡Un punto y coma! ¡He perdido toda mi energía mental por un punto y coma! No entres ahí fuera, está lleno de errores de sintaxis salvajes."
+    -OBTIENES Compilador Amigable (Recupera 20 de Energía ).
+NPC5(FP2): "La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Si no manejas bien la memoria dinámica, te borrarán el perfil."
+    OBTIENES: Puntero a NULL (Arma arrojadiza: Desactiva las habilidades  del enemigo un turno).
+NPC Veterano: "¿Vais a por el Capitán? Tened cuidado. Lanchares dice que ganar un partido de Rugby contra unos novatos es un resultado trivial.
+ Dice que ni siquiera necesita sudar la camiseta para transformaros en bits de baja prioridad."
+
+NPC6(MDL1/PUZZLE): ""¡No lo entiendo! La profesora de Discreta dice que la solución es trivial por inspección visual... ¡Pero cada vez que toco uno, la regla me electrocuta! La regla dice: 'Cada pedestal DEBE tener exactamente un vecino encendido'. Ni cero, ni dos... ¡UNO! 
+ ¡Si enciendo A, B y C se vuelven locos! ¡Ayudadme antes de que la IA de la planta me use como toma de tierra!"
+
+Hay 4 pedestales de piedra con grabados de circuitos. Están unidos por cables de luz en el suelo:A se une a B y C.B se une a A y D.C se une a A y D.D se une a B y C.(Es un ciclo un cuadrado sin conexiones cruzadas).
+Encender A y D (los opuestos).
+
+Si un pedestal cumple la regla (tiene un solo vecino encendido), brilla en verde.
+
+Dejar apagados B y C.
+¿Por qué funciona?
+A tiene como vecinos a B(0) y C(0) -> ERROR (A necesita un vecino encendido).
+El objetivo es que TODOS cumplan la regla.
+
+Si encendemos A y D:
+A(1) tiene vecinos B(0) y C(0)... ¡No funciona!
+
+La Solución:
+Para que cada pedestal tenga exactamente un vecino encendido en un cuadrado:
+Enciendes A y B.
+Dejas apagados C y D.
+
+A tiene vecino B(1) y C(0) -> (1 vecino encendido) ✅
+
+B tiene vecino A(1) y D(0) -> (1 vecino encendido) ✅
+
+C tiene vecino A(1) y D(0) -> (1 vecino encendido) ✅
+
+D tiene vecino B(1) y C(0) -> (1 vecino encendido) ✅
+
+""¿En serio era solo eso? ¡¿Solo tenía que admitir que soy un fracasado para que la puerta se abriera?! ¡Es tan trivial que me dan ganas de llorar otra vez! Tomad, espero que esto os sirva"
+    -OBTIENES: Ataque Apuntes de lo Trivial (Al usarlo, el Prota lanza un ataque que confunde al enemigo. El enemigo se queda parado un turno intentando comprender por qué el ataque que le acabas de dar es "trivial")
+
