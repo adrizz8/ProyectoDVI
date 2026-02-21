@@ -1,7 +1,8 @@
 import Platform from './platform.js';
 import Player from './player.js';
+import Toy from './toy.js';
+import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
-import pers from '../assets/sprites/protanuevo.png';
 
 
 /**
@@ -35,6 +36,18 @@ export default class Level extends Phaser.Scene {
         new Platform(this, this.player, this.bases, 850, 100);
         this.spawn();
 
+        // Canal de diálogo (Centralizado)
+        this.dialogueManager = new DialogueManager(this);
+
+        // Creamos un juguete interactivo en una posición específica
+        new Toy(this, this.player, 500, 400, "¡Hola! Soy un juguete y puedo hablar.");
+    }
+
+    /**
+     * Muestra un mensaje en pantalla a través del manager
+     */
+    showDialogue(message) {
+        this.dialogueManager.showDialogue(message);
     }
 
     /**
@@ -47,19 +60,13 @@ export default class Level extends Phaser.Scene {
     }
 
     /**
-     * Método que se ejecuta al coger una estrella. Se pasa la base
-     * sobre la que estaba la estrella cogida para evitar repeticiones
+     * Método que se ejecuta al coger una estrella. 
+     * Ahora, al coger una estrella, pasamos directamente al Nivel 2.
      * @param {Base} base La base sobre la que estaba la estrella que se ha cogido
      */
     starPickt(base) {
         this.player.point();
-        if (this.player.score == this.stars) {
-            this.scene.start('end');
-        }
-        else {
-            let s = this.bases.children.entries;
-            this.spawn(s.filter(o => o !== base));
-
-        }
+        // Al tocar la estrella, cambiamos al nuevo escenario
+        this.scene.start('level2');
     }
 }
