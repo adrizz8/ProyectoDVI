@@ -3,6 +3,7 @@ import End from './end.js';
 import Level from './level.js';
 import Phaser from 'phaser';
 import TitleScene from './TitleScene.js';
+import IntroScene from './IntroScene.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -13,17 +14,24 @@ let config = {
     width: 1000,
     height: 500,
     parent: 'juego',
+
+    //Para poder usar elementos DOM en Phaser, como los inputs de texto o los select, es necesario incluir esta propiedad en la configuración del juego
+    dom: {
+        createContainer: true
+    },
+
     scale: {
         //mode: Phaser.Scale.FIT,  
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, TitleScene, Level, End],
+    scene: [Boot, TitleScene, IntroScene, Level, End],
     physics: {
         default: 'arcade',
         arcade: {
             debug: false
         }
+
     }
 };
 
