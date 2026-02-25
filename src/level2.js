@@ -4,6 +4,8 @@ import Cable from './cable.js';
 import AndGate from './and_gate.js';
 import NotGate from './not_gate.js';
 import Bombilla from './bombilla.js';
+import XorGate from './xor_gate.js';
+import OrGate from './or_gate.js';
 import Phaser from 'phaser';
 
 /**
@@ -36,17 +38,17 @@ export default class Level2 extends Phaser.Scene {
         // 2. Puertas Lógicas 
         this.and_gate1 = new AndGate(this, 500, 200, this.player);
         this.and_gate1.setDisplaySize(120, 120);
-        this.and_gate1.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate1.body.updateFromGameObject();
         this.and_gate1.setDepth(1);
 
         this.and_gate2 = new AndGate(this, 500, 400, this.player);
         this.and_gate2.setDisplaySize(120, 120);
-        this.and_gate2.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate2.body.updateFromGameObject();
         this.and_gate2.setDepth(1);
 
         this.not_gate1 = new NotGate(this, 400, 150, this.player);
         this.not_gate1.setDisplaySize(50, 50);
-        this.not_gate1.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.not_gate1.body.updateFromGameObject();
         this.not_gate1.setDepth(1);
 
 
@@ -84,7 +86,7 @@ export default class Level2 extends Phaser.Scene {
 
         this.and_gate3 = new AndGate(this, 650, 300, this.player);
         this.and_gate3.setDisplaySize(120, 120);
-        this.and_gate3.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate3.body.updateFromGameObject();
         this.and_gate3.setDepth(1);
 
         this.cable6 = new Cable(this, 550, 250);
@@ -103,7 +105,7 @@ export default class Level2 extends Phaser.Scene {
         this.bombilla = new Bombilla(this, 800, 300);
         this.bombilla.setDepth(1);
 
-        // Cable de la Gate (X=500) a la Bombilla (X=750). Distancia 250.
+
         this.cableSalida = new Cable(this, 725, 300);
         this.cableSalida.setDisplaySize(100, 8);
         this.cableSalida.setDepth(0);
