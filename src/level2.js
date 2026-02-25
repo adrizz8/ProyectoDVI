@@ -1,12 +1,14 @@
-import Platform from './platform.js';
 import Player from './player.js';
-import Toy from './toy.js';
-import DialogueManager from './dialogueManager.js';
+import Boton from './boton.js';
+import Cable from './cable.js';
+import AndGate from './and_gate.js';
+import NotGate from './not_gate.js';
+import Bombilla from './bombilla.js';
 import Phaser from 'phaser';
 
 /**
- * Segundo nivel del juego. 
- * Tiene una disposición de plataformas diferente y un juguete diferente.
+ * Escena de Nivel 2 con un puzzle lógico sencillo.
+ * El jugador debe activar dos botones para encender la bombilla a través de una puerta AND.
  */
 export default class Level2 extends Phaser.Scene {
     constructor() {
@@ -14,30 +16,129 @@ export default class Level2 extends Phaser.Scene {
     }
 
     create() {
-        // Configuramos el jugador
+        // Fondo y Player
+        this.add.image(500, 250, 'fondo');
         this.player = new Player(this, 100, 400);
+        this.player.setDepth(1);
 
-        // Disposición de plataformas diferente a Level 1
-        this.platforms = this.add.group();
+        // --- CONSTRUCCIÓN DEL CIRCUITO ---
 
-        // Plataformas en escalera o zigzag
-        new Platform(this, this.player, this.platforms, 200, 350);
-        new Platform(this, this.player, this.platforms, 400, 250);
-        new Platform(this, this.player, this.platforms, 600, 150);
-        new Platform(this, this.player, this.platforms, 800, 250);
+        // 1. Entradas (Botones)
+        this.boton1 = new Boton(this, this.player, 300, 150);
+        this.boton1.setDepth(1);
+        this.boton2 = new Boton(this, this.player, 300, 250);
+        this.boton2.setDepth(1);
+        this.boton3 = new Boton(this, this.player, 300, 350);
+        this.boton3.setDepth(1);
+        this.boton4 = new Boton(this, this.player, 300, 450);
+        this.boton4.setDepth(1);
+
+        // 2. Puertas Lógicas 
+        this.and_gate1 = new AndGate(this, 500, 200, this.player);
+        this.and_gate1.setDisplaySize(120, 120);
+        this.and_gate1.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate1.setDepth(1);
+
+        this.and_gate2 = new AndGate(this, 500, 400, this.player);
+        this.and_gate2.setDisplaySize(120, 120);
+        this.and_gate2.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate2.setDepth(1);
+
+        this.not_gate1 = new NotGate(this, 400, 150, this.player);
+        this.not_gate1.setDisplaySize(50, 50);
+        this.not_gate1.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.not_gate1.setDepth(1);
 
 
-        // Canal de diálogo (Centralizado)
-        this.dialogueManager = new DialogueManager(this);
+        // 3. Cables
+        this.cable1 = new Cable(this, 350, 150);
+        this.cable1.setDisplaySize(100, 8);
+        this.cable1.setDepth(0);
+        this.cable1.connectInput(this.boton1);
+        this.cable1.connectOutput(this.not_gate1, 'input');
 
-        // Un juguete interactivo con un mensaje distinto
-        new Toy(this, this.player, 800, 70, "¡Bienvenido al Nivel 2! Has encontrado el juguete secreto.");
+        this.cable2 = new Cable(this, 450, 150);
+        this.cable2.setDisplaySize(100, 8);
+        this.cable2.setDepth(0);
+        this.cable2.connectInput(this.not_gate1);
+        this.cable2.connectOutput(this.and_gate1, 'inputA');
+
+        this.cable3 = new Cable(this, 400, 250);
+        this.cable3.setDisplaySize(200, 8);
+        this.cable3.setDepth(0);
+        this.cable3.connectInput(this.boton2);
+        this.cable3.connectOutput(this.and_gate1, 'inputB');
+
+        this.cable4 = new Cable(this, 400, 350);
+        this.cable4.setDisplaySize(200, 8);
+        this.cable4.setDepth(0);
+        this.cable4.connectInput(this.boton3);
+        this.cable4.connectOutput(this.and_gate2, 'inputA');
+
+        this.cable5 = new Cable(this, 400, 450);
+        this.cable5.setDisplaySize(200, 8);
+        this.cable5.setDepth(0);
+        this.cable5.connectInput(this.boton4);
+        this.cable5.connectOutput(this.and_gate2, 'inputB');
+
+
+        this.and_gate3 = new AndGate(this, 650, 300, this.player);
+        this.and_gate3.setDisplaySize(120, 120);
+        this.and_gate3.body.updateFromGameObject(); // Actualiza el área de colisión física
+        this.and_gate3.setDepth(1);
+
+        this.cable6 = new Cable(this, 550, 250);
+        this.cable6.setDisplaySize(100, 8);
+        this.cable6.setDepth(0);
+        this.cable6.connectInput(this.and_gate1);
+        this.cable6.connectOutput(this.and_gate3, 'inputA');
+
+        this.cable7 = new Cable(this, 550, 350);
+        this.cable7.setDisplaySize(100, 8);
+        this.cable7.setDepth(0);
+        this.cable7.connectInput(this.and_gate2);
+        this.cable7.connectOutput(this.and_gate3, 'inputB');
+
+        // 4. Salida (Bombilla)
+        this.bombilla = new Bombilla(this, 800, 300);
+        this.bombilla.setDepth(1);
+
+        // Cable de la Gate (X=500) a la Bombilla (X=750). Distancia 250.
+        this.cableSalida = new Cable(this, 725, 300);
+        this.cableSalida.setDisplaySize(100, 8);
+        this.cableSalida.setDepth(0);
+        this.cableSalida.connectInput(this.and_gate3);
+        this.cableSalida.connectOutput(this.bombilla, 'input');
+
+        // Grupo para actualizar toda la lógica junta
+        this.circuitComponents = [
+            this.cable1,
+            this.cable2,
+            this.cable3,
+            this.cable4,
+            this.cable5,
+            this.cable6,
+            this.cable7,
+            this.and_gate1,
+            this.and_gate2,
+            this.and_gate3,
+            this.not_gate1,
+            this.boton1,
+            this.boton2,
+            this.boton3,
+            this.boton4,
+            this.cableSalida,
+            this.bombilla,
+        ];
+
     }
 
-    /**
-     * Muestra un mensaje en pantalla a través del manager
-     */
-    showDialogue(message) {
-        this.dialogueManager.showDialogue(message);
+    update(t, dt) {
+        // En cada frame actualizamos la lógica de todo el circuito en orden de flujo
+        this.circuitComponents.forEach(component => {
+            if (component.updateLogic) {
+                component.updateLogic();
+            }
+        });
     }
 }
