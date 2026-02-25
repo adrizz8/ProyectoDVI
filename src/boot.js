@@ -7,6 +7,7 @@ import star from '../assets/sprites/star.png'
 import player from '../assets/sprites/protanuevo.png'
 import logo from '../assets/images/logo.png'
 import fondo from '../assets/images/fondo.png'
+import toy from '../assets/sprites/player.png'
 
 
 
@@ -35,8 +36,16 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', base);
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 64, frameHeight: 64 });
+    this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
+    this.load.image('or_gate', fondo);
+    this.load.image('and_gate', fondo);
+    this.load.image('not_gate', fondo);
+    this.load.image('xor_gate', fondo);
+    this.load.image('cable', base);
+    this.load.image('boton', star);
+    this.load.image('bombilla', toy);
   }
 
   /**
