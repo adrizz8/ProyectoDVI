@@ -65,7 +65,6 @@ export default class Level extends Phaser.Scene {
      * @param {Base} base La base sobre la que estaba la estrella que se ha cogido
      */
     starPickt(base) {
-        this.player.point();
         // Al tocar la estrella, cambiamos al nuevo escenario
         this.scene.start('level2');
     }

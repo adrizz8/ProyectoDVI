@@ -4,6 +4,9 @@ import Phaser from 'phaser';
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
  * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
  */
+
+
+
 export default class Player extends Phaser.GameObjects.Sprite {
 
     /**
@@ -14,19 +17,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     constructor(scene, x, y) {
         super(scene, x, y);
-        this.score = 0;
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         // Queremos que el jugador no se salga de los límites del mundo
         this.body.setCollideWorldBounds();
         this.speed = 300;
-        this.jumpSpeed = 700;
-        // Esta label es la UI en la que pondremos la puntuación del jugador
-        this.label = this.scene.add.text(10, 10, "", { fontSize: 20 });
+
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.interactKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        this.updateScore();
 
         // Definición de animaciones direccionales
         const animsConfig = [
@@ -61,21 +60,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.play('idle-down');
     }
 
-    /**
-     * El jugador ha recogido una estrella por lo que este método añade un punto y
-     * actualiza la UI con la puntuación actual.
-     */
-    point() {
-        this.score++;
-        this.updateScore();
-    }
-
-    /**
-     * Actualiza la UI con la puntuación actual
-     */
-    updateScore() {
-        this.label.text = 'Score: ' + this.score;
-    }
 
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
