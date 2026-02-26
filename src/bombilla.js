@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Player from './player';
+import scene from './battleScene/battle_scene.js';
 
 /**
  * Clase que representa una bombilla (salida final del circuito).
@@ -14,7 +15,7 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
      * @param {Player} player Jugador del juego (para detectar interacciones)
      * @param {string} message Mensaje que dirá la bombilla al interactuar
      */
-    constructor(scene, x, y, player, message) {
+    constructor(scene,player,x,y, message = "...") {
         super(scene, x, y, 'bombilla');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
@@ -49,6 +50,7 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
     interact(){
         if (this.scene.showDialogue) {
             this.scene.showDialogue(this.message);
+            this.scene.start('battle_scene'); // Indicamos que se ha interactuado con la bombilla para iniciar la siguiente escena
         }
     }
 

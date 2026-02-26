@@ -1,4 +1,4 @@
-
+import Phaser from "phaser";
 export default class battle_scene extends Phaser.Scene {
     /** 
      *  @param {Phaser.scene} scene; 
@@ -7,7 +7,7 @@ export default class battle_scene extends Phaser.Scene {
     */
    
     constructor(scene, player, enemy) {
-        super('BattleScene');
+        super('battle_scene');
         this.scene=scene; 
         this.player=player;
         this.enemy= enemy; 

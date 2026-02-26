@@ -6,6 +6,7 @@ import NotGate from './not_gate.js';
 import Bombilla from './bombilla.js';
 import XorGate from './xor_gate.js';
 import OrGate from './or_gate.js';
+import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 
 /**
@@ -22,6 +23,8 @@ export default class Level2 extends Phaser.Scene {
         this.add.image(500, 250, 'fondo');
         this.player = new Player(this, 100, 400);
         this.player.setDepth(1);
+
+           this.dialogueManager = new DialogueManager(this);
 
         // --- CONSTRUCCIÓN DEL CIRCUITO ---
 
@@ -105,6 +108,8 @@ export default class Level2 extends Phaser.Scene {
         this.bombilla = new Bombilla(this,this.player, 800, 300,"¡Prepárate para luchar!");
         this.bombilla.setDepth(1);
 
+        
+
 
         this.cableSalida = new Cable(this, 725, 300);
         this.cableSalida.setDisplaySize(100, 8);
@@ -133,6 +138,10 @@ export default class Level2 extends Phaser.Scene {
             this.bombilla,
         ];
 
+    }
+
+    showDialogue(message) {
+        this.dialogueManager.showDialogue(message);
     }
 
     update(t, dt) {
