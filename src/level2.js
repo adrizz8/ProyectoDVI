@@ -102,7 +102,7 @@ export default class Level2 extends Phaser.Scene {
         this.cable7.connectOutput(this.and_gate3, 'inputB');
 
         // 4. Salida (Bombilla)
-        this.bombilla = new Bombilla(this, 800, 300);
+        this.bombilla = new Bombilla(this,this.player, 800, 300,"¡Prepárate para luchar!");
         this.bombilla.setDepth(1);
 
 

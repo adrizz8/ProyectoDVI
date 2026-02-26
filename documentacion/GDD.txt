@@ -109,7 +109,7 @@ A pesar de todo por suerte o por desgracia conseguí inscribirme en la carrera:
 (Elegir Ingeniería Informática, de Software, de Computadores)
 
 ...(Pantalla en negro y apareces en la parte de afuera de la facultad para el primer combate )
-El juego comienza con el personaje principal llegando tarde a la facultad, entra por los caminos de atras de la parte de fuera
+El juego comienza con el personaje principal llegando tarde a la facultad, entra por los caminos de atras de la parte de fuera diciendo("puta renfe todos los dias lo mismo"),
 y aparece un alumno de 4º año cortandote el paso con los ojos inyectados en sangre y rodeado de un aura de error (glitches) corre hacia ti gritando: "¡No me carga el repositorio, no me cargaaaa!". 
 Es un combate tutorial rápido donde aprendes a "Atacar".
 

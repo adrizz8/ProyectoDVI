@@ -105,4 +105,40 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.play(`${animState}-${this.lastDirection}`, true);
     }
 
-}
+    isinteractuable(object) {
+        const distance = Phaser.Math.Distance.Between(this.x, this.y, object.x, object.y);
+        const threshold = 80;
+        if (distance < threshold) {
+           if (this.iamlookingat(object)) {
+                object.setScale(1.1);
+
+                // Si pulsa la tecla de interacción (E)
+                if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                object.interact();
+                }
+            } else {
+                object.setScale(1);
+            }
+            } else {
+            object.setScale(1); 
+        }
+    }
+
+    iamlookingat(object) {
+        const dx = object.x - this.x;
+        const dy = object.y - this.y;
+        const dir = this.lastDirection;
+
+        // Margen de alineación para considerar que está "mirando" (no tiene que ser perfecto)
+        const margin = 50;
+
+        if (dir === 'right' && dx > 0 && Math.abs(dy) < margin) return true;
+        if (dir === 'left' && dx < 0 && Math.abs(dy) < margin) return true;
+        if (dir === 'up' && dy < 0 && Math.abs(dx) < margin) return true;
+        if (dir === 'down' && dy > 0 && Math.abs(dx) < margin) return true;
+
+        return false;
+    }
+
+
+}  

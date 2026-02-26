@@ -17,6 +17,7 @@ export default class Boton extends Phaser.GameObjects.Sprite {
         this.player = player;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
+        this.scene.physics.add.collider(this, this.player);
 
         this.output = false; // Estado inicial apagado
         this.setTint(0x888888); // Gris para apagado
@@ -30,24 +31,14 @@ export default class Boton extends Phaser.GameObjects.Sprite {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
 
-        const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.x, this.y);
-        const threshold = 60;
+        this.player.isinteractuable(this);
 
-        if (distance < threshold) {
-            this.setDisplaySize(this.normalDisplaySize * 1.2, this.normalDisplaySize * 1.2);
-
-            if (Phaser.Input.Keyboard.JustDown(this.player.interactKey)) {
-                this.toggle();
-            }
-        } else {
-            this.setDisplaySize(this.normalDisplaySize, this.normalDisplaySize);
-        }
     }
 
     /**
      * Cambia el estado del botón y actualiza su color
      */
-    toggle() {
+    interact() {
         this.output = !this.output;
 
         if (this.output) {

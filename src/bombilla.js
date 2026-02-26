@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Player from './player';
 
 /**
  * Clase que representa una bombilla (salida final del circuito).
@@ -10,16 +11,23 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
      * @param {Phaser.Scene} scene Escena a la que pertenece
      * @param {number} x Coordenada x
      * @param {number} y Coordenada y
+     * @param {Player} player Jugador del juego (para detectar interacciones)
+     * @param {string} message Mensaje que dirá la bombilla al interactuar
      */
-    constructor(scene, x, y) {
+    constructor(scene, x, y, player, message) {
         super(scene, x, y, 'bombilla');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
 
+        this.player = player;
+        this.message = message; 
         this.input = false; // Señal de entrada
         this.setTint(0x444444); // Gris oscuro inicial (apagada)
         this.setDisplaySize(64, 64);
         this.normalDisplaySize = 64;
+        this.scene.add.existing(this);
+        this.scene.physics.add.existing(this, true);
+        this.scene.physics.add.collider(this, player);
     }
 
     /**
@@ -32,4 +40,16 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
             this.setTint(0x444444); // Gris oscuro
         }
     }
+
+    preUpdate(t, dt) {
+        super.preUpdate(t, dt); 
+        this.player.isinteractuable(this);
+    }
+
+    interact(){
+        if (this.scene.showDialogue) {
+            this.scene.showDialogue(this.message);
+        }
+    }
+
 }
