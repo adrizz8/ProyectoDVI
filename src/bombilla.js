@@ -1,6 +1,5 @@
 import Phaser from 'phaser'
 import Player from './player';
-import scene from './battleScene/battle_scene.js';
 
 /**
  * Clase que representa una bombilla (salida final del circuito).
@@ -15,19 +14,19 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
      * @param {Player} player Jugador del juego (para detectar interacciones)
      * @param {string} message Mensaje que dirá la bombilla al interactuar
      */
-    constructor(scene,player,x,y, message = "...") {
+    constructor(scene, player, x, y, message = "...") {
         super(scene, x, y, 'bombilla');
-        this.scene.add.existing(this);
-        this.scene.physics.add.existing(this, true);
 
         this.player = player;
-        this.message = message; 
-        this.input = false; // Señal de entrada
+        this.message = message;
+        this.signalIn = false; // Señal de entrada
         this.setTint(0x444444); // Gris oscuro inicial (apagada)
         this.setDisplaySize(64, 64);
         this.normalDisplaySize = 64;
+
+        // Una sola vez: registrar en escena y física
         this.scene.add.existing(this);
-        this.scene.physics.add.existing(this, true);
+        this.scene.physics.add.existing(this, true); // true = estático
         this.scene.physics.add.collider(this, player);
     }
 
@@ -35,7 +34,7 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
      * Actualiza el estado visual de la bombilla según la entrada
      */
     updateLogic() {
-        if (this.input) {
+        if (this.signalIn) {
             this.setTint(0xfffb00); // Amarillo brillante (encendida)
         } else {
             this.setTint(0x444444); // Gris oscuro
@@ -43,15 +42,24 @@ export default class Bombilla extends Phaser.GameObjects.Sprite {
     }
 
     preUpdate(t, dt) {
-        super.preUpdate(t, dt); 
+        super.preUpdate(t, dt);
         this.player.isinteractuable(this);
     }
 
-    interact(){
-        if (this.scene.showDialogue) {
-            this.scene.showDialogue(this.message);
-            this.scene.start('battle_scene'); // Indicamos que se ha interactuado con la bombilla para iniciar la siguiente escena
-        }
+    interact() {
+        // this.scene      = la escena Phaser (Phaser.Scene)
+        // this.scene.scene = el SceneManager (tiene .start())
+        this.scene.scene.start('battle_scene', {
+            playerName: 'Jugador',
+            playerHP: 100,
+            playerMaxHp: 100,
+            playerDamage: 25,
+            enemyName: 'Bombilla',
+            enemyHP: 60,
+            enemyMaxHp: 60,
+            enemyDamage: 10,
+            originScene: this.scene.scene.key,
+        });
     }
 
 }

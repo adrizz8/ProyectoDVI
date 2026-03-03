@@ -17,7 +17,7 @@ export default class NotGate extends Phaser.GameObjects.Sprite {
         this.setTint(0x00ff00); // Verde para NOT
         this.setDisplaySize(64, 64);
 
-        this.input = false;
+        this.signalIn = false;
         this.output = true;
     }
 
@@ -25,7 +25,7 @@ export default class NotGate extends Phaser.GameObjects.Sprite {
      * Actualiza el estado de la salida basado en la entrada
      */
     updateLogic() {
-        this.output = !this.input;
+        this.output = !this.signalIn;
         return this.output;
     }
 }

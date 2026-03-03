@@ -9,24 +9,16 @@ import OrGate from './or_gate.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 
-/**
- * Escena de Nivel 2 con un puzzle lógico sencillo.
- * El jugador debe activar dos botones para encender la bombilla a través de una puerta AND.
- */
 export default class Level2 extends Phaser.Scene {
     constructor() {
         super({ key: 'level2' });
     }
 
     create() {
-        // Fondo y Player
         this.add.image(500, 250, 'fondo');
         this.player = new Player(this, 100, 400);
         this.player.setDepth(1);
-
-           this.dialogueManager = new DialogueManager(this);
-
-        // --- CONSTRUCCIÓN DEL CIRCUITO ---
+        this.dialogueManager = new DialogueManager(this);
 
         // 1. Entradas (Botones)
         this.boton1 = new Boton(this, this.player, 300, 150);
@@ -41,26 +33,23 @@ export default class Level2 extends Phaser.Scene {
         // 2. Puertas Lógicas 
         this.and_gate1 = new AndGate(this, 500, 200, this.player);
         this.and_gate1.setDisplaySize(120, 120);
-        this.and_gate1.body.updateFromGameObject();
         this.and_gate1.setDepth(1);
-
         this.and_gate2 = new AndGate(this, 500, 400, this.player);
         this.and_gate2.setDisplaySize(120, 120);
-        this.and_gate2.body.updateFromGameObject();
         this.and_gate2.setDepth(1);
-
         this.not_gate1 = new NotGate(this, 400, 150, this.player);
         this.not_gate1.setDisplaySize(50, 50);
-        this.not_gate1.body.updateFromGameObject();
         this.not_gate1.setDepth(1);
+        this.and_gate3 = new AndGate(this, 650, 300, this.player);
+        this.and_gate3.setDisplaySize(120, 120);
+        this.and_gate3.setDepth(1);
 
-
-        // 3. Cables
+        // 3. Cables (Aquí corregimos los nombres de las propiedades de destino)
         this.cable1 = new Cable(this, 350, 150);
         this.cable1.setDisplaySize(100, 8);
         this.cable1.setDepth(0);
         this.cable1.connectInput(this.boton1);
-        this.cable1.connectOutput(this.not_gate1, 'input');
+        this.cable1.connectOutput(this.not_gate1, 'signalIn'); // CAMBIADO: de 'input' a 'signalIn'
 
         this.cable2 = new Cable(this, 450, 150);
         this.cable2.setDisplaySize(100, 8);
@@ -86,12 +75,6 @@ export default class Level2 extends Phaser.Scene {
         this.cable5.connectInput(this.boton4);
         this.cable5.connectOutput(this.and_gate2, 'inputB');
 
-
-        this.and_gate3 = new AndGate(this, 650, 300, this.player);
-        this.and_gate3.setDisplaySize(120, 120);
-        this.and_gate3.body.updateFromGameObject();
-        this.and_gate3.setDepth(1);
-
         this.cable6 = new Cable(this, 550, 250);
         this.cable6.setDisplaySize(100, 8);
         this.cable6.setDepth(0);
@@ -105,51 +88,31 @@ export default class Level2 extends Phaser.Scene {
         this.cable7.connectOutput(this.and_gate3, 'inputB');
 
         // 4. Salida (Bombilla)
-        this.bombilla = new Bombilla(this,this.player, 800, 300,"¡Prepárate para luchar!");
+        this.bombilla = new Bombilla(this, this.player, 800, 300, "¡Prepárate para luchar!");
         this.bombilla.setDepth(1);
-
-        
-
 
         this.cableSalida = new Cable(this, 725, 300);
         this.cableSalida.setDisplaySize(100, 8);
         this.cableSalida.setDepth(0);
         this.cableSalida.connectInput(this.and_gate3);
-        this.cableSalida.connectOutput(this.bombilla, 'input');
+        this.cableSalida.connectOutput(this.bombilla, 'signalIn'); // CAMBIADO: de 'input' a 'signalIn'
 
-        // Grupo para actualizar toda la lógica junta
         this.circuitComponents = [
-            this.cable1,
-            this.cable2,
-            this.cable3,
-            this.cable4,
-            this.cable5,
-            this.cable6,
-            this.cable7,
-            this.and_gate1,
-            this.and_gate2,
-            this.and_gate3,
-            this.not_gate1,
-            this.boton1,
-            this.boton2,
-            this.boton3,
-            this.boton4,
-            this.cableSalida,
-            this.bombilla,
+            this.cable1, this.cable2, this.cable3, this.cable4, this.cable5,
+            this.cable6, this.cable7, this.and_gate1, this.and_gate2,
+            this.and_gate3, this.not_gate1, this.boton1, this.boton2,
+            this.boton3, this.boton4, this.cableSalida, this.bombilla
         ];
 
-    }
-
-    showDialogue(message) {
-        this.dialogueManager.showDialogue(message);
+        // Ajustes de profundidad y tamaño masivos (opcional, simplificado)
+        this.circuitComponents.forEach(c => {
+            if (c.body && c.body.updateFromGameObject) c.body.updateFromGameObject();
+        });
     }
 
     update(t, dt) {
-        // En cada frame actualizamos la lógica de todo el circuito en orden de flujo
         this.circuitComponents.forEach(component => {
-            if (component.updateLogic) {
-                component.updateLogic();
-            }
+            if (component.updateLogic) component.updateLogic();
         });
     }
 }

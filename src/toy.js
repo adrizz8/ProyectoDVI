@@ -14,10 +14,20 @@ export default class Toy extends Phaser.GameObjects.Sprite {
    * @param {number} y Coordenada y
    * @param {string} message Mensaje que dirá el objeto
    */
-  constructor(scene, player, x, y, message = "...") {
+  /**
+   * @param {object} [enemyStats] Stats del enemigo para el combate
+   *   { name, hp, maxHp, damage } — si no se pasan, se usan valores por defecto
+   */
+  constructor(scene, player, x, y, message = "...", enemyStats = {}) {
     super(scene, x, y, 'toy');
     this.player = player;
     this.message = message;
+    this.enemyStats = {
+      name: enemyStats.name ?? 'Toy',
+      hp: enemyStats.hp ?? 80,
+      maxHp: enemyStats.maxHp ?? 80,
+      damage: enemyStats.damage ?? 15,
+    };
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this, true);
     this.scene.physics.add.collider(this, player);
@@ -36,14 +46,24 @@ export default class Toy extends Phaser.GameObjects.Sprite {
 
 
   /**
-   * Acción que ocurre al interaccionar
+   * Al interactuar, lanza la escena de combate por turnos.
+   * Pasa los stats del jugador y del enemigo (este Toy).
    */
   interact() {
-
-    // Llamamos al método de diálogo de la escena
-    if (this.scene.showDialogue) {
-      this.scene.showDialogue(this.message);
-    }
+    this.scene.scene.start('battle_scene', {
+      // Stats jugador
+      playerName: 'Jugador',
+      playerHP: 100,
+      playerMaxHp: 100,
+      playerDamage: 25,
+      // Stats enemigo (configurables al crear el Toy)
+      enemyName: this.enemyStats.name,
+      enemyHP: this.enemyStats.hp,
+      enemyMaxHp: this.enemyStats.maxHp,
+      enemyDamage: this.enemyStats.damage,
+      // Escena a la que volver al terminar el combate
+      originScene: this.scene.scene.key,
+    });
   }
 
 }

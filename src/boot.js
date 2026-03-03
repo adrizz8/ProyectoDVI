@@ -8,6 +8,8 @@ import player from '../assets/sprites/protaOW.png'
 import logo from '../assets/images/logo.png'
 import fondo from '../assets/images/fondo.png'
 import toy from '../assets/sprites/player.png'
+import battleUI from '../assets/sprites/battleuiejemplo.png'
+import playerFace from '../assets/sprites/protanuevo.png'
 
 
 
@@ -46,6 +48,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('cable', base);
     this.load.image('boton', star);
     this.load.image('bombilla', toy);
+    this.load.image('battleUI', battleUI);
+    this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
   }
 
   /**
