@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import BattleManager from "./battle_manager.js";
 
+//Hay que replantear esto y dividirlo en varias clases para luego poder escalarlo y que usarlo sea más sencillo. 
+
 export default class BattleScene extends Phaser.Scene {
 
     constructor() {
@@ -95,6 +97,25 @@ export default class BattleScene extends Phaser.Scene {
 
         this._BAR_MAX_W = BAR_MAX_W;
 
+        // ── 7. Cuadro de mensajes de batalla ─────────────────────────────────
+        // Situado dentro de la franja UI, a la derecha del portrait del jugador.
+        const MSG_X = 50;
+        const MSG_Y = UI_TOP_Y - 100;
+        const MSG_W = 400;
+
+        this._msgText = this.add.text(MSG_X + 10, MSG_Y + 10, '', {
+            fontSize: '15px',
+            fill: '#ffffff',
+            fontFamily: 'monospace',
+            wordWrap: { width: MSG_W - 20, useAdvancedWrap: true },
+            stroke: '#000',
+            strokeThickness: 2,
+            lineSpacing: 4,
+        }).setDepth(5);
+
+        // Mensaje de bienvenida
+        this._setMessage(`¡Empieza el combate!\n${this.manager.getEnemyName()} quiere pelear.`);
+
 
         // ── 8. Zonas de clic invisibles sobre los botones del asset ───────────
         // Los botones están en la franja superior de la UI (Y≈UI_TOP_Y+6 a UI_TOP_Y+28)
@@ -132,16 +153,22 @@ export default class BattleScene extends Phaser.Scene {
     }
 
 
-    //LÓGICA Y ACCIONES DEL COMBATE
+    //LÓGICA Y ACCIONES DEL COMBATE 
+    //Se moverá a otra clase
     _onLuchar() {
         this._busy = true;
         this._shakeSprite(this._enemySprite);
 
         const result = this.manager.playerAttack();
         this._updateEnemyHP();
+        this._setMessage(
+            `${this.manager.getPlayerName()} ataca a ${this.manager.getEnemyName()}\n` +
+            `¡Causa ${result.damage} puntos de daño!`
+        );
 
         if (result.enemyDead) {
             this.time.delayedCall(900, () => {
+                this._setMessage(`¡${this.manager.getEnemyName()} ha sido derrotado!\n¡Victoria!`);
                 this.time.delayedCall(2200, () => this._endBattle());
             });
         } else {
@@ -158,24 +185,37 @@ export default class BattleScene extends Phaser.Scene {
     _onGuardia() {
         this._busy = true;
         this.manager.activateGuard();
+        this._setMessage(
+            `${this.manager.getPlayerName()} se pone en guardia.\n` +
+            `El próximo ataque hará la mitad de daño.`
+        );
         this.time.delayedCall(900, () => this._enemyTurn());
     }
 
     _onHuir() {
         this._busy = true;
+        this._setMessage(`${this.manager.getPlayerName()} intenta huir...`);
         this.time.delayedCall(1200, () => this._endBattle());
     }
 
 
     _enemyTurn() {
-        this._setMessage = () => { }; // sin mensajes
         this._shakeSprite(this._enemySprite);
 
         const result = this.manager.enemyAttack();
         this._updatePlayerHP();
 
+        let msg = `${this.manager.getEnemyName()} ataca a ${this.manager.getPlayerName()}\n`;
+        if (result.guarded) {
+            msg += `¡Guardia activa! Solo ${result.damage} puntos de daño.`;
+        } else {
+            msg += `¡Causa ${result.damage} puntos de daño!`;
+        }
+        this._setMessage(msg);
+
         if (result.playerDead) {
             this.time.delayedCall(900, () => {
+                this._setMessage(`¡${this.manager.getPlayerName()} ha sido derrotado!\nFin del combate.`);
                 this.time.delayedCall(2200, () => this._endBattle());
             });
         } else {
@@ -214,7 +254,9 @@ export default class BattleScene extends Phaser.Scene {
     }
 
 
-    _setMessage(_msg) { /* mensajes eliminados */ }
+    _setMessage(msg) {
+        if (this._msgText) this._msgText.setText(msg);
+    }
 
     _shakeSprite(sprite) {
         if (!sprite) return;
