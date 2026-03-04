@@ -85,9 +85,9 @@ export default class BattleScene extends Phaser.Scene {
         const BAR_H = 10;
 
         this._playerHPBar = this.add.rectangle(BAR_X, HP_BAR_Y, BAR_MAX_W, BAR_H, 0x22dd22)
-            .setOrigin(0, 0.5).setDepth(5);
+            .setOrigin(0, -1).setDepth(5);
         this._playerMPBar = this.add.rectangle(BAR_X, MP_BAR_Y, BAR_MAX_W, BAR_H, 0x2266ff)
-            .setOrigin(0, 0.5).setDepth(5);
+            .setOrigin(0, -1).setDepth(5);
 
         this._playerHPText = this.add.text(BAR_X, HP_BAR_Y - 14,
             `${this.manager.getPlayerHP()} / ${this.manager.getPlayerMaxHP()}`, {
@@ -234,7 +234,12 @@ export default class BattleScene extends Phaser.Scene {
     _updatePlayerHP() {
         const pct = this.manager.getPlayerHPPercent();
         const newW = Math.max(1, pct * this._BAR_MAX_W);
-        this._playerHPBar.setDisplaySize(newW, 9);
+        this.tweens.add({
+            targets: this._playerHPBar,
+            displayWidth: newW,
+            duration: 1000,
+            ease: 'Cubic.easeOut',
+        })
         this._playerHPBar.setFillStyle(this._hpColor(pct));
         this._playerHPText.setText(
             `${this.manager.getPlayerHP()} / ${this.manager.getPlayerMaxHP()}`
