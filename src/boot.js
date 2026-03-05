@@ -54,7 +54,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
-    this.load.tilemapTiledJSON('mainscene',mainscene );
+    this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.image('tileset', tileset);
   }
 

@@ -42,7 +42,7 @@ export default class IntroScene extends Phaser.Scene {
         playButton.on('pointerdown', () => {
             const playerName = nameInput.node.value;
             const playerPersonalidad = personalidadSelect.node.value;
-            this.scene.start('level2', { name: playerName, personalidad: playerPersonalidad });
+            this.scene.start('level3', { name: playerName, personalidad: playerPersonalidad });
         });
     }
 

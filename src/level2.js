@@ -19,14 +19,14 @@ export default class Level2 extends Phaser.Scene {
     }
 
     create() {
-        var map = this.make.tilemap({ key: 'mainscene',tileHeight: 32, tileWidth:32 });
+        /*var map = this.make.tilemap({ key: 'mainscene', tileHeight: 32, tileWidth: 32 });
         var tileset = map.addTilesetImage('tilesetexterior', 'tileset');
         var backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
         var groundLayer = map.createLayer('Arboles', tileset, 0, 0);
         var objectsLayer = map.createLayer('Resto', tileset, 0, 0);
         groundLayer.setCollisionByProperty({ collides: true });
         backgroundLayer.setCollisionByProperty({ collides: true });
-        objectsLayer.setCollisionByProperty({ collides: true });
+        objectsLayer.setCollisionByProperty({ collides: true });*/
         this.player = new Player(this, 100, 400);
         this.player.setDepth(1);
         this.dialogueManager = new DialogueManager(this);
