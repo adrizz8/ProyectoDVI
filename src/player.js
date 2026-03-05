@@ -20,6 +20,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        // 1. Ajustar el tamaño (Ancho, Alto)
+// Prueba con valores pequeños, como el 50% del ancho y el 30% del alto del sprite
+    this.body.setSize(this.width, this.height);
+
+// 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
+// Tienes que mover la caja manualmente para que quede abajo
+    this.body.setOffset(this.width * 0.25, this.height * 0.7);
         // Queremos que el jugador no se salga de los límites del mundo
         this.body.setCollideWorldBounds();
         this.speed = 300;

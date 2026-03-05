@@ -26,15 +26,14 @@ export default class Level3 extends Phaser.Scene {
         const objectsLayer = map.createLayer('Resto', tileset, 0, 0);
 
         //backgroundLayer.setCollisionByProperty({ collides: true });
-        //groundLayer.setCollisionByProperty({ collides: true });
+        groundLayer.setCollisionByProperty({ collides: true }); // Solo esta capa tiene colisiones, el resto es decorativo
         objectsLayer.setCollisionByProperty({ collides: true });
 
         // --- Jugador ---
         this.player = new Player(this, 100, 400);
-        this.player.setDepth(1);
 
         // Colisión del jugador con las capas del mapa
-        //this.physics.add.collider(this.player, groundLayer);
+        this.physics.add.collider(this.player, groundLayer);
         this.physics.add.collider(this.player, objectsLayer);
 
         // --- Cámara ---
