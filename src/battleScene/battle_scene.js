@@ -34,31 +34,22 @@ export default class BattleScene extends Phaser.Scene {
         this.manager = new BattleManager(this._playerStats, this._enemyStats);
         this._busy = false;
 
-        // ── 1. Fondo de la zona de combate ────────────────────────────────────
-        // La imagen fondo.png llena solo la zona superior (área de batalla)
-        //this.add.image(W / 2, H / 2, 'fondo').setDisplaySize(W, H).setDepth(0);
+        // ── 1. Fondo de la zona de combate (detrás de todo) ─────────────────
+        this.add.image(W / 2, H / 2, 'fondoCombate').setDisplaySize(W, H).setDepth(-1);
 
         // ── 2. UI inferior: imagen battleuiejemplo.png ────────────────────────
-        // La imagen mide 1000×700 nativos. La queremos mostrando solo su franja
-        // inferior (la parte de UI) ajustada al fondo del canvas.
-        // Estrategia simple: escalarla para que encaje en ancho (W) y alinearla
-        // al fondo. Como el canvas es 500px y la imagen es 700px, la imagen queda
-        // por encima: el centro Y = H - (700/2) * escala → con escala = W/1000 = 1,
-        // centro = 500 - 350 = 150 → la zona de UI (y≈430 en imagen) cae a
-        // 150 + (430-350) = 230 en canvas. Eso es correcto, coincide con lo que vemos.
-        //
-        // Para simplificar y evitar cálculos errados, usamos setDisplaySize para
-        // forzar que la imagen ocupe exactamente la banda inferior de 200px.
         const UI_BAND_H = 200;   // altura de la banda UI en el canvas
         const UI_TOP_Y = H - UI_BAND_H;   // y=300 en canvas 500px
 
-        this.add.image(W / 2, H / 2, 'battleUI').setDisplaySize(W, H).setDepth(0);
+        this.add.image(W / 2, H / 2, 'battleUI').setDisplaySize(W, H).setDepth(1);
 
 
-        // ── 4. Sprite del enemigo (zona superior derecha, área de batalla) ────
-        this._enemySprite = this.add.image(760, 160, 'toy')
+        // ── 4. Sprite del enemigo encima de la plataforma morada ──────────
+        // La plataforma morada del battleuiejemplo está aprox. en x=760, y=255 del canvas.
+        // Colocamos el sprite justo encima de ella.
+        this._enemySprite = this.add.image(830, 155, 'toy')
             .setScale(4)
-            .setDepth(3);
+            .setDepth(2);
 
         // ── 5. Info del enemigo (esquina superior izquierda) ──────────────────
         this._enemyNameText = this.add.text(30, 20,
