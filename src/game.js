@@ -13,8 +13,8 @@ import BattleScene from './battleScene/battle_scene.js';
  */
 let config = {
     type: Phaser.AUTO,
-    width: 1000,
-    height: 500,
+    width: 1216,
+    height: 640,
     parent: 'juego',
 
     //Para poder usar elementos DOM en Phaser, como los inputs de texto o los select, es necesario incluir esta propiedad en la configuración del juego
