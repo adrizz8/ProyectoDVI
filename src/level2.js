@@ -15,16 +15,15 @@ export default class Level2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.tilemapTiledJSON('mapa1', 'assets/images/mapa1.json');
-        this.load.image('tileset', 'assets/images/tilesetexterior.png');
+
     }
 
     create() {
-        const map = this.make.tilemap({ key: 'mapa1' , tileWidth: 32, tileHeight: 32 });
-        const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
-        const backgroundLayer = map.createLayer('Capa de patrones 1', tileset, 0, 0);
-        const groundLayer = map.createLayer('Capa de patrones 2', tileset, 0, 0);
-        const objectsLayer = map.createLayer('Capa de patrones 3', tileset, 0, 0);
+        var map = this.make.tilemap({ key: 'mainscene',tileHeight: 32, tileWidth:32 });
+        var tileset = map.addTilesetImage('tilesetexterior', 'tileset');
+        var backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
+        var groundLayer = map.createLayer('Arboles', tileset, 0, 0);
+        var objectsLayer = map.createLayer('Resto', tileset, 0, 0);
         groundLayer.setCollisionByProperty({ collides: true });
         backgroundLayer.setCollisionByProperty({ collides: true });
         objectsLayer.setCollisionByProperty({ collides: true });
