@@ -21,6 +21,7 @@ export default class Level3 extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'mainscene', tileWidth: 32, tileHeight: 32 });
         const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
+        const backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
         const groundLayer = map.createLayer('Arboles', tileset, 0, 0);
         const objectsLayer = map.createLayer('Resto', tileset, 0, 0);
 
@@ -33,18 +34,14 @@ export default class Level3 extends Phaser.Scene {
         this.player.setDepth(1);
 
         // Colisión del jugador con las capas del mapa
-        this.physics.add.collider(this.player, groundLayer);
+        //this.physics.add.collider(this.player, groundLayer);
         this.physics.add.collider(this.player, objectsLayer);
 
         // --- Cámara ---
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-        // --- Diálogo de bienvenida ---
-        this.dialogueManager = new DialogueManager(this);
-        this.time.delayedCall(500, () => {
-            this.dialogueManager.showDialogue('¡Has resuelto el circuito! Explora el mundo...');
-        });
+
     }
 
     update(t, dt) {
