@@ -12,6 +12,7 @@ import battleUI from '../assets/sprites/battleuiejemplo.png'
 import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
+import outdoorMap from '../assets/images/mapaFuera.json'
 import tileset from '../assets/images/tilesetexterior.png'
 
 
@@ -55,6 +56,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('fondoCombate', fondoCombate);
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
+    this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
     this.load.image('tileset', tileset);
   }
 
