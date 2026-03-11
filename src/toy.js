@@ -51,19 +51,16 @@ export default class Toy extends Phaser.GameObjects.Sprite {
    */
   interact() {
     this.scene.scene.start('battle_scene', {
-      // Stats jugador
-      playerName: 'Jugador',
-      playerHP: 100,
-      playerMaxHp: 100,
-      playerDamage: 25,
-      // Stats enemigo (configurables al crear el Toy)
+      // Stats del enemigo (cada Toy configura los suyos)
       enemyName: this.enemyStats.name,
       enemyHP: this.enemyStats.hp,
       enemyMaxHp: this.enemyStats.maxHp,
       enemyDamage: this.enemyStats.damage,
+      enemySpriteKey: 'toy',
       // Escena a la que volver al terminar el combate
       originScene: this.scene.scene.key,
     });
+    // Los stats del jugador los lee BattleScene directamente del GameManager
   }
 
 }

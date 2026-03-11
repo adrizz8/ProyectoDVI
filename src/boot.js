@@ -16,6 +16,7 @@ import tileset from '../assets/images/tilesetexterior.png'
 
 
 
+
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
