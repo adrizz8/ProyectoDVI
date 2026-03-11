@@ -8,11 +8,20 @@ import player from '../assets/sprites/protaOW.png'
 import logo from '../assets/images/logo.png'
 import fondo from '../assets/images/fondo.png'
 import toy from '../assets/sprites/player.png'
-import battleUI from '../assets/sprites/battleuiejemplo.png'
+import battleUI from '../assets/images/battleui_vacio.png'
 import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
 import tileset from '../assets/images/tilesetexterior.png'
+import boton_luchar from '../assets/images/boton_luchar.png'
+import boton_habilidades from '../assets/images/boton_habilidades.png'
+import boton_mochila from '../assets/images/boton_mochila.png'
+import boton_huir from '../assets/images/boton_huir.png'
+import boton_guardia from '../assets/images/boton_guardia.png'
+import prota_battle from '../assets/sprites/prota_battle.png'
+import player2_battle from '../assets/sprites/player2_battle.png'
+import player3_battle from '../assets/sprites/player3_battle.png'
+import player4_battle from '../assets/sprites/player4_battle.png'
 
 
 
@@ -57,6 +66,15 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.image('tileset', tileset);
+    this.load.image('boton_luchar', boton_luchar);
+    this.load.image('boton_habilidades', boton_habilidades);
+    this.load.image('boton_mochila', boton_mochila);
+    this.load.image('boton_huir', boton_huir);
+    this.load.image('boton_guardia', boton_guardia);
+    this.load.image('prota_battle', prota_battle);
+    this.load.image('player2_battle', player2_battle);
+    this.load.image('player3_battle', player3_battle);
+    this.load.image('player4_battle', player4_battle);
   }
 
   /**

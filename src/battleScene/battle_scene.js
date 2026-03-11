@@ -70,21 +70,23 @@ export default class BattleScene extends Phaser.Scene {
         this._playerSprites = [];
         this._playerLabels = [];
         const players = this.battle_manager.getAllPlayers();
-        const tints = [0xffffff, 0xffcccc, 0xccffcc, 0xccccff];
 
-        const startX = 180;
-        const startY = 160;
-        const offsetX = -40;
-        const offsetY = 70;
+        // Mapeo de sprites específicos de batalla
+        const battleKeys = ['prota_battle', 'player2_battle', 'player3_battle', 'player4_battle'];
+
+        const startX = 294;
+        const startY = 500;
+        const offsetX = 210;
 
         players.forEach((player, index) => {
             const x = startX + (index * offsetX);
-            const y = startY + (index * offsetY);
+            const y = startY;
 
-            const sprite = this.add.sprite(x, y, 'player')
-                .setScale(4)
-                .setDepth(2)
-                .setTint(tints[index % tints.length]);
+            // Usamos la imagen específica según el orden en la party
+            const key = battleKeys[index];
+
+            const sprite = this.add.sprite(x, y, key)
+                .setDepth(2);
 
             // Texto con nombre sobre el jugador
             const label = this.add.text(x, y - 60, player.name, {
@@ -144,7 +146,7 @@ export default class BattleScene extends Phaser.Scene {
 
         players.forEach((player, i) => {
             const py = (H - 85) + (i * 22);
-            
+
             // Nombre pequeñito
             this.add.text(PARTY_X, py, player.name.substring(0, 8), {
                 fontSize: '11px', fill: '#ccc', fontFamily: 'monospace'
@@ -153,14 +155,14 @@ export default class BattleScene extends Phaser.Scene {
             // Fondo barra
             this.add.rectangle(PARTY_X, py + 13, MINI_BAR_W, 6, 0x000000)
                 .setOrigin(0, 0).setDepth(5).setAlpha(0.5);
-            
+
             // Barra progreso
             const bar = this.add.rectangle(PARTY_X, py + 13, MINI_BAR_W, 6, 0x22dd22)
                 .setOrigin(0, 0).setDepth(6);
 
             this._partyBarGroup.push({ bar, player, maxW: MINI_BAR_W });
         });
-        
+
         this._updatePartyBars();
     }
 
@@ -173,39 +175,49 @@ export default class BattleScene extends Phaser.Scene {
 
     _buildButtons(H) {
         this._btnContainer = this.add.container(0, 0).setDepth(10);
-        const BTN_Y = H - 196;
-        const BTN_H = 26;
+        const BTN_Y = H - 272;
 
         const btnDefs = [
-            { x1: 93, x2: 218, action: () => this.battle_manager.onAttack() },
-            { x1: 233, x2: 430, action: () => this.battle_manager.onSkill() },
-            { x1: 452, x2: 622, action: () => { } }, // Bag (not implemented)
-            { x1: 637, x2: 793, action: () => this.battle_manager.onGuard() },
-            { x1: 808, x2: 895, action: () => this.battle_manager.onFlee() },
+            { key: 'boton_luchar', x: 155, action: () => this.battle_manager.onAttack() },
+            { key: 'boton_habilidades', x: 330, action: () => this.battle_manager.onSkill() },
+            { key: 'boton_mochila', x: 593, action: () => { } }, // Bag (no implementado)
+            { key: 'boton_guardia', x: 780, action: () => this.battle_manager.onGuard() },
+            { key: 'boton_huir', x: 968, action: () => this.battle_manager.onFlee() },
         ];
 
-        btnDefs.forEach(({ x1, x2, action }) => {
-            const cx = (x1 + x2) / 2;
-            const bw = x2 - x1;
-
-            const zone = this.add.zone(cx, BTN_Y, bw, BTN_H)
-                .setOrigin(0.5, 0)
+        btnDefs.forEach(({ key, x, action }) => {
+            const btn = this.add.image(x, BTN_Y, key)
+                .setOrigin(0, 0.5)
                 .setInteractive({ useHandCursor: true });
 
-            const highlight = this.add.rectangle(cx, BTN_Y + BTN_H / 2, bw, BTN_H, 0xffff00, 0);
+            // Efecto premium: Escala y brillo al pasar el ratón
+            btn.on('pointerover', () => {
+                btn.setScale(1.05);
+                btn.setTint(0xffffff);
+            });
 
-            zone.on('pointerover', () => highlight.setFillStyle(0xffff00, 0.3));
-            zone.on('pointerout', () => highlight.setFillStyle(0xffff00, 0));
-            zone.on('pointerdown', () => action());
+            btn.on('pointerout', () => {
+                btn.setScale(1.0);
+                btn.clearTint();
+            });
 
-            this._btnContainer.add([zone, highlight]);
+            btn.on('pointerdown', () => {
+                btn.setScale(0.95);
+                action();
+            });
+
+            btn.on('pointerup', () => {
+                btn.setScale(1.05);
+            });
+
+            this._btnContainer.add(btn);
         });
     }
 
     _setButtonsVisibility(visible) {
-        this._btnContainer.setAlpha(visible ? 1 : 0.3);
+        this._btnContainer.setAlpha(visible ? 1 : 0.4);
         this._btnContainer.iterate(child => {
-            if (child.type === 'Zone') child.input.enabled = visible;
+            if (child.input) child.input.enabled = visible;
         });
     }
 
@@ -246,7 +258,7 @@ export default class BattleScene extends Phaser.Scene {
         }
 
         this._updatePartyBars();
-        
+
         // Si el que ha recibido el daño es el que tiene el turno ahora, actualizamos la barra grande
         const current = this.battle_manager.getActiveParticipant();
         if (current && current.type === 'player' && current.data.name === result.targetName) {
