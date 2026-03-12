@@ -14,6 +14,7 @@ import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
 import outdoorMap from '../assets/images/mapaFuera.json'
 import tileset from '../assets/images/tilesetexterior.png'
+import menuPrincipal from '../assets/images/fondo.png'
 
 
 
@@ -58,6 +59,7 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
     this.load.image('tileset', tileset);
+    this.load.image('menuPrincipal', menuPrincipal);
   }
 
   /**
@@ -65,6 +67,11 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
+    // Inicializamos el contador de horas si todavía no existe
+    if (this.registry.get('horasJuego') === undefined) {
+      this.registry.set('horasJuego', 0);
+    }
+
     this.scene.start('TitleScene');
   }
 }
