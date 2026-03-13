@@ -119,9 +119,19 @@ export default class Level2 extends Phaser.Scene {
         this.circuitComponents.forEach(c => {
             if (c.body && c.body.updateFromGameObject) c.body.updateFromGameObject();
         });
+
+        // Listener para abrir el menú principal con la tecla ESPACIO
+        this.input.keyboard.on('keydown-SPACE', () => {
+            this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.pause();
+        });
     }
 
     update(t, dt) {
+        // sumar segundos jugados
+        const sec = this.registry.get('horasJuego') || 0;
+        this.registry.set('horasJuego', sec + dt / 1000);
+
         this.circuitComponents.forEach(component => {
             if (component.updateLogic) component.updateLogic();
         });
