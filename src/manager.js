@@ -39,10 +39,12 @@ export default class GameManager {
                 maxMp: 50,
                 damage: 25,
                 speed: 15,     // para decidir quién ataca primero
+                defense: 10,
+                luck: 25,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque Básico']
+                habilidades: ['Ataque UP', 'Golpe Triple']
             },
             'Jugador2': {
                 hp: 100,
@@ -51,10 +53,12 @@ export default class GameManager {
                 maxMp: 50,
                 damage: 25,
                 speed: 12,     // para decidir quién ataca primero
+                defense: 10,
+                luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque Básico']
+                habilidades: ['Defensa UP', 'Cura']
             },
             'Jugador3': {
                 hp: 100,
@@ -63,10 +67,12 @@ export default class GameManager {
                 maxMp: 50,
                 damage: 25,
                 speed: 10,     // para decidir quién ataca primero
+                defense: 10,
+                luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque Básico']
+                habilidades: ['Velocidad UP', 'Ataque Potente']
             },
             'Jugador4': {
                 hp: 100,
@@ -75,10 +81,12 @@ export default class GameManager {
                 maxMp: 50,
                 damage: 25,
                 speed: 6,     // para decidir quién ataca primero
+                defense: 10,
+                luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque Básico']
+                habilidades: ['Fuego']
             },
         };
 
@@ -166,7 +174,7 @@ export default class GameManager {
 
         // Mejora de stats (ejemplo simple)
         p.maxHp += 20;
-        p.hp = p.maxHp; 
+        p.hp = p.maxHp;
         p.maxMp += 10;
         p.mp = p.maxMp;
         p.damage += 5;

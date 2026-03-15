@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import BattleManager from './battle_manager.js';
 import GameManager from '../manager.js';
+import { HABILITIES } from './habilities.js';
 
 /**
  * BattleScene
@@ -18,7 +19,7 @@ export default class BattleScene extends Phaser.Scene {
         const allNames = Object.keys(gm.playerStats);
         this._playerStats = gm.getPlayersForBattle(allNames);
 
-        this._enemyStats = {
+        this._enemiesStats = data.enemies || [{
             name: data.enemyName ?? 'Toy',
             hp: data.enemyHP ?? 120,
             maxHp: data.enemyMaxHp ?? 120,
@@ -26,7 +27,25 @@ export default class BattleScene extends Phaser.Scene {
             speed: data.enemySpeed ?? 12,
             spriteKey: data.enemySpriteKey ?? 'toy',
             expReward: data.expReward ?? 150
-        };
+        },
+        {
+            name: data.enemyName ?? 'Toy',
+            hp: data.enemyHP ?? 120,
+            maxHp: data.enemyMaxHp ?? 120,
+            damage: data.enemyDamage ?? 20,
+            speed: data.enemySpeed ?? 12,
+            spriteKey: data.enemySpriteKey ?? 'toy',
+            expReward: data.expReward ?? 150
+        },
+        {
+            name: data.enemyName ?? 'Toy',
+            hp: data.enemyHP ?? 120,
+            maxHp: data.enemyMaxHp ?? 120,
+            damage: data.enemyDamage ?? 20,
+            speed: data.enemySpeed ?? 12,
+            spriteKey: data.enemySpriteKey ?? 'toy',
+            expReward: data.expReward ?? 150
+        }];
         this._originScene = data.originScene ?? 'level';
     }
 
@@ -34,7 +53,10 @@ export default class BattleScene extends Phaser.Scene {
         const W = this.scale.width;
         const H = this.scale.height;
 
-        this.battle_manager = new BattleManager(this._playerStats, this._enemyStats, this);
+        this._actionState = 'IDLE';
+        this._currentSkill = null;
+
+        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this);
         this.battle_manager.setCallbacks({
             onPlayerTurnStarted: (idx) => this._onPlayerTurnStarted(idx),
             onPlayerActionResult: (r) => this._onPlayerActionResult(r),
@@ -46,9 +68,8 @@ export default class BattleScene extends Phaser.Scene {
 
         this._buildBackground(W, H);
         this._buildPlayerSprites();
-        this._buildEnemySprite();
-        this._buildEnemyInfo();
-        this._buildPlayerBars(H); // Estas barras ahora representarán al jugador ACTIVO
+        this._buildEnemiesSprites();
+        this._buildTurnIndicator();
         this._buildMessageBox(H);
         this._buildButtons(H);
 
@@ -63,111 +84,103 @@ export default class BattleScene extends Phaser.Scene {
 
     _buildBackground(W, H) {
         this.add.image(W / 2, H / 2, 'fondoCombate').setDisplaySize(W, H).setDepth(-1);
-        this.add.image(W / 2, H / 2, 'battleUI').setDisplaySize(W, H).setDepth(1);
+        this.add.image(W / 2, H / 2, 'battleUI').setDisplaySize(W, H).setDepth(0);
     }
 
     _buildPlayerSprites() {
         this._playerSprites = [];
-        this._playerLabels = [];
+        this._playerHUDs = [];
         const players = this.battle_manager.getAllPlayers();
 
         // Mapeo de sprites específicos de batalla
         const battleKeys = ['prota_battle', 'player2_battle', 'player3_battle', 'player4_battle'];
 
-        const startX = 294;
+        const startX = 293;
         const startY = 500;
         const offsetX = 210;
+        const BAR_W = 189;
+        const BAR_H = 10;
 
         players.forEach((player, index) => {
             const x = startX + (index * offsetX);
             const y = startY;
 
-            // Usamos la imagen específica según el orden en la party
             const key = battleKeys[index];
 
             const sprite = this.add.sprite(x, y, key)
-                .setDepth(2);
+                .setDepth(2)
+                .setInteractive({ useHandCursor: true });
 
-            // Texto con nombre sobre el jugador
-            const label = this.add.text(x, y - 60, player.name, {
-                fontSize: '14px', fill: '#fff', fontFamily: 'monospace',
-                stroke: '#000', strokeThickness: 3
-            }).setOrigin(0.5).setDepth(3);
+            sprite.on('pointerdown', () => this._onSpriteClicked('player', index));
+
+            const hpFill = this.add.rectangle(x - BAR_W / 2, y + 107, BAR_W, BAR_H, 0x22dd22)
+                .setOrigin(0, 0.5).setDepth(5);
+
+            const mpFill = this.add.rectangle(x - BAR_W / 2, y + 128, BAR_W, BAR_H, 0x2266ff)
+                .setOrigin(0, 0.5).setDepth(5);
 
             this._playerSprites.push(sprite);
-            this._playerLabels.push(label);
-        });
-    }
-
-    _buildEnemySprite() {
-        this._enemySprite = this.add.image(830, 155, this.battle_manager.getEnemy().spriteKey)
-            .setScale(4)
-            .setDepth(2);
-    }
-
-    _buildEnemyInfo() {
-        this._enemyNameText = this.add.text(30, 20, this.battle_manager.getEnemy().name, {
-            fontSize: '26px', fill: '#fff', fontFamily: 'monospace', fontStyle: 'bold',
-            stroke: '#000', strokeThickness: 5
-        }).setDepth(4);
-
-        this._enemyHPText = this.add.text(30, 55, '', {
-            fontSize: '18px', fill: '#aaffaa', fontFamily: 'monospace',
-            stroke: '#000', strokeThickness: 3
-        }).setDepth(4);
-        this._updateEnemyHP();
-    }
-
-    _buildPlayerBars(H) {
-        const BAR_X = 90;
-        const HP_BAR_Y = H - 42;
-        const MP_BAR_Y = H - 26;
-        this._BAR_MAX_W = 180;
-
-        // Nombre del jugador activo en el panel inferior
-        this._activePlayerNameText = this.add.text(BAR_X, H - 75, '', {
-            fontSize: '18px', fill: '#fff', fontFamily: 'monospace', fontStyle: 'bold'
-        }).setDepth(6);
-
-        this._playerHPBar = this.add.rectangle(BAR_X, HP_BAR_Y, this._BAR_MAX_W, 10, 0x22dd22)
-            .setOrigin(0, -1).setDepth(5);
-        this._playerMPBar = this.add.rectangle(BAR_X, MP_BAR_Y, this._BAR_MAX_W, 10, 0x2266ff)
-            .setOrigin(0, -1).setDepth(5);
-
-        this._playerHPText = this.add.text(BAR_X, HP_BAR_Y - 15, '', {
-            fontSize: '12px', fill: '#fff', fontFamily: 'monospace'
-        }).setDepth(6);
-
-        // ── Barras de la Party (Derecha) ──
-        this._partyBarGroup = [];
-        const PARTY_X = BAR_X + this._BAR_MAX_W + 36;
-        const MINI_BAR_W = 100;
-        const players = this.battle_manager.getAllPlayers();
-
-        players.forEach((player, i) => {
-            const py = (H - 85) + (i * 22);
-
-            // Nombre pequeñito
-            this.add.text(PARTY_X, py, player.name.substring(0, 8), {
-                fontSize: '11px', fill: '#ccc', fontFamily: 'monospace'
-            }).setDepth(6);
-
-            // Fondo barra
-            this.add.rectangle(PARTY_X, py + 13, MINI_BAR_W, 6, 0x000000)
-                .setOrigin(0, 0).setDepth(5).setAlpha(0.5);
-
-            // Barra progreso
-            const bar = this.add.rectangle(PARTY_X, py + 13, MINI_BAR_W, 6, 0x22dd22)
-                .setOrigin(0, 0).setDepth(6);
-
-            this._partyBarGroup.push({ bar, player, maxW: MINI_BAR_W });
+            this._playerHUDs.push({ hpFill, mpFill, player, barWidth: BAR_W });
         });
 
-        this._updatePartyBars();
+        this._updatePlayerHUDs();
+    }
+
+    _buildEnemiesSprites() {
+        const W = this.scale.width;
+        this._enemySprites = [];
+        this._enemyHUDs = [];
+
+        const enemies = this.battle_manager.getEnemies();
+        const count = enemies.length;
+        const spacing = 180;
+        const startX = (W / 2) - (((count - 1) * spacing) / 2);
+
+        enemies.forEach((enemy, index) => {
+            const x = startX + (index * spacing);
+            const y = 155;
+
+            const sprite = this.add.image(x, y, enemy.spriteKey)
+                .setScale(2.8) // el originial era 4
+                .setDepth(2)
+                .setInteractive({ useHandCursor: true });
+
+            sprite.on('pointerdown', () => this._onSpriteClicked('enemy', index));
+
+            const BAR_W = 120;
+            const BAR_H = 12;
+            const yInfo = y + 155;
+
+            this.add.rectangle(x, yInfo, BAR_W, BAR_H, 0x000000)
+                .setDepth(4).setAlpha(0.6);
+
+            const hpFill = this.add.rectangle(x - BAR_W / 2, yInfo, BAR_W, BAR_H, 0x22dd22)
+                .setOrigin(0, 0.5).setDepth(5);
+
+            this._enemySprites.push(sprite);
+            this._enemyHUDs.push({ hpFill, enemy, barWidth: BAR_W });
+        });
+
+        this._updateEnemiesHP();
+    }
+
+    _buildTurnIndicator() {
+        this._turnGlow = this.add.rectangle(-100, -100, 208, 198, 0xffff00, 0.8)
+            .setDepth(1)
+            .setAlpha(0);
+
+        this.tweens.add({
+            targets: this._turnGlow,
+            alpha: 0.8,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
     }
 
     _buildMessageBox(H) {
-        this._msgText = this.add.text(480, H - 140, '', {
+        this._msgText = this.add.text(180, H - 450, '', {
             fontSize: '18px', fill: '#fff', fontFamily: 'monospace',
             wordWrap: { width: 450 }, align: 'center'
         }).setOrigin(0.5, 0).setDepth(5);
@@ -178,9 +191,40 @@ export default class BattleScene extends Phaser.Scene {
         const BTN_Y = H - 272;
 
         const btnDefs = [
-            { key: 'boton_luchar', x: 155, action: () => this.battle_manager.onAttack() },
-            { key: 'boton_habilidades', x: 330, action: () => this.battle_manager.onSkill() },
-            { key: 'boton_mochila', x: 593, action: () => { } }, // Bag (no implementado)
+            {
+                key: 'boton_luchar', x: 155, action: () => {
+                    if (this._actionState === 'IDLE') {
+                        this._actionState = 'SELECTING_TARGET_ATTACK';
+                        this._setMessage("Selecciona un enemigo para atacar.");
+                    } else {
+                        this._actionState = 'IDLE';
+                        this._setMessage("Acción cancelada.");
+                    }
+                }
+            },
+            {
+                key: 'boton_habilidades', x: 330, action: () => {
+                    if (this._actionState === 'IDLE') {
+                        const participant = this.battle_manager.getActiveParticipant();
+                        const player = participant.data;
+                        this._currentSkill = player.habilidades[0];
+                        const skill = HABILITIES[this._currentSkill];
+
+                        if (skill && skill.targetType === 'self') {
+                            this.battle_manager.onSkill(this._currentSkill, participant.type, participant.index);
+                            this._currentSkill = null;
+                        } else {
+                            this._actionState = 'SELECTING_TARGET_SKILL';
+                            this._setMessage(`Selecciona un objetivo para ${this._currentSkill}.`);
+                        }
+                    } else {
+                        this._actionState = 'IDLE';
+                        this._currentSkill = null;
+                        this._setMessage("Acción cancelada.");
+                    }
+                }
+            },
+            { key: 'boton_mochila', x: 593, action: () => this.battle_manager.onBag() },
             { key: 'boton_guardia', x: 780, action: () => this.battle_manager.onGuard() },
             { key: 'boton_huir', x: 968, action: () => this.battle_manager.onFlee() },
         ];
@@ -190,7 +234,6 @@ export default class BattleScene extends Phaser.Scene {
                 .setOrigin(0, 0.5)
                 .setInteractive({ useHandCursor: true });
 
-            // Efecto premium: Escala y brillo al pasar el ratón
             btn.on('pointerover', () => {
                 btn.setScale(1.05);
                 btn.setTint(0xffffff);
@@ -223,19 +266,68 @@ export default class BattleScene extends Phaser.Scene {
 
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
+    _onSpriteClicked(type, index) {
+        if (this._actionState === 'SELECTING_TARGET_ATTACK') {
+            if (type === 'enemy') {
+                const enemies = this.battle_manager.getEnemies();
+                if (enemies[index].isDead) {
+                    this._setMessage("¡Ese enemigo ya está derrotado!");
+                    return;
+                }
+                this._actionState = 'IDLE';
+                this.battle_manager.onAttack(index);
+            } else {
+                this._setMessage("¡No puedes atacar a un aliado!");
+            }
+        } else if (this._actionState === 'SELECTING_TARGET_SKILL') {
+            const skill = HABILITIES[this._currentSkill];
+
+            if (skill.type === 'heal' && type === 'enemy') {
+                this._setMessage("¡No puedes curar a un enemigo!");
+                return;
+            }
+            if (skill.type === 'buff' && type === 'enemy') {
+                this._setMessage("¡No puedes mejorar a un enemigo!");
+                return;
+            }
+            if (skill.type === 'damage' && type === 'player') {
+                this._setMessage("¡No puedes atacar a un aliado!");
+                return;
+            }
+
+            const targetList = type === 'enemy' ? this.battle_manager.getEnemies() : this.battle_manager.getAllPlayers();
+            if (targetList[index].isDead) {
+                this._setMessage("¡Ese objetivo ya está derrotado!");
+                return;
+            }
+            this._actionState = 'IDLE';
+            this.battle_manager.onSkill(this._currentSkill, type, index);
+            this._currentSkill = null;
+        }
+    }
+
     _updateTurnIndicator(participant) {
-        // Resetear todos los labels
-        this._playerLabels.forEach(l => l.setColor('#ffffff').setFontStyle('normal'));
-        this._enemyNameText.setColor('#ffffff');
+        let targetX, targetY;
 
         if (participant.type === 'player') {
-            const label = this._playerLabels[participant.index];
-            label.setColor('#ffff00').setFontStyle('bold');
-            this._updateActivePlayerUI(participant.data);
+            const sprite = this._playerSprites[participant.index];
+            targetX = sprite.x;
+            targetY = sprite.y;
+            this._updatePlayerHUDs();
         } else {
-            this._enemyNameText.setColor('#ffff00');
-            // Al ser turno enemigo, los botones deben estar desactivados
+            const sprite = this._enemySprites[participant.index];
+            targetX = -100;
+            targetY = -100;
             this._setButtonsVisibility(false);
+        }
+
+        if (this._turnGlow) {
+            this._turnGlow.setPosition(targetX, targetY);
+            if (targetX !== -100) {
+                this._turnGlow.setAlpha(0.6);
+            } else {
+                this._turnGlow.setAlpha(0);
+            }
         }
     }
 
@@ -245,9 +337,31 @@ export default class BattleScene extends Phaser.Scene {
 
     _onPlayerActionResult(result) {
         this._setButtonsVisibility(false);
-        this._shakeSprite(this._enemySprite);
-        this._updateEnemyHP();
-        this._setMessage(`¡${result.actionName} de ${this.battle_manager.turnQueue[this.battle_manager.currentTurnIndex].data.name}!\nCausa ${result.damage} de daño.`);
+
+        let msg = result.message;
+        if (!msg) {
+            const player = this.battle_manager.getActiveParticipant().data;
+            if (result.targetType === 'player') {
+                msg = `¡${result.actionName} de ${player.name} sobre un aliado!\n${result.heal ? `Cura ${result.heal} HP.` : ''}`;
+            } else {
+                msg = `¡${result.actionName} de ${player.name}!\nCausa ${result.damage} de daño.`;
+            }
+        }
+
+        if (result.isCrit) {
+            msg += '\n¡GOLPE CRÍTICO!';
+        }
+
+        if (result.targetType === 'enemy' && this._enemySprites[result.targetIndex]) {
+            this._shakeSprite(this._enemySprites[result.targetIndex]);
+        } else if (result.targetType === 'player' && this._playerSprites[result.targetIndex]) {
+            // curación: no animar o algo distinto
+        }
+
+        this._updateEnemiesHP();
+        this._updatePlayerHUDs();
+
+        this._setMessage(msg);
     }
 
     _onEnemyActionResult(result) {
@@ -257,15 +371,13 @@ export default class BattleScene extends Phaser.Scene {
             this._shakeSprite(this._playerSprites[targetIdx]);
         }
 
-        this._updatePartyBars();
+        this._updatePlayerHUDs();
 
-        // Si el que ha recibido el daño es el que tiene el turno ahora, actualizamos la barra grande
-        const current = this.battle_manager.getActiveParticipant();
-        if (current && current.type === 'player' && current.data.name === result.targetName) {
-            this._updateActivePlayerUI(current.data);
+        let msg = `${result.actionName} contra ${result.targetName}.\n¡Causa ${result.damage} de daño!`;
+        if (result.isCrit) {
+            msg += '\n¡GOLPE CRÍTICO!';
         }
-
-        this._setMessage(`${result.actionName} contra ${result.targetName}.\n¡Causa ${result.damage} de daño!`);
+        this._setMessage(msg);
     }
 
     _onBattleEnd(result) {
@@ -278,26 +390,33 @@ export default class BattleScene extends Phaser.Scene {
 
     // ── Updates ───────────────────────────────────────────────────────────────
 
-    _updateActivePlayerUI(player) {
-        if (!player || player.hp === undefined) return;
-        this._activePlayerNameText.setText(player.name);
-        const pct = player.hpPercent;
-        this._playerHPBar.displayWidth = pct * this._BAR_MAX_W;
-        this._playerHPBar.setFillStyle(this._hpColor(pct));
-        this._playerHPText.setText(`HP: ${player.hp} / ${player.maxHp}`);
-    }
+    _updatePlayerHUDs() {
+        if (!this._playerHUDs) return;
+        this._playerHUDs.forEach(hud => {
+            const hpPct = hud.player.hpPercent;
+            const mpPct = hud.player.mpPercent;
 
-    _updatePartyBars() {
-        this._partyBarGroup.forEach(item => {
-            const pct = item.player.hpPercent;
-            item.bar.displayWidth = pct * item.maxW;
-            item.bar.setFillStyle(this._hpColor(pct));
+            hud.hpFill.displayWidth = hpPct * hud.barWidth;
+            hud.hpFill.setFillStyle(this._hpColor(hpPct));
+
+            hud.mpFill.displayWidth = mpPct * hud.barWidth;
         });
     }
 
-    _updateEnemyHP() {
-        const enemy = this.battle_manager.getEnemy();
-        this._enemyHPText.setText(`HP: ${enemy.hp} / ${enemy.maxHp}`);
+    _updateEnemiesHP() {
+        if (!this._enemyHUDs) return;
+        this._enemyHUDs.forEach((hud, index) => {
+            const pct = hud.enemy.hp / hud.enemy.maxHp;
+            const actualPct = Math.max(0, pct);
+
+            hud.hpFill.displayWidth = actualPct * hud.barWidth;
+            hud.hpFill.setFillStyle(this._hpColor(actualPct));
+
+            if (hud.enemy.isDead && this._enemySprites[index]) {
+                this._enemySprites[index].setAlpha(0.2);
+                hud.hpFill.setAlpha(0.2);
+            }
+        });
     }
 
     // ── Utils ─────────────────────────────────────────────────────────────────

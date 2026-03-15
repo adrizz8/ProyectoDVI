@@ -14,15 +14,15 @@ export default class BattleManager {
 
     /**
      * @param {Object[]} playerStatsArr  Lista de stats de los jugadores
-     * @param {Object}   enemyStats      Stats del enemigo
+     * @param {Object[]} enemiesStatsArr Lista de stats de los enemigos
      * @param {Phaser.Scene} scene       Referencia a la escena
      */
-    constructor(playerStatsArr, enemyStats, scene) {
+    constructor(playerStatsArr, enemiesStatsArr, scene) {
         this._scene = scene;
 
-        // Inicializar jugadores y enemigo
+        // Inicializar jugadores y enemigos
         this.players = playerStatsArr.map(s => new PlayerBattle(s));
-        this.enemy = new EnemyBattle(enemyStats);
+        this.enemies = enemiesStatsArr.map(s => new EnemyBattle(s));
 
         // Turnos
         this.turnQueue = [];
@@ -58,14 +58,14 @@ export default class BattleManager {
         this.currentTurnIndex = -1;
 
         // Generar cola de turnos basada en velocidad
-        // Participantes: todos los jugadores vivos + enemigo (si está vivo)
+        // Participantes: todos los jugadores vivos + enemigos vivos
         const participants = [];
         this.players.forEach((p, i) => {
             if (!p.isDead) participants.push({ type: 'player', data: p, index: i });
         });
-        if (!this.enemy.isDead) {
-            participants.push({ type: 'enemy', data: this.enemy });
-        }
+        this.enemies.forEach((e, i) => {
+            if (!e.isDead) participants.push({ type: 'enemy', data: e, index: i });
+        });
 
         // Ordenar por velocidad (descendente)
         this.turnQueue = participants.sort((a, b) => b.data.speed - a.data.speed);
@@ -75,7 +75,7 @@ export default class BattleManager {
     }
 
     nextTurn() {
-        if (this.enemy.isDead) {
+        if (this.enemies.every(e => e.isDead)) {
             this._endBattle('player');
             return;
         }
@@ -95,6 +95,13 @@ export default class BattleManager {
         }
 
         const current = this.turnQueue[this.currentTurnIndex];
+        
+        // Si el participante actual murió debido a contadores o daño previo, saltar turno
+        if (current.data.isDead) {
+            this.nextTurn();
+            return;
+        }
+
         this._callbacks.onTurnChanged?.(current);
 
         if (current.type === 'player') {
@@ -109,24 +116,31 @@ export default class BattleManager {
 
     // ── Acciones del Jugador ──────────────────────────────────────────────────
 
-    onAttack() {
+    onAttack(targetIndex) {
         if (this._isBusy) return;
         this._isBusy = true;
 
+        const targetEnemy = this.enemies[targetIndex];
         const player = this.getActiveParticipant().data;
         const action = player.attack();
-        const result = this.enemy.receiveDamage(action.damage);
+        const result = targetEnemy.receiveDamage(action.damage);
 
         this._callbacks.onPlayerActionResult?.({
             actionName: action.actionName,
             damage: result.damageTaken,
-            enemyHP: this.enemy.hp,
+            enemyHP: targetEnemy.hp,
             enemyDead: result.isDead,
-            attackerIndex: this.getActiveParticipant().index
+            attackerIndex: this.getActiveParticipant().index,
+            targetIndex: targetIndex,
+            targetType: 'enemy',
+            isCrit: action.isCrit
         });
 
-        if (result.isDead) {
-            this._handleEnemyDeath();
+        if (this.enemies.every(e => e.isDead)) {
+            this._handleAllEnemiesDeath();
+        } else if (result.isDead) {
+            this._callbacks.onMessage?.(`¡${targetEnemy.name} fue derrotado!`);
+            this._scene.time.delayedCall(1200, () => this.nextTurn());
         } else {
             this._scene.time.delayedCall(1200, () => this.nextTurn());
         }
@@ -143,9 +157,63 @@ export default class BattleManager {
         this._scene.time.delayedCall(1000, () => this.nextTurn());
     }
 
-    onSkill(skillId) {
+    onSkill(skillName, targetType, targetIndex) {
         if (this._isBusy) return;
-        this._callbacks.onMessage?.("Habilidades no implementadas aún.");
+        
+        const player = this.getActiveParticipant().data;
+        
+        // Si no se pasa nombre, usamos la primera por defecto (útil para pruebas)
+        const nameToUse = skillName || player.habilidades[0];
+        
+        let target;
+        if (targetType === 'player') target = this.players[targetIndex];
+        else target = this.enemies[targetIndex];
+
+        const result = player.useSkill(nameToUse, target);
+
+        if (!result.success) {
+            this._callbacks.onMessage?.(result.message);
+            return;
+        }
+
+        this._isBusy = true;
+
+        // Si la habilidad hizo daño
+        let enemyResult = { isDead: false, damageTaken: 0 };
+        if (result.damage) {
+            enemyResult = target.receiveDamage(result.damage);
+        }
+
+        if (result.heal) {
+            target.hp = Math.min(target.maxHp, target.hp + result.heal);
+        }
+
+        this._callbacks.onPlayerActionResult?.({
+            actionName: result.actionName,
+            damage: enemyResult.damageTaken,
+            heal: result.heal,
+            enemyHP: targetType === 'enemy' ? target.hp : null,
+            enemyDead: enemyResult.isDead,
+            attackerIndex: this.getActiveParticipant().index,
+            message: result.message,
+            targetIndex: targetIndex,
+            targetType: targetType,
+            isCrit: result.isCrit
+        });
+
+        if (this.enemies.every(e => e.isDead)) {
+            this._handleAllEnemiesDeath();
+        } else if (enemyResult.isDead) {
+            this._callbacks.onMessage?.(`¡${target.name} fue derrotado!`);
+            this._scene.time.delayedCall(1200, () => this.nextTurn());
+        } else {
+            this._scene.time.delayedCall(1200, () => this.nextTurn());
+        }
+    }
+
+    onBag() {
+        if (this._isBusy) return;
+        this._callbacks.onMessage?.("Mochila no implementada aún.");
     }
 
     onFlee() {
@@ -158,12 +226,14 @@ export default class BattleManager {
     // ── Lógica Enemiga ────────────────────────────────────────────────────────
 
     _runEnemyTurn() {
-        const action = this.enemy.chooseAction();
-        
+        const currentEnemyData = this.getActiveParticipant();
+        const currentEnemy = currentEnemyData.data;
+        const action = currentEnemy.chooseAction();
+
         // El enemigo elige a un jugador vivo al azar
         const alivePlayers = this.players.filter(p => !p.isDead);
         if (alivePlayers.length === 0) return;
-        
+
         const target = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
         const result = target.receiveDamage(action.damage);
 
@@ -173,7 +243,9 @@ export default class BattleManager {
             targetName: target.name,
             targetHP: target.hp,
             targetDead: result.isDead,
-            guarded: result.guarded
+            guarded: result.guarded,
+            attackerIndex: currentEnemyData.index,
+            isCrit: action.isCrit
         });
 
         this._scene.time.delayedCall(1500, () => {
@@ -187,15 +259,15 @@ export default class BattleManager {
 
     // ── Finalización ──────────────────────────────────────────────────────────
 
-    _handleEnemyDeath() {
+    _handleAllEnemiesDeath() {
         this._scene.time.delayedCall(1000, () => {
-            const expAmount = this.enemy.expReward;
-            this._callbacks.onMessage?.(`¡${this.enemy.name} derrotado! +${expAmount} EXP`);
+            const totalExp = this.enemies.reduce((acc, e) => acc + e.expReward, 0);
+            this._callbacks.onMessage?.(`¡Victoria! +${totalExp} EXP`);
 
             const gm = GameManager.getInstance();
             this.players.forEach(p => {
                 if (!p.isDead) {
-                    const leveled = gm.gainExp(p.name, expAmount);
+                    const leveled = gm.gainExp(p.name, totalExp);
                     if (leveled) {
                         this._callbacks.onMessage?.(`¡${p.name} subió de nivel!`);
                     }
@@ -228,5 +300,5 @@ export default class BattleManager {
     }
 
     getAllPlayers() { return this.players; }
-    getEnemy() { return this.enemy; }
+    getEnemies() { return this.enemies; }
 }

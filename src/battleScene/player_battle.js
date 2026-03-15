@@ -1,3 +1,5 @@
+import { HABILITIES } from './habilities.js';
+
 /**
  * PlayerBattle
  * ------------
@@ -30,9 +32,14 @@ export default class PlayerBattle {
         this.maxHp = stats.maxHp;
         this.mp = stats.mp;
         this.maxMp = stats.maxMp;
+        this.baseDamage = stats.damage;
         this.damage = stats.damage;
+        this.baseSpeed = stats.speed;
         this.speed = stats.speed;
+        this.baseDefense = stats.defense || 10;
+        this.defense = stats.defense || 10;
         this.level = stats.level;
+        this.luck = stats.luck || 1;
         this.exp = stats.exp;
         this.expNext = stats.expNext;
         this.habilidades = stats.habilidades || [];
@@ -49,9 +56,13 @@ export default class PlayerBattle {
      * @returns {{ damage: number, actionName: string }}
      */
     attack() {
+        const isCrit = Math.random() < (this.luck / 50);
+        const finalDamage = isCrit ? Math.floor(this.damage * 1.5) : this.damage;
+
         return {
             actionName: 'Ataque',
-            damage: this.damage,
+            damage: finalDamage,
+            isCrit: isCrit
         };
     }
 
@@ -73,6 +84,20 @@ export default class PlayerBattle {
      */
     useItem(itemId) {
         return { actionName: 'Objeto', itemId };
+    }
+
+    /**
+     * Usa una habilidad específica.
+     * @param {string} skillName Nombre de la habilidad (clave en HABILITIES)
+     * @param {EnemyBattle} target El enemigo al que se ataca
+     * @returns {Object} Resultado de la habilidad
+     */
+    useSkill(skillName, target) {
+        const hability = HABILITIES[skillName];
+        if (!hability) {
+            return { success: false, message: "Habilidad no encontrada" };
+        }
+        return hability.execute(this, target);
     }
 
     // ── Recibir daño ─────────────────────────────────────────────────────────

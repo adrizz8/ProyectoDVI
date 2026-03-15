@@ -26,7 +26,12 @@ export default class EnemyBattle {
         this.name = stats.name ?? 'Enemigo';
         this.hp = stats.hp ?? 80;
         this.maxHp = stats.maxHp ?? 80;
+        this.baseDamage = stats.damage ?? 15;
         this.damage = stats.damage ?? 15;
+        this.baseDefense = stats.defense ?? 10;
+        this.defense = stats.defense ?? 10;
+        this.luck = stats.luck ?? 1;
+        this.baseSpeed = stats.speed ?? 5;
         this.speed = stats.speed ?? 5;
         this.spriteKey = stats.spriteKey ?? 'toy';
         this.expReward = stats.expReward ?? 50;
@@ -43,10 +48,14 @@ export default class EnemyBattle {
      */
     chooseAction() {
         // TODO: añadir lógica de IA más compleja (habilidades especiales, etc.)
+        const isCrit = Math.random() < (this.luck / 50);
+        const finalDamage = isCrit ? Math.floor(this.damage * 1.5) : this.damage;
+
         return {
             type: 'attack',
             actionName: `${this.name} ataca`,
-            damage: this.damage,
+            damage: finalDamage,
+            isCrit: isCrit
         };
     }
 
