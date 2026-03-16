@@ -44,7 +44,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque UP', 'Golpe Triple']
+                habilidades: ['Ataque UP', 'Golpe Triple', 'Curar', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego']
             },
             'Jugador2': {
                 hp: 100,

@@ -61,15 +61,17 @@ export default class EnemyBattle {
 
     // ── Recibir daño ─────────────────────────────────────────────────────────
 
-    /**
-     * El enemigo recibe daño del jugador.
-     * @param {number} damage
-     * @returns {{ damageTaken: number, isDead: boolean }}
-     */
     receiveDamage(damage) {
-        this.hp = Math.max(0, this.hp - damage);
+        const currentDefense = Math.max(1, this.defense); // Prevent division by zero
+        
+        // Fórmula pedida: Daño = (Poder * DañoBase) / Defensa
+        // Se multiplica por 10 porque 10 es la defensa neutral por defecto
+        let damageTaken = Math.floor((damage * 10) / currentDefense);
+        damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado
+
+        this.hp = Math.max(0, this.hp - damageTaken);
         return {
-            damageTaken: damage,
+            damageTaken: damageTaken,
             isDead: this.hp <= 0,
         };
     }

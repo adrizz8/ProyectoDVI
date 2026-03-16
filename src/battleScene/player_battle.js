@@ -102,14 +102,16 @@ export default class PlayerBattle {
 
     // ── Recibir daño ─────────────────────────────────────────────────────────
 
-    /**
-     * El jugador recibe daño. Si la guardia está activa, lo reduce a la mitad.
-     * @param {number} rawDamage  Daño base que llega
-     * @returns {{ damageTaken: number, guarded: boolean, isDead: boolean }}
-     */
     receiveDamage(rawDamage) {
         const guarded = this._guardActive;
-        const damageTaken = guarded ? Math.floor(rawDamage / 2) : rawDamage;
+        const currentDefense = Math.max(1, this.defense); // Prevent division by zero
+        
+        // Fórmula pedida: Daño = (Poder * DañoBase) / Defensa
+        // Aquí ajustamos multiplicando por 10 para que cuando Defensa=10 el daño sea equivalente a antes
+        const damageAfterDefense = Math.max(1, Math.floor((rawDamage * 10) / currentDefense));
+        
+        let damageTaken = guarded ? Math.floor(damageAfterDefense / 2) : damageAfterDefense;
+        damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado
 
         this.hp = Math.max(0, this.hp - damageTaken);
 

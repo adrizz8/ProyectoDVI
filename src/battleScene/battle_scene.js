@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import BattleManager from './battle_manager.js';
 import GameManager from '../manager.js';
 import { HABILITIES } from './habilities.js';
+import SkillMenu from './skill_menu.js';
+import ActionMenu from './action_menu.js';
 
 /**
  * BattleScene
@@ -71,10 +73,28 @@ export default class BattleScene extends Phaser.Scene {
         this._buildEnemiesSprites();
         this._buildTurnIndicator();
         this._buildMessageBox(H);
-        this._buildButtons(H);
+        
+        // Inicializar menú de acciones principal
+        this.actionMenu = new ActionMenu(this, this.battle_manager, {
+            onAttack: () => this._onAttackIntent(),
+            onSkills: () => this._onSkillsIntent(),
+            onCancelSkills: () => {
+                if (this.skillMenu) this.skillMenu.hide();
+                this._actionState = 'IDLE';
+            },
+            onBag: () => this.battle_manager.onBag(),
+            onGuard: () => this.battle_manager.onGuard(),
+            onFlee: () => this.battle_manager.onFlee()
+        });
+
+        // Inicializar menú de habilidades externo
+        this.skillMenu = new SkillMenu(this, 
+            (skillId) => this._onSkillSelectedExternal(skillId),
+            () => this._onSkillMenuCancelExternal()
+        );
 
         // Ocultar botones al inicio
-        this._setButtonsVisibility(false);
+        this.actionMenu.setVisibility(false);
 
         // Iniciar combate
         this.battle_manager.startBattle();
@@ -186,84 +206,65 @@ export default class BattleScene extends Phaser.Scene {
         }).setOrigin(0.5, 0).setDepth(5);
     }
 
-    _buildButtons(H) {
-        this._btnContainer = this.add.container(0, 0).setDepth(10);
-        const BTN_Y = H - 272;
+    // ── Acciones desde Menús ──────────────────────────────────────────────────
 
-        const btnDefs = [
-            {
-                key: 'boton_luchar', x: 155, action: () => {
-                    if (this._actionState === 'IDLE') {
-                        this._actionState = 'SELECTING_TARGET_ATTACK';
-                        this._setMessage("Selecciona un enemigo para atacar.");
-                    } else {
-                        this._actionState = 'IDLE';
-                        this._setMessage("Acción cancelada.");
-                    }
-                }
-            },
-            {
-                key: 'boton_habilidades', x: 330, action: () => {
-                    if (this._actionState === 'IDLE') {
-                        const participant = this.battle_manager.getActiveParticipant();
-                        const player = participant.data;
-                        this._currentSkill = player.habilidades[0];
-                        const skill = HABILITIES[this._currentSkill];
-
-                        if (skill && skill.targetType === 'self') {
-                            this.battle_manager.onSkill(this._currentSkill, participant.type, participant.index);
-                            this._currentSkill = null;
-                        } else {
-                            this._actionState = 'SELECTING_TARGET_SKILL';
-                            this._setMessage(`Selecciona un objetivo para ${this._currentSkill}.`);
-                        }
-                    } else {
-                        this._actionState = 'IDLE';
-                        this._currentSkill = null;
-                        this._setMessage("Acción cancelada.");
-                    }
-                }
-            },
-            { key: 'boton_mochila', x: 593, action: () => this.battle_manager.onBag() },
-            { key: 'boton_guardia', x: 780, action: () => this.battle_manager.onGuard() },
-            { key: 'boton_huir', x: 968, action: () => this.battle_manager.onFlee() },
-        ];
-
-        btnDefs.forEach(({ key, x, action }) => {
-            const btn = this.add.image(x, BTN_Y, key)
-                .setOrigin(0, 0.5)
-                .setInteractive({ useHandCursor: true });
-
-            btn.on('pointerover', () => {
-                btn.setScale(1.05);
-                btn.setTint(0xffffff);
-            });
-
-            btn.on('pointerout', () => {
-                btn.setScale(1.0);
-                btn.clearTint();
-            });
-
-            btn.on('pointerdown', () => {
-                btn.setScale(0.95);
-                action();
-            });
-
-            btn.on('pointerup', () => {
-                btn.setScale(1.05);
-            });
-
-            this._btnContainer.add(btn);
-        });
+    _onAttackIntent() {
+        if (this._actionState === 'IDLE') {
+            this._actionState = 'SELECTING_TARGET_ATTACK';
+            this._setMessage("Selecciona un enemigo para atacar.");
+        } else {
+            if (this.skillMenu) this.skillMenu.hide();
+            this._actionState = 'IDLE';
+            this._currentSkill = null;
+            this._setMessage("Acción cancelada.");
+        }
     }
 
-    _setButtonsVisibility(visible) {
-        this._btnContainer.setAlpha(visible ? 1 : 0.4);
-        this._btnContainer.iterate(child => {
-            if (child.input) child.input.enabled = visible;
-        });
+    _onSkillsIntent() {
+        if (this._actionState === 'IDLE') {
+            const participant = this.battle_manager.getActiveParticipant();
+            const player = participant.data;
+            if (!player.habilidades || player.habilidades.length === 0) {
+                this._setMessage("No tienes habilidades disponibles.");
+                return;
+            }
+            this._actionState = 'SELECTING_SKILL';
+            this.skillMenu.show(player.habilidades);
+        } else if (this._actionState === 'SELECTING_SKILL' || this._actionState === 'SELECTING_TARGET_SKILL') {
+            this.skillMenu.hide();
+            this._actionState = 'IDLE';
+            this._currentSkill = null;
+            this._setMessage("Acción cancelada.");
+        } else {
+            this._actionState = 'IDLE';
+            this._setMessage("Acción cancelada.");
+        }
     }
 
+    _onSkillMenuCancelExternal() {
+        if (this._actionState === 'SELECTING_SKILL') {
+             this._actionState = 'IDLE';
+             this._setMessage("Acción cancelada.");
+        }
+    }
+
+    _onSkillSelectedExternal(skillId) {
+        if (this._actionState !== 'SELECTING_SKILL') return;
+
+        this._currentSkill = skillId;
+        const skill = HABILITIES[this._currentSkill];
+
+        const participant = this.battle_manager.getActiveParticipant();
+
+        if (skill && skill.targetType === 'self') {
+            this._actionState = 'IDLE';
+            this.battle_manager.onSkill(this._currentSkill, participant.type, participant.index);
+            this._currentSkill = null;
+        } else {
+            this._actionState = 'SELECTING_TARGET_SKILL';
+            this._setMessage(`Selecciona un objetivo para ${skill ? skill.name : this._currentSkill}.`);
+        }
+    }
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
     _onSpriteClicked(type, index) {
@@ -318,7 +319,7 @@ export default class BattleScene extends Phaser.Scene {
             const sprite = this._enemySprites[participant.index];
             targetX = -100;
             targetY = -100;
-            this._setButtonsVisibility(false);
+            this.actionMenu.setVisibility(false);
         }
 
         if (this._turnGlow) {
@@ -332,11 +333,11 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _onPlayerTurnStarted(idx) {
-        this._setButtonsVisibility(true);
+        this.actionMenu.setVisibility(true);
     }
 
     _onPlayerActionResult(result) {
-        this._setButtonsVisibility(false);
+        this.actionMenu.setVisibility(false);
 
         let msg = result.message;
         if (!msg) {
