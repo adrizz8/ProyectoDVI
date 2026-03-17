@@ -23,15 +23,12 @@ export default class ActionMenu {
                 }
             },
             { key: 'boton_mochila', x: 593, action: () => {
-                if (this.callbacks.onCancelSkills) this.callbacks.onCancelSkills();
                 if (this.callbacks.onBag) this.callbacks.onBag();
             }},
             { key: 'boton_guardia', x: 780, action: () => {
-                if (this.callbacks.onCancelSkills) this.callbacks.onCancelSkills();
                 if (this.callbacks.onGuard) this.callbacks.onGuard();
             }},
             { key: 'boton_huir', x: 968, action: () => {
-                if (this.callbacks.onCancelSkills) this.callbacks.onCancelSkills();
                 if (this.callbacks.onFlee) this.callbacks.onFlee();
             }},
         ];

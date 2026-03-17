@@ -3,6 +3,7 @@ import BattleManager from './battle_manager.js';
 import GameManager from '../manager.js';
 import { HABILITIES } from './habilities.js';
 import SkillMenu from './skill_menu.js';
+import BagMenu from './bag_menu.js';
 import ActionMenu from './action_menu.js';
 
 /**
@@ -57,6 +58,7 @@ export default class BattleScene extends Phaser.Scene {
 
         this._actionState = 'IDLE';
         this._currentSkill = null;
+        this._currentItem = null;
 
         this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this);
         this.battle_manager.setCallbacks({
@@ -78,19 +80,27 @@ export default class BattleScene extends Phaser.Scene {
         this.actionMenu = new ActionMenu(this, this.battle_manager, {
             onAttack: () => this._onAttackIntent(),
             onSkills: () => this._onSkillsIntent(),
-            onCancelSkills: () => {
-                if (this.skillMenu) this.skillMenu.hide();
-                this._actionState = 'IDLE';
+            onBag: () => this._onBagIntent(),
+            onGuard: () => {
+                this._cancelAllMenus();
+                this.battle_manager.onGuard();
             },
-            onBag: () => this.battle_manager.onBag(),
-            onGuard: () => this.battle_manager.onGuard(),
-            onFlee: () => this.battle_manager.onFlee()
+            onFlee: () => {
+                this._cancelAllMenus();
+                this.battle_manager.onFlee();
+            }
         });
 
         // Inicializar menú de habilidades externo
         this.skillMenu = new SkillMenu(this, 
             (skillId) => this._onSkillSelectedExternal(skillId),
             () => this._onSkillMenuCancelExternal()
+        );
+
+        // Inicializar menú de mochila externo
+        this.bagMenu = new BagMenu(this,
+            (item) => this._onItemSelectedExternal(item),
+            () => this._onBagMenuCancelExternal()
         );
 
         // Ocultar botones al inicio
@@ -200,28 +210,47 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _buildMessageBox(H) {
-        this._msgText = this.add.text(180, H - 450, '', {
-            fontSize: '18px', fill: '#fff', fontFamily: 'monospace',
-            wordWrap: { width: 450 }, align: 'center'
+        const cx = 180;
+        const cy = H - 450;
+
+        // Fondo semi-transparente con borde para los mensajes
+        this._msgBoxBg = this.add.rectangle(cx, cy - 15, 300, 100, 0x000000, 0.85)
+            .setStrokeStyle(4, 0xffffff)
+            .setOrigin(0.5, 0).setDepth(4).setVisible(false);
+
+        this._msgText = this.add.text(cx, cy, '', {
+            fontFamily: 'SFDistantGalaxy, monospace', fontSize: '18px', fill: '#ffffff',
+            wordWrap: { width: 280 }, align: 'center', lineSpacing: 5
         }).setOrigin(0.5, 0).setDepth(5);
     }
 
     // ── Acciones desde Menús ──────────────────────────────────────────────────
 
+    _cancelAllMenus() {
+        if (this.skillMenu) this.skillMenu.hide();
+        if (this.bagMenu) this.bagMenu.hide();
+        this._actionState = 'IDLE';
+        this._currentSkill = null;
+        this._currentItem = null;
+    }
+
     _onAttackIntent() {
-        if (this._actionState === 'IDLE') {
+        if (this._actionState === 'SELECTING_TARGET_ATTACK') {
+            this._cancelAllMenus();
+            this._setMessage("Acción cancelada.");
+        } else {
+            this._cancelAllMenus();
             this._actionState = 'SELECTING_TARGET_ATTACK';
             this._setMessage("Selecciona un enemigo para atacar.");
-        } else {
-            if (this.skillMenu) this.skillMenu.hide();
-            this._actionState = 'IDLE';
-            this._currentSkill = null;
-            this._setMessage("Acción cancelada.");
         }
     }
 
     _onSkillsIntent() {
-        if (this._actionState === 'IDLE') {
+        if (this._actionState === 'SELECTING_SKILL' || this._actionState === 'SELECTING_TARGET_SKILL') {
+            this._cancelAllMenus();
+            this._setMessage("Acción cancelada.");
+        } else {
+            this._cancelAllMenus();
             const participant = this.battle_manager.getActiveParticipant();
             const player = participant.data;
             if (!player.habilidades || player.habilidades.length === 0) {
@@ -230,14 +259,6 @@ export default class BattleScene extends Phaser.Scene {
             }
             this._actionState = 'SELECTING_SKILL';
             this.skillMenu.show(player.habilidades);
-        } else if (this._actionState === 'SELECTING_SKILL' || this._actionState === 'SELECTING_TARGET_SKILL') {
-            this.skillMenu.hide();
-            this._actionState = 'IDLE';
-            this._currentSkill = null;
-            this._setMessage("Acción cancelada.");
-        } else {
-            this._actionState = 'IDLE';
-            this._setMessage("Acción cancelada.");
         }
     }
 
@@ -264,6 +285,38 @@ export default class BattleScene extends Phaser.Scene {
             this._actionState = 'SELECTING_TARGET_SKILL';
             this._setMessage(`Selecciona un objetivo para ${skill ? skill.name : this._currentSkill}.`);
         }
+    }
+
+    _onBagIntent() {
+        if (this._actionState === 'SELECTING_ITEM' || this._actionState === 'SELECTING_TARGET_ITEM') {
+            this._cancelAllMenus();
+            this._setMessage("Acción cancelada.");
+        } else {
+            this._cancelAllMenus();
+            const gm = GameManager.getInstance();
+            if (!gm.backpack || gm.backpack.filter(i => i.type === 'consumable' && i.quantity > 0).length === 0) {
+                this._setMessage("No tienes objetos utilizables.");
+                return;
+            }
+            this._actionState = 'SELECTING_ITEM';
+            this.bagMenu.show(gm.backpack);
+        }
+    }
+
+    _onBagMenuCancelExternal() {
+        if (this._actionState === 'SELECTING_ITEM') {
+             this._actionState = 'IDLE';
+             this._setMessage("Acción cancelada.");
+        }
+    }
+
+    _onItemSelectedExternal(item) {
+        if (this._actionState !== 'SELECTING_ITEM') return;
+
+        this._currentItem = item;
+
+        this._actionState = 'SELECTING_TARGET_ITEM';
+        this._setMessage(`Selecciona un objetivo para ${item.name}.`);
     }
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
@@ -304,6 +357,20 @@ export default class BattleScene extends Phaser.Scene {
             this._actionState = 'IDLE';
             this.battle_manager.onSkill(this._currentSkill, type, index);
             this._currentSkill = null;
+        } else if (this._actionState === 'SELECTING_TARGET_ITEM') {
+            if (type === 'enemy') {
+                this._setMessage("¡Los objetos solo se pueden usar en aliados!");
+                return;
+            }
+
+            const targetList = this.battle_manager.getAllPlayers();
+            if (targetList[index].isDead) {
+                this._setMessage("¡Ese objetivo ya está derrotado!");
+                return;
+            }
+            this._actionState = 'IDLE';
+            this.battle_manager.onItem(this._currentItem, type, index);
+            this._currentItem = null;
         }
     }
 
@@ -356,7 +423,39 @@ export default class BattleScene extends Phaser.Scene {
         if (result.targetType === 'enemy' && this._enemySprites[result.targetIndex]) {
             this._shakeSprite(this._enemySprites[result.targetIndex]);
         } else if (result.targetType === 'player' && this._playerSprites[result.targetIndex]) {
-            // curación: no animar o algo distinto
+            const spr = this._playerSprites[result.targetIndex];
+            
+            if (result.actionName === 'Guardia') {
+                this._shieldAnimation(spr);
+                this._showFloatingText(spr, 'DEFENSA', '#44aaff');
+            } else if (result.actionName === 'Objeto' && result.usedItem) {
+                let color = 0x22dd22;
+                let text = '';
+                let textCol = '#22dd22';
+                
+                if (result.usedItem.heal) {
+                    text = `+${result.usedItem.heal} HP`;
+                } else if (result.usedItem.recMp) {
+                    color = 0x2266ff;
+                    textCol = '#2266ff';
+                    text = `+${result.usedItem.recMp} MP`;
+                } else {
+                    color = 0xffcc00;
+                    textCol = '#ffcc00';
+                    text = 'UP!';
+                }
+                
+                this._powerUpSprite(spr, color);
+                this._showFloatingText(spr, text, textCol);
+            } else if (result.heal) {
+                this._powerUpSprite(spr, 0x22dd22);
+                this._showFloatingText(spr, `+${result.heal} HP`, '#22dd22');
+            } else if (result.actionName.includes('UP')) {
+                this._powerUpSprite(spr, 0xffcc00);
+                this._showFloatingText(spr, 'UP!', '#ffcc00');
+            } else {
+                this._powerUpSprite(spr, 0xffffff);
+            }
         }
 
         this._updateEnemiesHP();
@@ -424,6 +523,13 @@ export default class BattleScene extends Phaser.Scene {
 
     _setMessage(msg) {
         this._msgText.setText(msg);
+        if (msg && msg.trim() !== '') {
+            this._msgBoxBg.setVisible(true);
+            const bounds = this._msgText.getBounds();
+            this._msgBoxBg.setSize(Math.max(300, bounds.width + 40), Math.max(80, bounds.height + 30));
+        } else {
+            this._msgBoxBg.setVisible(false);
+        }
     }
 
     _hpColor(pct) {
@@ -443,5 +549,58 @@ export default class BattleScene extends Phaser.Scene {
             repeat: 4,
             onComplete: () => sprite.x = ox
         });
+    }
+
+    _powerUpSprite(sprite, color) {
+        if (!sprite) return;
+        const oy = sprite.y;
+        
+        sprite.setTintFill(color);
+        this.tweens.add({
+            targets: sprite,
+            y: oy - 15,
+            duration: 150,
+            yoyo: true,
+            onComplete: () => {
+                sprite.clearTint();
+                sprite.y = oy;
+            }
+        });
+    }
+
+    _showFloatingText(sprite, text, colorStr) {
+        if (!sprite) return;
+        const floatText = this.add.text(sprite.x, sprite.y - 50, text, {
+            fontFamily: 'SFDistantGalaxy', fontSize: '24px', fill: colorStr, stroke: '#000', strokeThickness: 4
+        }).setOrigin(0.5).setDepth(20);
+
+        this.tweens.add({
+            targets: floatText,
+            y: sprite.y - 120,
+            alpha: 0,
+            duration: 1200,
+            ease: 'Power2',
+            onComplete: () => floatText.destroy()
+        });
+    }
+
+    _shieldAnimation(sprite) {
+        if (!sprite) return;
+        
+        // Creamos un óvalo/escudo azul superpuesto al sprite
+        const shield = this.add.ellipse(sprite.x, sprite.y, sprite.displayWidth * 1.1, sprite.displayHeight * 1.3, 0x44aaff, 0.5)
+            .setDepth(sprite.depth + 1);
+        
+        this.tweens.add({
+            targets: shield,
+            alpha: 0,
+            scaleX: 1.4,
+            scaleY: 1.4,
+            duration: 800,
+            ease: 'Sine.easeOut',
+            onComplete: () => shield.destroy()
+        });
+        
+        this._powerUpSprite(sprite, 0x44aaff);
     }
 }

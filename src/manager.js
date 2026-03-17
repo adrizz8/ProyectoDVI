@@ -44,7 +44,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque UP', 'Golpe Triple', 'Curar', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego']
+                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego']
             },
             'Jugador2': {
                 hp: 100,
@@ -91,11 +91,17 @@ export default class GameManager {
         };
 
         // ── Mochila / Inventario ──────────────────────────────────────────────
-        // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable'|'key', ...}
-        this.backpack = [];
+        // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
+        this.backpack = [
+            { id: 'pocion', name: 'Poción', quantity: 5, type: 'consumable', heal: 50, description: 'Cura 50 HP.' },
+            { id: 'eter', name: 'Éter', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP.' },
+            { id: 'elixir', name: 'Elixir', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP.' },
+            { id: 'pocion_fuerza', name: 'Poción de Fuerza', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15.' },
+            { id: 'pocion_defensa', name: 'Poción de Defensa', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10.' },
+            { id: 'pocion_rapidez', name: 'Poción de Rapidez', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10.' },
+            { id: 'pocion_suerte', name: 'Poción de Suerte', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5.' }
+        ];
 
-        // ── Flags globales ────────────────────────────────────────────────────
-        this.flags = {};
     }
 
     // ── Helpers de mochila ────────────────────────────────────────────────────

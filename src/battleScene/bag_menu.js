@@ -1,9 +1,7 @@
-import { HABILITIES } from './habilities.js';
-
-export default class SkillMenu {
-    constructor(scene, onSkillSelected, onCancel) {
+export default class BagMenu {
+    constructor(scene, onItemSelected, onCancel) {
         this.scene = scene;
-        this.onSkillSelected = onSkillSelected;
+        this.onItemSelected = onItemSelected;
         this.onCancel = onCancel;
 
         this._buildMenu();
@@ -20,14 +18,14 @@ export default class SkillMenu {
         this.container.add(bg);
 
         // Title
-        const title = this.scene.add.text(0, -90, 'HABILIDADES', {
+        const title = this.scene.add.text(0, -90, 'MOCHILA', {
             fontFamily: 'SFDistantGalaxy', fontSize: '28px', fill: '#ffffff'
         }).setOrigin(0.5);
         this.container.add(title);
 
-        this._skillTexts = [];
-        this._skillPage = 0;
-        this._currentSkillsList = [];
+        this._itemTexts = [];
+        this._itemPage = 0;
+        this._currentItemsList = [];
 
         // Pagination buttons
         this._prevBtn = this.scene.add.text(-470, 10, '<', {
@@ -62,7 +60,7 @@ export default class SkillMenu {
             text.on('pointerout', () => text.clearTint());
             text.on('pointerdown', () => this.onSelect(i));
 
-            this._skillTexts.push(text);
+            this._itemTexts.push(text);
             this.container.add(text);
         }
 
@@ -74,9 +72,9 @@ export default class SkillMenu {
         this.container.add(closeBtn);
     }
 
-    show(skills) {
-        this._currentSkillsList = skills;
-        this._skillPage = 0;
+    show(items) {
+        this._currentItemsList = items.filter(item => item.type === 'consumable' && item.quantity > 0);
+        this._itemPage = 0;
         this.updateMenu();
         this.container.setVisible(true);
     }
@@ -93,29 +91,28 @@ export default class SkillMenu {
     }
 
     changePage(dir) {
-        if (!this._currentSkillsList || this._currentSkillsList.length <= 6) return;
-        const maxPage = Math.ceil(this._currentSkillsList.length / 6) - 1;
-        this._skillPage += dir;
-        if (this._skillPage < 0) this._skillPage = maxPage;
-        if (this._skillPage > maxPage) this._skillPage = 0;
+        if (!this._currentItemsList || this._currentItemsList.length <= 6) return;
+        const maxPage = Math.ceil(this._currentItemsList.length / 6) - 1;
+        this._itemPage += dir;
+        if (this._itemPage < 0) this._itemPage = maxPage;
+        if (this._itemPage > maxPage) this._itemPage = 0;
         this.updateMenu();
     }
 
     updateMenu() {
-        const startIdx = this._skillPage * 6;
+        const startIdx = this._itemPage * 6;
         for (let i = 0; i < 6; i++) {
-            const skillIdx = startIdx + i;
-            if (skillIdx < this._currentSkillsList.length) {
-                const skillId = this._currentSkillsList[skillIdx];
-                const skillData = HABILITIES[skillId];
-                this._skillTexts[i].setText(`${skillData ? skillData.name : skillId}`);
-                this._skillTexts[i].setVisible(true);
+            const itemIdx = startIdx + i;
+            if (itemIdx < this._currentItemsList.length) {
+                const item = this._currentItemsList[itemIdx];
+                this._itemTexts[i].setText(`${item.name} x${item.quantity}`);
+                this._itemTexts[i].setVisible(true);
             } else {
-                this._skillTexts[i].setVisible(false);
+                this._itemTexts[i].setVisible(false);
             }
         }
 
-        if (this._currentSkillsList.length > 6) {
+        if (this._currentItemsList.length > 6) {
             this._prevBtn.setVisible(true);
             this._nextBtn.setVisible(true);
         } else {
@@ -127,11 +124,13 @@ export default class SkillMenu {
     onSelect(idx) {
         if (!this.isVisible()) return;
 
-        const skillId = this._currentSkillsList[this._skillPage * 6 + idx];
+        const item = this._currentItemsList[this._itemPage * 6 + idx];
+        if (!item) return;
+
         this.hide(false);
 
-        if (this.onSkillSelected) {
-            this.onSkillSelected(skillId);
+        if (this.onItemSelected) {
+            this.onItemSelected(item);
         }
     }
 }

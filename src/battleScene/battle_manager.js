@@ -95,7 +95,7 @@ export default class BattleManager {
         }
 
         const current = this.turnQueue[this.currentTurnIndex];
-        
+
         // Si el participante actual murió debido a contadores o daño previo, saltar turno
         if (current.data.isDead) {
             this.nextTurn();
@@ -152,19 +152,26 @@ export default class BattleManager {
 
         const player = this.getActiveParticipant().data;
         player.guard();
-        this._callbacks.onMessage?.(`${player.name} se defiende.`);
+        
+        this._callbacks.onPlayerActionResult?.({
+            actionName: 'Guardia',
+            attackerIndex: this.getActiveParticipant().index,
+            targetIndex: this.getActiveParticipant().index,
+            targetType: 'player',
+            message: `${player.name} se pone en posición de defensa.`
+        });
 
         this._scene.time.delayedCall(1000, () => this.nextTurn());
     }
 
     onSkill(skillName, targetType, targetIndex) {
         if (this._isBusy) return;
-        
+
         const player = this.getActiveParticipant().data;
-        
+
         // Si no se pasa nombre, usamos la primera por defecto (útil para pruebas)
         const nameToUse = skillName || player.habilidades[0];
-        
+
         let target;
         if (targetType === 'player') target = this.players[targetIndex];
         else target = this.enemies[targetIndex];
@@ -211,9 +218,65 @@ export default class BattleManager {
         }
     }
 
-    onBag() {
+    onItem(item, targetType, targetIndex) {
         if (this._isBusy) return;
-        this._callbacks.onMessage?.("Mochila no implementada aún.");
+        this._isBusy = true;
+
+        let target;
+        if (targetType === 'player') target = this.players[targetIndex];
+        else target = this.enemies[targetIndex];
+
+        const gm = GameManager.getInstance();
+        if (!gm.useItem(item.id)) {
+            this._callbacks.onMessage?.("No se pudo usar el objeto.");
+            this._isBusy = false;
+            return;
+        }
+
+        const participant = this.getActiveParticipant().data;
+
+        let resultMessage = `${participant.name} usó ${item.name} en ${target.name}.`;
+
+        if (item.heal) {
+            target.hp = Math.min(target.maxHp, target.hp + item.heal);
+            resultMessage += `\nRecupera ${item.heal} HP.`;
+        }
+        if (item.recMp) {
+            target.mp = Math.min(target.maxMp, target.mp + item.recMp);
+            resultMessage += `\nRecupera ${item.recMp} MP.`;
+        }
+        if (item.buffAtt) {
+            target.damage += item.buffAtt;
+            resultMessage += `\nAtaque +${item.buffAtt}.`;
+        }
+        if (item.buffDef) {
+            target.defense += item.buffDef;
+            resultMessage += `\nDefensa +${item.buffDef}.`;
+        }
+        if (item.buffSpd) {
+            target.speed += item.buffSpd;
+            resultMessage += `\nVelocidad +${item.buffSpd}.`;
+        }
+        if (item.buffLck) {
+            target.luck += item.buffLck;
+            resultMessage += `\nSuerte +${item.buffLck}.`;
+        }
+
+        this._callbacks.onPlayerActionResult?.({
+            actionName: "Objeto",
+            damage: 0,
+            heal: item.heal || 0,
+            enemyHP: targetType === 'enemy' ? target.hp : null,
+            enemyDead: targetType === 'enemy' ? target.isDead : false,
+            attackerIndex: this.getActiveParticipant().index,
+            message: resultMessage,
+            targetIndex: targetIndex,
+            targetType: targetType,
+            isCrit: false,
+            usedItem: item
+        });
+
+        this._scene.time.delayedCall(1500, () => this.nextTurn());
     }
 
     onFlee() {
