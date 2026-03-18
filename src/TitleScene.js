@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 export default class TitleScene extends Phaser.Scene {
 
     constructor() {
-        super({ key: 'TitleScene'});
+        super({ key: 'TitleScene' });
     }
 
     preload() {
@@ -12,7 +12,7 @@ export default class TitleScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.image(400,300, 'fondo');
+        this.add.image(400, 300, 'fondo');
         this.add.image(450, 250, 'logo');
         const playButton = this.add.text(400, 400, 'NUEVA PARTIDA', { fontSize: '32px', fill: '#000000', fontWeight: 'bold' }).setOrigin(0.5);
         playButton.setInteractive();
@@ -20,7 +20,7 @@ export default class TitleScene extends Phaser.Scene {
         configuracion.setInteractive();
 
         playButton.on('pointerdown', () => {
-            this.scene.start('IntroScene');
+            this.scene.start('battle_scene');
         });
 
     }
