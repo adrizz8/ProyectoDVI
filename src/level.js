@@ -41,6 +41,13 @@ export default class Level extends Phaser.Scene {
 
         // Creamos un juguete interactivo en una posición específica
         new Toy(this, this.player, 500, 400, "¡Hola! Soy un juguete y puedo hablar.");
+
+        // ── Abrir menú con ESPACIO ─────────────────────────────────────
+        this.input.keyboard.on('keydown-SPACE', () => {
+            // Al pulsar espacio se pausa este nivel y se lanza la escena del menú principal
+            this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.pause();
+        });
     }
 
     /**
@@ -57,6 +64,20 @@ export default class Level extends Phaser.Scene {
      */
     spawn(from = null) {
         Phaser.Math.RND.pick(from || this.bases.children.entries).spawn();
+    }
+
+    /**
+     * Actualiza el temporizador global de horas de juego
+     * @param {number} dt Delta en ms
+     */
+    _updateTimer(dt) {
+        const sec = this.registry.get('horasJuego') || 0;
+        this.registry.set('horasJuego', sec + dt / 1000);
+    }
+
+    update(time, dt) {
+        // incrementa tiempo jugado
+        this._updateTimer(dt);
     }
 
     /**

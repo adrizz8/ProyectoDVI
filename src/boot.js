@@ -12,6 +12,7 @@ import battleUI from '../assets/images/battleui_vacio.png'
 import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
+import outdoorMap from '../assets/images/mapaFuera.json'
 import tileset from '../assets/images/tilesetexterior.png'
 import boton_luchar from '../assets/images/boton_luchar.png'
 import boton_habilidades from '../assets/images/boton_habilidades.png'
@@ -65,6 +66,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('fondoCombate', fondoCombate);
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
+    this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
     this.load.image('tileset', tileset);
     this.load.image('boton_luchar', boton_luchar);
     this.load.image('boton_habilidades', boton_habilidades);
@@ -82,6 +84,11 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
+    // Inicializamos el contador de horas si todavía no existe
+    if (this.registry.get('horasJuego') === undefined) {
+      this.registry.set('horasJuego', 0);
+    }
+
     this.scene.start('TitleScene');
   }
 }

@@ -40,10 +40,18 @@ export default class Level3 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-
+        // Atajo para abrir el menú principal durante exploración
+        this.input.keyboard.on('keydown-SPACE', () => {
+            this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.pause();
+        });
     }
 
     update(t, dt) {
+        // actualizamos el contador global
+        const sec = this.registry.get('horasJuego') || 0;
+        this.registry.set('horasJuego', sec + dt / 1000);
+
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }
