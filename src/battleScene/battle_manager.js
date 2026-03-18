@@ -80,8 +80,8 @@ export default class BattleManager {
             return;
         }
 
-        // ¿Todos los jugadores han muerto?
-        if (this.players.every(p => p.isDead)) {
+        // Si el Jugador1 muere, se pierde la partida
+        if (this._isPlayer1Dead()) {
             this._endBattle('enemy');
             return;
         }
@@ -150,14 +150,16 @@ export default class BattleManager {
         if (this._isBusy) return;
         this._isBusy = true;
 
-        const player = this.getActiveParticipant().data;
-        player.guard();
-        
+        const participant = this.getActiveParticipant();
+        const player = participant.data;
+        const guardResult = player.guard();
+
         this._callbacks.onPlayerActionResult?.({
             actionName: 'Guardia',
-            attackerIndex: this.getActiveParticipant().index,
-            targetIndex: this.getActiveParticipant().index,
+            attackerIndex: participant.index,
+            targetIndex: participant.index,
             targetType: 'player',
+            mpGained: guardResult.mpGained,
             message: `${player.name} se pone en posición de defensa.`
         });
 
@@ -169,14 +171,11 @@ export default class BattleManager {
 
         const player = this.getActiveParticipant().data;
 
-        // Si no se pasa nombre, usamos la primera por defecto (útil para pruebas)
-        const nameToUse = skillName || player.habilidades[0];
-
         let target;
         if (targetType === 'player') target = this.players[targetIndex];
         else target = this.enemies[targetIndex];
 
-        const result = player.useSkill(nameToUse, target);
+        const result = player.useSkill(skillName, target);
 
         if (!result.success) {
             this._callbacks.onMessage?.(result.message);
@@ -199,6 +198,8 @@ export default class BattleManager {
             actionName: result.actionName,
             damage: enemyResult.damageTaken,
             heal: result.heal,
+            nerf: result.nerf || null,
+            buff: result.buff || null,
             enemyHP: targetType === 'enemy' ? target.hp : null,
             enemyDead: enemyResult.isDead,
             attackerIndex: this.getActiveParticipant().index,
@@ -298,21 +299,103 @@ export default class BattleManager {
         if (alivePlayers.length === 0) return;
 
         const target = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
-        const result = target.receiveDamage(action.damage);
+        const targetIdx = this.players.indexOf(target);
+
+        if (action.type === 'skill') {
+            // Ejecutar habilidad del enemigo
+            const result = currentEnemy.useSkill(action.skillName, target);
+
+            if (!result.success) {
+                // Habilidad fallida (sin MP): 70% guardia, 30% ataque básico
+                if (Math.random() < 0.70) {
+                    this._runEnemyGuard(currentEnemyData, currentEnemy);
+                } else {
+                    this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
+                }
+                return;
+            }
+
+            // Aplicar daño si lo hay
+            let damageTaken = 0;
+            if (result.damage) {
+                const dmgResult = target.receiveDamage(result.damage);
+                damageTaken = dmgResult.damageTaken;
+            }
+
+            // Aplicar curación si la hubiera (habilidades de soporte enemigas futuras)
+            if (result.heal) {
+                currentEnemy.hp = Math.min(currentEnemy.maxHp, currentEnemy.hp + result.heal);
+            }
+
+            this._callbacks.onEnemyActionResult?.({
+                actionName: result.actionName,
+                damage: damageTaken,
+                targetName: target.name,
+                targetIndex: targetIdx,
+                targetHP: target.hp,
+                targetDead: target.isDead,
+                attackerIndex: currentEnemyData.index,
+                isCrit: result.isCrit || false,
+                nerf: result.nerf || null,
+                buff: result.buff || null,
+                message: result.message
+            });
+
+        } else {
+            // Ataque básico
+            this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
+        }
+
+        this._scene.time.delayedCall(1500, () => {
+            if (this._isPlayer1Dead()) {
+                this._endBattle('enemy');
+            } else {
+                this.nextTurn();
+            }
+        });
+    }
+
+    _runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx) {
+        const isCrit = Math.random() < (currentEnemy.luck / 50);
+        const finalDamage = isCrit ? Math.floor(currentEnemy.damage * 1.5) : currentEnemy.damage;
+        const result = target.receiveDamage(finalDamage);
 
         this._callbacks.onEnemyActionResult?.({
-            actionName: action.actionName,
+            actionName: `${currentEnemy.name} ataca`,
             damage: result.damageTaken,
             targetName: target.name,
+            targetIndex: targetIdx,
             targetHP: target.hp,
             targetDead: result.isDead,
             guarded: result.guarded,
             attackerIndex: currentEnemyData.index,
-            isCrit: action.isCrit
+            isCrit: isCrit,
+            nerf: null,
+            buff: null
+        });
+    }
+
+    _runEnemyGuard(currentEnemyData, currentEnemy) {
+        const guardResult = currentEnemy.guard();
+
+        this._callbacks.onEnemyActionResult?.({
+            actionName: 'Guardia',
+            damage: 0,
+            targetName: currentEnemy.name,
+            targetIndex: null,
+            targetHP: currentEnemy.hp,
+            targetDead: false,
+            attackerIndex: currentEnemyData.index,
+            isCrit: false,
+            nerf: null,
+            buff: null,
+            isGuard: true,
+            guardEnemyIndex: currentEnemyData.index,
+            message: `${currentEnemy.name} se prepara para el siguiente ataque.`
         });
 
         this._scene.time.delayedCall(1500, () => {
-            if (this.players.every(p => p.isDead)) {
+            if (this._isPlayer1Dead()) {
                 this._endBattle('enemy');
             } else {
                 this.nextTurn();
@@ -364,4 +447,9 @@ export default class BattleManager {
 
     getAllPlayers() { return this.players; }
     getEnemies() { return this.enemies; }
+
+    _isPlayer1Dead() {
+        const p1 = this.players.find(p => p.name === 'Jugador1');
+        return p1 ? p1.isDead : false;
+    }
 }

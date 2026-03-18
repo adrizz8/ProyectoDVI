@@ -175,5 +175,62 @@ export const HABILITIES = {
                 message: `${source.name} sube su propia velocidad en ${buffAmount} puntos!`
             };
         }
-    })
+    }),
+
+    'Ataque NERF': new Hability({
+        id: 'attack_nerf',
+        name: 'Ataque NERF',
+        description: 'Baja el ataque del enemigo un 50% de su ataque base para este combate.',
+        cost: 15,
+        type: 'nerf',
+        targetType: 'selectable',
+        effectFn: (source, target) => {
+            const nerfAmount = Math.floor(target.baseDamage * 0.5);
+            target.damage = Math.max(1, target.damage - nerfAmount);
+            return {
+                nerf: { stat: 'damage', amount: nerfAmount },
+                message: `${source.name} debilita el ataque de ${target.name} en ${nerfAmount} puntos!`
+            };
+        }
+    }),
+
+    // ── Habilidades Híbridas (daño + efecto secundario) ────────────────────────
+
+    'Golpe Debilitador': new Hability({
+        id: 'weakening_strike',
+        name: 'Golpe Debilitador',
+        description: 'Ataca al enemigo y reduce su ataque un 30%.',
+        cost: 20,
+        type: 'damage+nerf',
+        targetType: 'selectable',
+        effectFn: (source, target) => {
+            const damage = Math.floor(source.damage * 1.1);
+            const nerfAmount = Math.floor(target.baseDamage * 0.3);
+            target.damage = Math.max(1, target.damage - nerfAmount);
+            return {
+                damage,
+                nerf: { stat: 'damage', amount: nerfAmount },
+                message: `${source.name} asesta un Golpe Debilitador a ${target.name}!\n¡Su ataque baja ${nerfAmount} puntos!`
+            };
+        }
+    }),
+
+    'Golpe Vigorizante': new Hability({
+        id: 'invigorating_strike',
+        name: 'Golpe Vigorizante',
+        description: 'Ataca al objetivo y sube tu propio ataque un 25%.',
+        cost: 20,
+        type: 'damage+buff',
+        targetType: 'selectable',
+        effectFn: (source, target) => {
+            const damage = Math.floor(source.damage * 1.0);
+            const buffAmount = Math.floor(source.baseDamage * 0.25);
+            source.damage += buffAmount;
+            return {
+                damage,
+                buff: { stat: 'damage', amount: buffAmount },
+                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su ataque sube ${buffAmount} puntos!`
+            };
+        }
+    }),
 };

@@ -22,33 +22,47 @@ export default class BattleScene extends Phaser.Scene {
         const allNames = Object.keys(gm.playerStats);
         this._playerStats = gm.getPlayersForBattle(allNames);
 
-        this._enemiesStats = data.enemies || [{
-            name: data.enemyName ?? 'Toy',
-            hp: data.enemyHP ?? 120,
-            maxHp: data.enemyMaxHp ?? 120,
-            damage: data.enemyDamage ?? 20,
-            speed: data.enemySpeed ?? 12,
-            spriteKey: data.enemySpriteKey ?? 'toy',
-            expReward: data.expReward ?? 150
-        },
-        {
-            name: data.enemyName ?? 'Toy',
-            hp: data.enemyHP ?? 120,
-            maxHp: data.enemyMaxHp ?? 120,
-            damage: data.enemyDamage ?? 20,
-            speed: data.enemySpeed ?? 12,
-            spriteKey: data.enemySpriteKey ?? 'toy',
-            expReward: data.expReward ?? 150
-        },
-        {
-            name: data.enemyName ?? 'Toy',
-            hp: data.enemyHP ?? 120,
-            maxHp: data.enemyMaxHp ?? 120,
-            damage: data.enemyDamage ?? 20,
-            speed: data.enemySpeed ?? 12,
-            spriteKey: data.enemySpriteKey ?? 'toy',
-            expReward: data.expReward ?? 150
-        }];
+        this._enemiesStats = data.enemies || [
+            {
+                name: data.enemyName ?? 'Toy',
+                hp: data.enemyHP ?? 120,
+                maxHp: data.enemyMaxHp ?? 120,
+                damage: data.enemyDamage ?? 20,
+                speed: data.enemySpeed ?? 12,
+                spriteKey: data.enemySpriteKey ?? 'toy',
+                expReward: data.expReward ?? 150,
+                habilidades: ['Ataque NERF', 'Golpe Debilitador']
+            },
+            {
+                name: data.enemyName ?? 'Toy',
+                hp: data.enemyHP ?? 120,
+                maxHp: data.enemyMaxHp ?? 120,
+                damage: data.enemyDamage ?? 20,
+                speed: data.enemySpeed ?? 12,
+                spriteKey: data.enemySpriteKey ?? 'toy',
+                expReward: data.expReward ?? 150,
+                habilidades: ['Ataque NERF']
+            },
+            {
+                name: data.enemyName ?? 'Toy',
+                hp: data.enemyHP ?? 120,
+                maxHp: data.enemyMaxHp ?? 120,
+                damage: data.enemyDamage ?? 20,
+                speed: data.enemySpeed ?? 12,
+                spriteKey: data.enemySpriteKey ?? 'toy',
+                expReward: data.expReward ?? 150,
+                habilidades: []
+            },
+            {
+                name: data.enemyName ?? 'Toy',
+                hp: data.enemyHP ?? 120,
+                maxHp: data.enemyMaxHp ?? 120,
+                damage: data.enemyDamage ?? 20,
+                speed: data.enemySpeed ?? 12,
+                spriteKey: data.enemySpriteKey ?? 'toy',
+                expReward: data.expReward ?? 150,
+                habilidades: []
+            }];
         this._originScene = data.originScene ?? 'level';
     }
 
@@ -75,7 +89,7 @@ export default class BattleScene extends Phaser.Scene {
         this._buildEnemiesSprites();
         this._buildTurnIndicator();
         this._buildMessageBox(H);
-        
+
         // Inicializar menú de acciones principal
         this.actionMenu = new ActionMenu(this, this.battle_manager, {
             onAttack: () => this._onAttackIntent(),
@@ -92,7 +106,7 @@ export default class BattleScene extends Phaser.Scene {
         });
 
         // Inicializar menú de habilidades externo
-        this.skillMenu = new SkillMenu(this, 
+        this.skillMenu = new SkillMenu(this,
             (skillId) => this._onSkillSelectedExternal(skillId),
             () => this._onSkillMenuCancelExternal()
         );
@@ -209,18 +223,20 @@ export default class BattleScene extends Phaser.Scene {
         });
     }
 
+
+    // Revisar no me convence mucho como queda
     _buildMessageBox(H) {
-        const cx = 180;
-        const cy = H - 450;
+        const cx = 120;
+        const cy = H - 370;
 
         // Fondo semi-transparente con borde para los mensajes
-        this._msgBoxBg = this.add.rectangle(cx, cy - 15, 300, 100, 0x000000, 0.85)
-            .setStrokeStyle(4, 0xffffff)
+        this._msgBoxBg = this.add.rectangle(cx, cy - 15, 200, 60, 0xffffff, 0.85)
+            .setStrokeStyle(4, 0x000000)
             .setOrigin(0.5, 0).setDepth(4).setVisible(false);
 
         this._msgText = this.add.text(cx, cy, '', {
-            fontFamily: 'SFDistantGalaxy, monospace', fontSize: '18px', fill: '#ffffff',
-            wordWrap: { width: 280 }, align: 'center', lineSpacing: 5
+            fontFamily: 'SFDistantGalaxy, monospace', fontSize: '13px', fill: '#000000',
+            wordWrap: { width: 180 }, align: 'center', lineSpacing: 5
         }).setOrigin(0.5, 0).setDepth(5);
     }
 
@@ -264,8 +280,8 @@ export default class BattleScene extends Phaser.Scene {
 
     _onSkillMenuCancelExternal() {
         if (this._actionState === 'SELECTING_SKILL') {
-             this._actionState = 'IDLE';
-             this._setMessage("Acción cancelada.");
+            this._actionState = 'IDLE';
+            this._setMessage("Acción cancelada.");
         }
     }
 
@@ -305,8 +321,8 @@ export default class BattleScene extends Phaser.Scene {
 
     _onBagMenuCancelExternal() {
         if (this._actionState === 'SELECTING_ITEM') {
-             this._actionState = 'IDLE';
-             this._setMessage("Acción cancelada.");
+            this._actionState = 'IDLE';
+            this._setMessage("Acción cancelada.");
         }
     }
 
@@ -346,6 +362,14 @@ export default class BattleScene extends Phaser.Scene {
             }
             if (skill.type === 'damage' && type === 'player') {
                 this._setMessage("¡No puedes atacar a un aliado!");
+                return;
+            }
+            if (skill.type === 'nerf' && type === 'player') {
+                this._setMessage("¡No puedes debilitar a un aliado!");
+                return;
+            }
+            if ((skill.type === 'damage+nerf' || skill.type === 'damage+buff') && type === 'player') {
+                this._setMessage("¡Esta habilidad solo se puede usar contra enemigos!");
                 return;
             }
 
@@ -421,10 +445,18 @@ export default class BattleScene extends Phaser.Scene {
         }
 
         if (result.targetType === 'enemy' && this._enemySprites[result.targetIndex]) {
-            this._shakeSprite(this._enemySprites[result.targetIndex]);
+            const enemySpr = this._enemySprites[result.targetIndex];
+            // Animaciones sobre el enemigo
+            if (result.damage) {
+                this._shakeSprite(enemySpr);
+            }
+            if (result.nerf) {
+                this._nerfAnimation(enemySpr);
+                this._showFloatingText(enemySpr, `ATK -${result.nerf.amount}`, '#cc44ff');
+            }
         } else if (result.targetType === 'player' && this._playerSprites[result.targetIndex]) {
             const spr = this._playerSprites[result.targetIndex];
-            
+
             if (result.actionName === 'Guardia') {
                 this._shieldAnimation(spr);
                 this._showFloatingText(spr, 'DEFENSA', '#44aaff');
@@ -432,7 +464,7 @@ export default class BattleScene extends Phaser.Scene {
                 let color = 0x22dd22;
                 let text = '';
                 let textCol = '#22dd22';
-                
+
                 if (result.usedItem.heal) {
                     text = `+${result.usedItem.heal} HP`;
                 } else if (result.usedItem.recMp) {
@@ -444,7 +476,7 @@ export default class BattleScene extends Phaser.Scene {
                     textCol = '#ffcc00';
                     text = 'UP!';
                 }
-                
+
                 this._powerUpSprite(spr, color);
                 this._showFloatingText(spr, text, textCol);
             } else if (result.heal) {
@@ -458,6 +490,13 @@ export default class BattleScene extends Phaser.Scene {
             }
         }
 
+        // Si la habilidad dio buff al jugador atacante (ej: Golpe Vigorizante)
+        if (result.buff && result.attackerIndex !== undefined && this._playerSprites[result.attackerIndex]) {
+            const attackerSpr = this._playerSprites[result.attackerIndex];
+            this._powerUpSprite(attackerSpr, 0xffcc00);
+            this._showFloatingText(attackerSpr, `ATK +${result.buff.amount}`, '#ffcc00');
+        }
+
         this._updateEnemiesHP();
         this._updatePlayerHUDs();
 
@@ -465,18 +504,47 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _onEnemyActionResult(result) {
-        const players = this.battle_manager.getAllPlayers();
-        const targetIdx = players.findIndex(p => p.name === result.targetName);
-        if (targetIdx !== -1) {
-            this._shakeSprite(this._playerSprites[targetIdx]);
+        // Guardia del enemigo: animación de escudo sobre su propio sprite
+        if (result.isGuard) {
+            const enemySpr = this._enemySprites[result.guardEnemyIndex];
+            if (enemySpr) {
+                this._shieldAnimation(enemySpr);
+                this._showFloatingText(enemySpr, 'DEFENSA', '#44aaff');
+            }
+            this._setMessage(result.message || `${result.targetName} se defiende.`);
+            return;
+        }
+
+        // Usar targetIndex si viene (habilidades), sino buscar por nombre (ataque básico)
+        let targetIdx = result.targetIndex ?? -1;
+        if (targetIdx === -1) {
+            const players = this.battle_manager.getAllPlayers();
+            targetIdx = players.findIndex(p => p.name === result.targetName);
+        }
+
+        if (targetIdx !== -1 && this._playerSprites[targetIdx]) {
+            const spr = this._playerSprites[targetIdx];
+
+            // Animación de daño
+            if (result.damage > 0) {
+                this._shakeSprite(spr);
+            }
+
+            // Animación de nerf sobre el jugador
+            if (result.nerf) {
+                this._nerfAnimation(spr);
+                this._showFloatingText(spr, `ATK -${result.nerf.amount}`, '#cc44ff');
+            }
         }
 
         this._updatePlayerHUDs();
 
-        let msg = `${result.actionName} contra ${result.targetName}.\n¡Causa ${result.damage} de daño!`;
-        if (result.isCrit) {
-            msg += '\n¡GOLPE CRÍTICO!';
-        }
+        // Usar el mensaje de la habilidad si existe, o construir uno genérico
+        let msg = result.message
+            || `${result.actionName} contra ${result.targetName}.\n¡Causa ${result.damage} de daño!`;
+
+        if (result.isCrit) msg += '\n¡GOLPE CRÍTICO!';
+
         this._setMessage(msg);
     }
 
@@ -492,7 +560,7 @@ export default class BattleScene extends Phaser.Scene {
 
     _updatePlayerHUDs() {
         if (!this._playerHUDs) return;
-        this._playerHUDs.forEach(hud => {
+        this._playerHUDs.forEach((hud, index) => {
             const hpPct = hud.player.hpPercent;
             const mpPct = hud.player.mpPercent;
 
@@ -500,6 +568,12 @@ export default class BattleScene extends Phaser.Scene {
             hud.hpFill.setFillStyle(this._hpColor(hpPct));
 
             hud.mpFill.displayWidth = mpPct * hud.barWidth;
+
+            if (hud.player.isDead && this._playerSprites[index]) {
+                this._playerSprites[index].setAlpha(0.2);
+                hud.hpFill.setAlpha(0.2);
+                hud.mpFill.setAlpha(0.2);
+            }
         });
     }
 
@@ -526,7 +600,7 @@ export default class BattleScene extends Phaser.Scene {
         if (msg && msg.trim() !== '') {
             this._msgBoxBg.setVisible(true);
             const bounds = this._msgText.getBounds();
-            this._msgBoxBg.setSize(Math.max(300, bounds.width + 40), Math.max(80, bounds.height + 30));
+            this._msgBoxBg.setSize(Math.max(200, bounds.width + 30), Math.max(50, bounds.height + 30));
         } else {
             this._msgBoxBg.setVisible(false);
         }
@@ -554,7 +628,7 @@ export default class BattleScene extends Phaser.Scene {
     _powerUpSprite(sprite, color) {
         if (!sprite) return;
         const oy = sprite.y;
-        
+
         sprite.setTintFill(color);
         this.tweens.add({
             targets: sprite,
@@ -586,11 +660,11 @@ export default class BattleScene extends Phaser.Scene {
 
     _shieldAnimation(sprite) {
         if (!sprite) return;
-        
+
         // Creamos un óvalo/escudo azul superpuesto al sprite
         const shield = this.add.ellipse(sprite.x, sprite.y, sprite.displayWidth * 1.1, sprite.displayHeight * 1.3, 0x44aaff, 0.5)
             .setDepth(sprite.depth + 1);
-        
+
         this.tweens.add({
             targets: shield,
             alpha: 0,
@@ -600,7 +674,40 @@ export default class BattleScene extends Phaser.Scene {
             ease: 'Sine.easeOut',
             onComplete: () => shield.destroy()
         });
-        
+
         this._powerUpSprite(sprite, 0x44aaff);
+    }
+
+    _nerfAnimation(sprite) {
+        if (!sprite) return;
+
+        // Lanzar varias partículas moradas que caen girando
+        const count = 6;
+        for (let i = 0; i < count; i++) {
+            const angle = (i / count) * Math.PI * 2;
+            const radius = 30;
+            const px = sprite.x + Math.cos(angle) * radius;
+            const py = sprite.y + Math.sin(angle) * radius - 10;
+
+            const particle = this.add.circle(px, py, 5, 0xaa22ff, 0.9)
+                .setDepth(sprite.depth + 2);
+
+            this.tweens.add({
+                targets: particle,
+                x: sprite.x + (Math.random() - 0.5) * 20,
+                y: sprite.y + 60,
+                alpha: 0,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                duration: 700 + Math.random() * 300,
+                delay: i * 60,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+
+        // Tinte morado temporal sobre el sprite
+        sprite.setTintFill(0xaa22ff);
+        this.time.delayedCall(400, () => sprite.clearTint());
     }
 }

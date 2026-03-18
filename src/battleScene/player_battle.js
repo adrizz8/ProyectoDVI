@@ -73,7 +73,9 @@ export default class PlayerBattle {
      */
     guard() {
         this._guardActive = true;
-        return { actionName: 'Guardia' };
+        const mpGain = 10;
+        this.mp = Math.min(this.maxMp, this.mp + mpGain);
+        return { actionName: 'Guardia', mpGained: mpGain };
     }
 
     /**

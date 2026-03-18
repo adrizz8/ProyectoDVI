@@ -1,3 +1,5 @@
+import { HABILITIES } from './habilities.js';
+
 /**
  * EnemyBattle
  * -----------
@@ -35,6 +37,11 @@ export default class EnemyBattle {
         this.speed = stats.speed ?? 5;
         this.spriteKey = stats.spriteKey ?? 'toy';
         this.expReward = stats.expReward ?? 50;
+        this.mp = stats.mp ?? 30;      // MP real, se agota y se recupera con guardia
+        this.maxMp = stats.maxMp ?? 30;
+        this.habilidades = stats.habilidades || [];
+
+        this._guardActive = false;
     }
 
     // ── IA: acción del enemigo en su turno ────────────────────────────────────
@@ -47,7 +54,25 @@ export default class EnemyBattle {
      * @returns {{ type: 'attack'|'special'|'skip', damage?: number, actionName: string }}
      */
     chooseAction() {
-        // TODO: añadir lógica de IA más compleja (habilidades especiales, etc.)
+        // Si tiene habilidades disponibles y MP suficiente, 40% prob de usar una
+        const usableSkills = this.habilidades.filter(name => {
+            const skill = HABILITIES[name];
+            return skill && this.mp >= skill.cost;
+        });
+
+        if (usableSkills.length > 0 && Math.random() < 0.70) {
+            const skillName = usableSkills[Math.floor(Math.random() * usableSkills.length)];
+            const skill = HABILITIES[skillName];
+            if (skill) {
+                return {
+                    type: 'skill',
+                    skillName,
+                    actionName: skill.name
+                };
+            }
+        }
+
+        // Ataque básico
         const isCrit = Math.random() < (this.luck / 50);
         const finalDamage = isCrit ? Math.floor(this.damage * 1.5) : this.damage;
 
@@ -59,19 +84,46 @@ export default class EnemyBattle {
         };
     }
 
+    /**
+     * El enemigo se pone en guardia: mitiga el siguiente golpe y recupera MP.
+     */
+    guard() {
+        this._guardActive = true;
+        const mpGain = 10;
+        this.mp = Math.min(this.maxMp, this.mp + mpGain);
+        return { actionName: 'Guardia', mpGained: mpGain };
+    }
+
+    /**
+     * Usa una habilidad sobre un objetivo.
+     * @param {string} skillName
+     * @param {PlayerBattle|EnemyBattle} target
+     */
+    useSkill(skillName, target) {
+        const hability = HABILITIES[skillName];
+        if (!hability) return { success: false, message: 'Habilidad no encontrada' };
+        return hability.execute(this, target);
+    }
+
     // ── Recibir daño ─────────────────────────────────────────────────────────
 
     receiveDamage(damage) {
-        const currentDefense = Math.max(1, this.defense); // Prevent division by zero
-        
-        // Fórmula pedida: Daño = (Poder * DañoBase) / Defensa
-        // Se multiplica por 10 porque 10 es la defensa neutral por defecto
+        const guarded = this._guardActive;
+        const currentDefense = Math.max(1, this.defense);
+
         let damageTaken = Math.floor((damage * 10) / currentDefense);
-        damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado
+        damageTaken = Math.max(1, damageTaken);
+
+        // La guardia reduce el daño a la mitad
+        if (guarded) {
+            damageTaken = Math.floor(damageTaken / 2);
+            this._guardActive = false;
+        }
 
         this.hp = Math.max(0, this.hp - damageTaken);
         return {
-            damageTaken: damageTaken,
+            damageTaken,
+            guarded,
             isDead: this.hp <= 0,
         };
     }
