@@ -341,8 +341,10 @@ export default class BattleManager {
                 message: result.message
             });
 
+        } else if (action.type === 'guard') {
+            this._runEnemyGuard(currentEnemyData, currentEnemy);
+            return;
         } else {
-            // Ataque básico
             this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
         }
 

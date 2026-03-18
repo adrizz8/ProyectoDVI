@@ -37,42 +37,50 @@ export default class EnemyBattle {
         this.speed = stats.speed ?? 5;
         this.spriteKey = stats.spriteKey ?? 'toy';
         this.expReward = stats.expReward ?? 50;
-        this.mp = stats.mp ?? 30;      // MP real, se agota y se recupera con guardia
+        this.mp = stats.mp ?? 30;
         this.maxMp = stats.maxMp ?? 30;
         this.habilidades = stats.habilidades || [];
 
         this._guardActive = false;
     }
 
-    // ── IA: acción del enemigo en su turno ────────────────────────────────────
-
     /**
-     * El enemigo decide qué hacer en su turno.
-     * Por ahora siempre ataca, pero aquí es donde se puede añadir
-     * lógica de IA: habilidades especiales, patrones de ataque, etc.
-     *
      * @returns {{ type: 'attack'|'special'|'skip', damage?: number, actionName: string }}
      */
     chooseAction() {
-        // Si tiene habilidades disponibles y MP suficiente, 40% prob de usar una
+        if (this.habilidades.length > 0) {
+            const randomIdx = Math.floor(Math.random() * this.habilidades.length);
+            const randomSkillName = this.habilidades[randomIdx];
+            const skill = HABILITIES[randomSkillName];
+
+            if (skill) {
+                if (this.mp < skill.cost) {
+                    if (Math.random() < 0.75) {
+                        return { type: 'guard', actionName: 'Guardia' };
+                    }
+                } else {
+                    if (Math.random() < 0.70) {
+                        return { type: 'skill', skillName: randomSkillName, actionName: skill.name };
+                    }
+                }
+            }
+        }
+
         const usableSkills = this.habilidades.filter(name => {
             const skill = HABILITIES[name];
             return skill && this.mp >= skill.cost;
         });
 
-        if (usableSkills.length > 0 && Math.random() < 0.70) {
+        if (usableSkills.length > 0 && Math.random() < 0.60) {
             const skillName = usableSkills[Math.floor(Math.random() * usableSkills.length)];
             const skill = HABILITIES[skillName];
-            if (skill) {
-                return {
-                    type: 'skill',
-                    skillName,
-                    actionName: skill.name
-                };
-            }
+            return {
+                type: 'skill',
+                skillName,
+                actionName: skill.name
+            };
         }
 
-        // Ataque básico
         const isCrit = Math.random() < (this.luck / 50);
         const finalDamage = isCrit ? Math.floor(this.damage * 1.5) : this.damage;
 
