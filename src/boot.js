@@ -23,6 +23,7 @@ import prota_battle from '../assets/sprites/prota_battle.png'
 import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
+import estrategiaUI from '../assets/images/estrategiaui.png'
 
 
 
@@ -77,6 +78,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player2_battle', player2_battle);
     this.load.image('player3_battle', player3_battle);
     this.load.image('player4_battle', player4_battle);
+    this.load.image('estrategiaUI', estrategiaUI);
   }
 
   /**

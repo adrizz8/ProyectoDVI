@@ -11,35 +11,28 @@ import { HABILITIES } from '../battleScene/habilities.js';
 export default class EstrategiaScene extends Phaser.Scene {
     constructor() {
         super('EstrategiaScene');
+        this.panelActivo = null;
     }
 
     create() {
         const gm = GameManager.getInstance();
 
-        // Fondo
-        this.add.rectangle(608, 320, 1216, 640, 0x222233);
+        // Fondo con UI de estrategia
+        this.add.image(608, 320, 'estrategiaUI').setDisplaySize(1216, 640);
 
-        // Título
-        this.add.text(608, 30, 'ESTRATEGIA', {
-            fontSize: '32px',
-            fill: '#f5d442',
-            fontFamily: 'Distant Galaxy', 
-            fontStyle: 'bold'
-        }).setOrigin(0.5);
-
-        // Obtener los personajes
-        const personajes = Object.entries(gm.playerStats);
-        const caracteresPorFila = 2; // Mostrar 2 personajes por fila
+        // Orden específica de los 4 jugadores (1 TL, 2 BL, 3 TR, 4 BR)
+        const playerOrder = ['Jugador1', 'Jugador3', 'Jugador2', 'Jugador4'];
         const startX = 150;
         const startY = 100;
         const espacioX = 560;
         const espacioY = 340;
 
-        // Crear cards para cada personaje
-        personajes.forEach((entry, index) => {
-            const [nombrePers, stats] = entry;
-            const fila = Math.floor(index / caracteresPorFila);
-            const columna = index % caracteresPorFila;
+        playerOrder.forEach((nombrePers, index) => {
+            const stats = gm.playerStats[nombrePers];
+            if (!stats) return;
+
+            const fila = Math.floor(index / 2);
+            const columna = index % 2;
             const x = startX + columna * espacioX;
             const y = startY + fila * espacioY;
 
@@ -63,109 +56,231 @@ export default class EstrategiaScene extends Phaser.Scene {
         });
     }
 
-    /**
-     * Crea una card visual para un personaje
-     */
     crearCardPersonaje(x, y, nombre, stats) {
-        // Fondo de card
-        const cardWidth = 480;
-        const cardHeight = 280;
-        const card = this.add.rectangle(x + cardWidth / 2, y + cardHeight / 2, cardWidth, cardHeight, 0x1a1a2e, 0.8);
-        card.setStrokeStyle(2, 0xf5d442);
+        // Se asume que el fondo ya está dibujado en estrategiaUI.
+        // No se dibuja fondo opaco para el personaje.
 
-        let textoY = y + 15;
-
-        // Nombre del personaje
-        this.add.text(x + 15, textoY, nombre.toUpperCase(), {
+        const labelText = `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
+        this.add.text(x + 20, y + 12, labelText, {
             fontSize: '16px',
             fill: '#f5d442',
             fontFamily: 'Distant Galaxy',
             fontStyle: 'bold'
         });
 
-        // Separador
-        this.add.line(x + 15, textoY + 20, x + 15, textoY + 20, x + cardWidth - 30, textoY + 20, 0xf5d442);
+        // Nivel y experiencia restante
+        const xpRestante = Math.max(0, stats.expNext - stats.exp);
+        this.add.text(x + 15, y + 45, `NV: ${stats.level}`, { fontSize: '12px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(x + 115, y + 45, `SIG: ${xpRestante}`, { fontSize: '12px', fill: '#90ee90', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
 
-        textoY += 35;
+        // Coordinación con las barras de PS/PM dentro de estrategiaUI, bajo cada retrato
+        const coordenadasBarra = {
+            Jugador1: { x: 117.50, y:  227}, // arriba izquierda
+            Jugador3: { x: 675, y: 227 }, // arriba derecha
+            Jugador2: { x: 117.50, y: 558 }, // abajo izquierda
+            Jugador4: { x: 675, y: 558 }
+        };
 
-        // Stats principales (HP, MP, Nivel, Velocidad)
-        const statsTexto = [
-            `PS: ${stats.hp}/${stats.maxHp}`,
-            `PM: ${stats.mp}/${stats.maxMp}`,
-            `Nivel: ${stats.level}`,
-            `Defensa: ${stats.defense} | Velocidad: ${stats.baseSpeed}`
+        const baseBar = coordenadasBarra[nombre]
+        const barraX = baseBar.x;
+        const barraY = baseBar.y;
+        const barraWidth = 190;
+        const barraHeight = 11;
+
+        // Barra de HP colocada exactamente bajo la barra PS del UI
+        this.add.rectangle(barraX, barraY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
+        this.add.rectangle(barraX, barraY, Math.max(0.1, (stats.hp / stats.maxHp) * barraWidth), barraHeight, 0x1e7b1e).setOrigin(0, 0);
+        this.add.text(barraX - 40, barraY - 1, 'PS', { fontSize: '11px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '10px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+
+        // Barra de MP colocada exactamente bajo la barra PM del UI
+        const mpY = barraY + barraHeight + 34;
+        this.add.rectangle(barraX, mpY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
+        this.add.rectangle(barraX, mpY, Math.max(0.1, (stats.mp / stats.maxMp) * barraWidth), barraHeight, 0x1e4fbf).setOrigin(0, 0);
+        this.add.text(barraX - 40, mpY - 1, 'PM', { fontSize: '11px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX, mpY + barraHeight + 2, `${stats.mp}/${stats.maxMp}`, { fontSize: '10px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+
+        // Estadísticas numéricas adicionales
+        const statsBaseY = mpY + 40;
+        const lineHeight = 16;
+        const statsNumericos = [
+            `Daño: ${stats.damage}`,
+            `Def: ${stats.defense}`,
+            `Vel: ${stats.speed}`,
+            `Suerte: ${stats.luck}`
         ];
 
-        statsTexto.forEach(stat => {
-            this.add.text(x + 15, textoY, stat, {
-                fontSize: '12px',
+        statsNumericos.forEach((texto, idx) => {
+            this.add.text(x + 15 + (idx > 1 ? 110 : 0), statsBaseY + (idx % 2) * lineHeight, texto, {
+                fontSize: '11px',
                 fill: '#ffffff',
                 fontFamily: 'Distant Galaxy',
                 fontStyle: 'bold'
             });
-            textoY += 18;
         });
 
-        // Experiencia
-        textoY += 2;
-        this.add.text(x + 15, textoY, `EXP: ${stats.exp}/${stats.expNext}`, {
+        // Botones interactivos en la UI
+        const btnStyle = { fontSize: '12px', fill: '#00ffea', fontFamily: 'Distant Galaxy', fontStyle: 'bold' };
+
+        // Ajustamos ubicación de botones dentro del cuadro visual (sobre imagen)
+        const botonesY = y + 205;
+        const verHab = this.add.text(x + 16, botonesY, 'VER HABILIDADES', btnStyle).setInteractive({ useHandCursor: true });
+        const verEq = this.add.text(x + 16, botonesY + 20, 'VER EQUIPAMIENTO', Object.assign({}, btnStyle, { fill: '#5aa6ff' })).setInteractive({ useHandCursor: true });
+
+        verHab.on('pointerdown', () => this.showHabilidadesPanel(nombre, stats));
+        verEq.on('pointerdown', () => this.showEquipamientoPanel(nombre, stats));
+
+      
+    }
+
+    showHabilidadesPanel(nombre, stats) {
+        this.closePanel();
+
+        const width = 560;
+        const height = 360;
+        const panelX = 608 - width / 2;
+        const panelY = 170;
+
+        const group = this.add.group();
+
+        const fondo = this.add.rectangle(608, panelY + height / 2, width, height, 0x000000, 0.9);
+        fondo.setStrokeStyle(2, 0x87ceeb);
+        group.add(fondo);
+
+        const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${nombre}`, {
+            fontSize: '20px',
+            fill: '#f5d442',
+            fontFamily: 'Distant Galaxy',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0);
+        group.add(titulo);
+
+        const descripcion = this.add.text(panelX + 20, panelY + 50, '* Pulsa fuera del panel o ACEPTAR para cerrar', {
             fontSize: '12px',
-            fill: '#90ee90',
+            fill: '#cccccc',
             fontFamily: 'Distant Galaxy',
-            fontStyle: 'bold'
+            fontStyle: 'italic'
         });
+        group.add(descripcion);
 
-        textoY += 22;
-
-        // Título Habilidades
-        this.add.text(x + 15, textoY, 'Habilidades:', {
-            fontSize: '11px',
-            fill: '#87ceeb',
-            fontFamily: 'Distant Galaxy',
-            fontStyle: 'bold'
-        });
-
-        textoY += 16;
-
-        // Lista de habilidades
+        const listaY = panelY + 80;
         if (stats.habilidades && stats.habilidades.length > 0) {
-            stats.habilidades.slice(0, 4).forEach(nombreHab => {
+            stats.habilidades.forEach((nombreHab, idx) => {
                 const hab = HABILITIES[nombreHab];
-                const costoMP = hab ? `(${hab.cost} MP)` : '';
-                const textoHab = `• ${nombreHab} ${costoMP}`;
+                const text = this.add.text(panelX + 20, listaY + idx * 36,
+                    `- ${nombreHab} ${hab ? `(Coste ${hab.cost} MP)` : ''}`, {
+                        fontSize: '14px',
+                        fill: '#f8fafc',
+                        fontFamily: 'Distant Galaxy',
+                        fontStyle: 'bold'
+                    });
+                group.add(text);
 
-                this.add.text(x + 20, textoY, textoHab, {
-                    fontSize: '10px',
-                    fill: '#e0e0e0',
-                    fontFamily: 'Distant Galaxy',
-                    fontStyle: 'bold'
+                const desc = hab ? hab.description : 'No hay descripción disponible.';
+                const descText = this.add.text(panelX + 40, listaY + idx * 36 + 16, desc, {
+                    fontSize: '12px',
+                    fill: '#d1d5db',
+                    fontFamily: 'Distant Galaxy'
                 });
-
-                textoY += 14;
+                group.add(descText);
             });
-
-            // Si hay más de 4 habilidades, mostrar indicador
-            if (stats.habilidades.length > 4) {
-                this.add.text(x + 20, textoY, `... y ${stats.habilidades.length - 4} más`, {
-                    fontSize: '9px',
-                    fill: '#aaaaaa',
-                    fontFamily: 'Distant Galaxy',
-                    fontStyle: 'bold'
-                });
-            }
         } else {
-            this.add.text(x + 20, textoY, 'Sin habilidades', {
-                fontSize: '10px',
-                fill: '#aaaaaa',
+            const noText = this.add.text(panelX + 20, listaY, 'Este personaje no tiene habilidades asignadas.', {
+                fontSize: '14px',
+                fill: '#f5f5f5',
+                fontFamily: 'Distant Galaxy'
+            });
+            group.add(noText);
+        }
+
+        const cerrar = this.add.text(608, panelY + height - 30, 'CERRAR', {
+            fontSize: '16px',
+            fill: '#34d399',
+            fontFamily: 'Distant Galaxy',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        cerrar.on('pointerdown', () => this.closePanel());
+        group.add(cerrar);
+
+        const mask = this.add.rectangle(608, 320, 1216, 640, 0x000000, 0.2).setInteractive();
+        mask.on('pointerdown', () => this.closePanel());
+        group.add(mask);
+
+        this.panelActivo = group;
+    }
+
+    showEquipamientoPanel(nombre, stats) {
+        this.closePanel();
+
+        const width = 560;
+        const height = 280;
+        const panelX = 608 - width / 2;
+        const panelY = 220;
+
+        const group = this.add.group();
+
+        const fondo = this.add.rectangle(608, panelY + height / 2, width, height, 0x000000, 0.9);
+        fondo.setStrokeStyle(2, 0x5aa6ff);
+        group.add(fondo);
+
+        const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${nombre}`, {
+            fontSize: '20px',
+            fill: '#f5d442',
+            fontFamily: 'Distant Galaxy',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0);
+        group.add(titulo);
+
+        const equipo = stats.equipment || {
+            weapon: { name: 'Ninguno', description: 'Sin arma equipada.' },
+            armor: { name: 'Ninguno', description: 'Sin armadura equipada.' },
+            accessory: { name: 'Ninguno', description: 'Sin accesorio equipado.' }
+        };
+
+        const entries = [
+            { slot: 'Arma', value: equipo.weapon },
+            { slot: 'Armadura', value: equipo.armor },
+            { slot: 'Accesorio', value: equipo.accessory }
+        ];
+
+        entries.forEach((item, idx) => {
+            const y = panelY + 60 + idx * 60;
+            this.add.text(panelX + 20, y, `${item.slot}: ${item.value.name}`, {
+                fontSize: '14px',
+                fill: '#f8fafc',
                 fontFamily: 'Distant Galaxy',
                 fontStyle: 'bold'
             });
+            this.add.text(panelX + 20, y + 18, item.value.description || 'Sin descripción', {
+                fontSize: '12px',
+                fill: '#d1d5db',
+                fontFamily: 'Distant Galaxy'
+            });
+        });
+
+        const cerrar = this.add.text(608, panelY + height - 25, 'CERRAR', {
+            fontSize: '16px',
+            fill: '#34d399',
+            fontFamily: 'Distant Galaxy',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        cerrar.on('pointerdown', () => this.closePanel());
+        group.add(cerrar);
+
+        const mask = this.add.rectangle(608, 320, 1216, 640, 0x000000, 0.2).setInteractive();
+        mask.on('pointerdown', () => this.closePanel());
+        group.add(mask);
+
+        this.panelActivo = group;
+    }
+
+    closePanel() {
+        if (this.panelActivo) {
+            this.panelActivo.clear(true);
+            this.panelActivo = null;
         }
     }
 
-    /**
-     * Formatea el nombre del personaje para que sea más legible
-     */
     formatearNombre(nombre) {
         return nombre.replace(/([\d])/g, ' $1').trim();
     }
