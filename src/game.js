@@ -7,6 +7,7 @@ import Phaser from 'phaser';
 import TitleScene from './TitleScene.js';
 import IntroScene from './IntroScene.js';
 import MenuPrincipal from './menuScenes/menuprincipal.js';
+import EstrategiaScene from './menuScenes/EstrategiaScene.js';
 import BattleScene from './battleScene/battle_scene.js';
 
 /**
@@ -29,7 +30,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, TitleScene, IntroScene, Level, Level2, Level3, MenuPrincipal, End, BattleScene],
+    scene: [Boot, TitleScene, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, End, BattleScene],
     physics: {
         default: 'arcade',
         arcade: {
