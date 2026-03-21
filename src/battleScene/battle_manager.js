@@ -71,7 +71,7 @@ export default class BattleManager {
         this.turnQueue = participants.sort((a, b) => b.data.speed - a.data.speed);
 
         this._callbacks.onMessage?.(`--- Ronda ${this.roundCount} ---`);
-        this._scene.time.delayedCall(1000, () => this.nextTurn());
+        this._scene.time.delayedCall(1500, () => this.nextTurn());
     }
 
     nextTurn() {
@@ -110,7 +110,7 @@ export default class BattleManager {
             this._callbacks.onMessage?.(`Turno de ${current.data.name}`);
         } else {
             this._isBusy = true;
-            this._scene.time.delayedCall(1000, () => this._runEnemyTurn());
+            this._scene.time.delayedCall(1500, () => this._runEnemyTurn());
         }
     }
 
@@ -140,9 +140,9 @@ export default class BattleManager {
             this._handleAllEnemiesDeath();
         } else if (result.isDead) {
             this._callbacks.onMessage?.(`¡${targetEnemy.name} fue derrotado!`);
-            this._scene.time.delayedCall(1200, () => this.nextTurn());
+            this._scene.time.delayedCall(2000, () => this.nextTurn());
         } else {
-            this._scene.time.delayedCall(1200, () => this.nextTurn());
+            this._scene.time.delayedCall(2000, () => this.nextTurn());
         }
     }
 
@@ -163,7 +163,7 @@ export default class BattleManager {
             message: `${player.name} se pone en posición de defensa.`
         });
 
-        this._scene.time.delayedCall(1000, () => this.nextTurn());
+        this._scene.time.delayedCall(1800, () => this.nextTurn());
     }
 
     onSkill(skillName, targetType, targetIndex) {
@@ -213,9 +213,9 @@ export default class BattleManager {
             this._handleAllEnemiesDeath();
         } else if (enemyResult.isDead) {
             this._callbacks.onMessage?.(`¡${target.name} fue derrotado!`);
-            this._scene.time.delayedCall(1200, () => this.nextTurn());
+            this._scene.time.delayedCall(2000, () => this.nextTurn());
         } else {
-            this._scene.time.delayedCall(1200, () => this.nextTurn());
+            this._scene.time.delayedCall(2000, () => this.nextTurn());
         }
     }
 
@@ -277,7 +277,7 @@ export default class BattleManager {
             usedItem: item
         });
 
-        this._scene.time.delayedCall(1500, () => this.nextTurn());
+        this._scene.time.delayedCall(2200, () => this.nextTurn());
     }
 
     onFlee() {
@@ -348,7 +348,7 @@ export default class BattleManager {
             this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
         }
 
-        this._scene.time.delayedCall(1500, () => {
+        this._scene.time.delayedCall(2200, () => {
             if (this._isPlayer1Dead()) {
                 this._endBattle('enemy');
             } else {
@@ -396,7 +396,7 @@ export default class BattleManager {
             message: `${currentEnemy.name} se prepara para el siguiente ataque.`
         });
 
-        this._scene.time.delayedCall(1500, () => {
+        this._scene.time.delayedCall(2200, () => {
             if (this._isPlayer1Dead()) {
                 this._endBattle('enemy');
             } else {

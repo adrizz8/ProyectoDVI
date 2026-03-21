@@ -81,8 +81,10 @@ export default class EnemyBattle {
             };
         }
 
+        const potencia = 10;
         const isCrit = Math.random() < (this.luck / 50);
-        const finalDamage = isCrit ? Math.floor(this.damage * 1.5) : this.damage;
+        const rawDamage = Math.floor(this.damage * potencia);
+        const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
 
         return {
             type: 'attack',
@@ -119,7 +121,8 @@ export default class EnemyBattle {
         const guarded = this._guardActive;
         const currentDefense = Math.max(1, this.defense);
 
-        let damageTaken = Math.floor((damage * 10) / currentDefense);
+        // Nueva Fórmula: Resultado = (Ataque * Potencia) / Defensa
+        let damageTaken = Math.floor(damage / currentDefense);
         damageTaken = Math.max(1, damageTaken);
 
         // La guardia reduce el daño a la mitad

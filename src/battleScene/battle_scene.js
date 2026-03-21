@@ -209,14 +209,17 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _buildTurnIndicator() {
-        this._turnGlow = this.add.rectangle(-100, -100, 208, 198, 0xffff00, 0.8)
+        // Marcador de turno: un sprite que tomará la forma del personaje activo
+        // Se coloca detrás (depth 1) y con un tinte amarillo
+        this._turnGlow = this.add.sprite(-500, -500, '__WHITE')
             .setDepth(1)
-            .setAlpha(0);
+            .setAlpha(0)
+            .setTintFill(0xffff00);
 
         this.tweens.add({
             targets: this._turnGlow,
-            alpha: 0.8,
-            duration: 1000,
+            alpha: 0.7,
+            duration: 300,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
@@ -399,27 +402,29 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _updateTurnIndicator(participant) {
-        let targetX, targetY;
+        let targetSprite = null;
 
         if (participant.type === 'player') {
-            const sprite = this._playerSprites[participant.index];
-            targetX = sprite.x;
-            targetY = sprite.y;
+            targetSprite = this._playerSprites[participant.index];
             this._updatePlayerHUDs();
         } else {
-            const sprite = this._enemySprites[participant.index];
-            targetX = -100;
-            targetY = -100;
+            targetSprite = this._enemySprites[participant.index];
             this.actionMenu.setVisibility(false);
         }
 
-        if (this._turnGlow) {
-            this._turnGlow.setPosition(targetX, targetY);
-            if (targetX !== -100) {
-                this._turnGlow.setAlpha(0.6);
-            } else {
-                this._turnGlow.setAlpha(0);
-            }
+        if (this._turnGlow && targetSprite) {
+            // Sincronizar textura y forma
+            this._turnGlow.setTexture(targetSprite.texture.key, targetSprite.frame.name);
+            this._turnGlow.setPosition(targetSprite.x, targetSprite.y);
+
+            // Un poco más grande que el original para que asome por detrás
+            this._turnGlow.setScale(targetSprite.scaleX * 1.1, targetSprite.scaleY * 1.05);
+            this._turnGlow.setFlipX(targetSprite.flipX);
+            this._turnGlow.setRotation(targetSprite.rotation);
+
+            this._turnGlow.setVisible(true);
+        } else if (this._turnGlow) {
+            this._turnGlow.setVisible(false);
         }
     }
 

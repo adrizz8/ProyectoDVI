@@ -71,11 +71,12 @@ export const HABILITIES = {
     'Ataque Potente': new Hability({
         id: 'power_attack',
         name: 'Ataque Potente',
-        description: 'Inflige un 150% del daño base del usuario.',
+        description: 'Inflige un ataque físico de gran potencia.',
         cost: 10,
         type: 'damage',
         effectFn: (source, target) => {
-            const damage = Math.floor(source.damage * 1.5);
+            const potencia = 15;
+            const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
                 message: `${source.name} usa un Ataque Potente sobre ${target.name}!`
@@ -91,7 +92,6 @@ export const HABILITIES = {
         type: 'heal',
         effectFn: (source, target) => {
             const healAmount = 50;
-            // La lógica de curación la aplicaría el BattleManager o el propio target
             return {
                 heal: healAmount,
                 message: `${source.name} lanza Cura sobre ${target.name}!`
@@ -102,11 +102,12 @@ export const HABILITIES = {
     'Fuego': new Hability({
         id: 'fireball',
         name: 'Fuego',
-        description: 'Lanza una bola de fuego que ignora parte de la defensa.',
+        description: 'Lanza una bola de fuego mágica que hace daño ignorando parte del ataque.',
         cost: 20,
         type: 'damage',
         effectFn: (source, target) => {
-            const damage = Math.floor(source.damage * 1.2 + 10);
+            const potencia = 13;
+            const damage = Math.floor(source.damage * potencia) + 10;
             return {
                 damage,
                 message: `${source.name} lanza una Bola de Fuego a ${target.name}!`
@@ -117,11 +118,12 @@ export const HABILITIES = {
     'Golpe Triple': new Hability({
         id: 'triple_strike',
         name: 'Golpe Triple',
-        description: 'Ataca tres veces con daño reducido por golpe.',
+        description: 'Ataca tres veces rápidamente.',
         cost: 25,
         type: 'damage',
         effectFn: (source, target) => {
-            const damage = Math.floor(source.damage * 0.6) * 3;
+            const potencia = 6; // Tres golpes de 6 de potencia cada uno
+            const damage = Math.floor(source.damage * potencia) * 3;
             return {
                 damage,
                 message: `${source.name} asesta un Golpe Triple a ${target.name}!`
@@ -132,12 +134,12 @@ export const HABILITIES = {
     'Ataque UP': new Hability({
         id: 'attack_up',
         name: 'Ataque UP',
-        description: 'Sube tu propio ataque un 50% de tu ataque base para este combate.',
+        description: 'Sube tu propio ataque un 25% de tu ataque base para este combate.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDamage * 0.5);
+            const buffAmount = Math.floor(source.baseDamage * 0.25);
             source.damage += buffAmount;
             return {
                 message: `${source.name} sube su propio ataque en ${buffAmount} puntos!`
@@ -148,12 +150,12 @@ export const HABILITIES = {
     'Defensa UP': new Hability({
         id: 'defense_up',
         name: 'Defensa UP',
-        description: 'Sube tu propia defensa un 50% de tu defensa base para este combate.',
+        description: 'Sube tu propia defensa un 25% de tu defensa base para este combate.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDefense * 0.5);
+            const buffAmount = Math.floor(source.baseDefense * 0.25);
             source.defense += buffAmount;
             return {
                 message: `${source.name} sube su propia defensa en ${buffAmount} puntos!`
@@ -164,12 +166,12 @@ export const HABILITIES = {
     'Velocidad UP': new Hability({
         id: 'speed_up',
         name: 'Velocidad UP',
-        description: 'Sube tu propia velocidad un 50% de tu velocidad base para este combate.',
+        description: 'Sube tu propia velocidad un 25% de tu velocidad base para este combate.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseSpeed * 0.5);
+            const buffAmount = Math.floor(source.baseSpeed * 0.25);
             source.speed += buffAmount;
             return {
                 message: `${source.name} sube su propia velocidad en ${buffAmount} puntos!`
@@ -180,12 +182,12 @@ export const HABILITIES = {
     'Ataque NERF': new Hability({
         id: 'attack_nerf',
         name: 'Ataque NERF',
-        description: 'Baja el ataque del enemigo un 50% de su ataque base para este combate.',
+        description: 'Baja el ataque del enemigo un 25% de su ataque base para este combate.',
         cost: 15,
         type: 'nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const nerfAmount = Math.floor(target.baseDamage * 0.5);
+            const nerfAmount = Math.floor(target.baseDamage * 0.25);
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 nerf: { stat: 'damage', amount: nerfAmount },
@@ -199,13 +201,14 @@ export const HABILITIES = {
     'Golpe Debilitador': new Hability({
         id: 'weakening_strike',
         name: 'Golpe Debilitador',
-        description: 'Ataca al enemigo y reduce su ataque un 30%.',
+        description: 'Ataca al enemigo y reduce su ataque un 25%.',
         cost: 20,
         type: 'damage+nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const damage = Math.floor(source.damage * 1.1);
-            const nerfAmount = Math.floor(target.baseDamage * 0.3);
+            const potencia = 11;
+            const damage = Math.floor(source.damage * potencia);
+            const nerfAmount = Math.floor(target.baseDamage * 0.25);
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 damage,
@@ -223,7 +226,8 @@ export const HABILITIES = {
         type: 'damage+buff',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const damage = Math.floor(source.damage * 1.0);
+            const potencia = 10;
+            const damage = Math.floor(source.damage * potencia);
             const buffAmount = Math.floor(source.baseDamage * 0.25);
             source.damage += buffAmount;
             return {
