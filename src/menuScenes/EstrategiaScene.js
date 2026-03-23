@@ -63,15 +63,16 @@ export default class EstrategiaScene extends Phaser.Scene {
         const labelText = `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
         this.add.text(x + 20, y + 12, labelText, {
             fontSize: '16px',
-            fill: '#f5d442',
+            fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 5
         });
 
         // Nivel y experiencia restante
         const xpRestante = Math.max(0, stats.expNext - stats.exp);
-        this.add.text(x + 15, y + 45, `NV: ${stats.level}`, { fontSize: '12px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
-        this.add.text(x + 115, y + 45, `SIG: ${xpRestante}`, { fontSize: '12px', fill: '#90ee90', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        
 
         // Coordinación con las barras de PS/PM dentro de estrategiaUI, bajo cada retrato
         const coordenadasBarra = {
@@ -90,34 +91,100 @@ export default class EstrategiaScene extends Phaser.Scene {
         // Barra de HP colocada exactamente bajo la barra PS del UI
         this.add.rectangle(barraX, barraY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, barraY, Math.max(0.1, (stats.hp / stats.maxHp) * barraWidth), barraHeight, 0x1e7b1e).setOrigin(0, 0);
-        this.add.text(barraX - 40, barraY - 1, 'PS', { fontSize: '11px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
-        this.add.text(barraX, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '10px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX - 40, barraY - 1, '', { fontSize: '11px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX + barraWidth / 2, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', justify: 'center' , stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5, 0);
 
         // Barra de MP colocada exactamente bajo la barra PM del UI
         const mpY = barraY + barraHeight + 34;
         this.add.rectangle(barraX, mpY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, mpY, Math.max(0.1, (stats.mp / stats.maxMp) * barraWidth), barraHeight, 0x1e4fbf).setOrigin(0, 0);
-        this.add.text(barraX - 40, mpY - 1, 'PM', { fontSize: '11px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
-        this.add.text(barraX, mpY + barraHeight + 2, `${stats.mp}/${stats.maxMp}`, { fontSize: '10px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX - 40, mpY - 1, '', { fontSize: '11px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
+        this.add.text(barraX + barraWidth / 2, mpY + barraHeight + 2, `${stats.mp}/${stats.maxMp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', justify: 'center', stroke: '#000000', strokeThickness: 5  }).setOrigin(0.5, 0);
 
-        // Estadísticas numéricas adicionales
-        const statsBaseY = mpY + 40;
-        const lineHeight = 16;
-        const statsNumericos = [
-            `Daño: ${stats.damage}`,
-            `Def: ${stats.defense}`,
-            `Vel: ${stats.speed}`,
-            `Suerte: ${stats.luck}`
-        ];
+        const coordenadasStats = {
+    Jugador1: {
+        damage: { x: 414, y: 95 },
+        defense: { x: 414, y: 125 },
+        speed: { x: 414, y: 155 },
+        luck: { x: 505, y: 95 }
+    },
+    Jugador2: {
+        damage: { x: 414, y: 425},
+        defense: { x: 414, y: 455 },
+        speed: { x: 414, y: 485 },
+        luck: { x: 505, y: 425 }
+    },
+    Jugador3: {
+        damage: { x: 970, y: 95 },
+        defense: { x: 970, y: 125 },
+        speed: { x: 970, y: 155 },
+        luck: { x: 1065, y: 95 }
+    },
+    Jugador4: {
+        damage: { x: 970, y: 425 },
+        defense: { x: 970, y: 455 },
+        speed: { x: 970, y: 485 },
+        luck: { x: 1065, y: 425 }
+    }
+};
 
-        statsNumericos.forEach((texto, idx) => {
-            this.add.text(x + 15 + (idx > 1 ? 110 : 0), statsBaseY + (idx % 2) * lineHeight, texto, {
-                fontSize: '11px',
-                fill: '#ffffff',
-                fontFamily: 'Distant Galaxy',
-                fontStyle: 'bold'
-            });
-        });
+const pos = coordenadasStats[nombre];
+
+const coordenadasNivel = {
+    Jugador1: {
+        level: { x: 414, y: 60 },
+        exp: { x: 505, y: 60 }
+    },
+    Jugador2: {
+        level: { x: 414, y: 390 },
+        exp: { x: 505, y: 390 }
+    },
+    Jugador3: {
+        level: { x: 970, y: 60 },
+        exp: { x: 1065, y: 60 }
+    },
+    Jugador4: {
+        level: { x: 970, y: 390 },
+        exp: { x: 1065, y: 390 }
+    }
+};
+
+const posNivel = coordenadasNivel[nombre];
+
+const estiloNivel = {
+    fontSize: '16px',
+    fill: '#ffffff',
+    fontFamily: 'Distant Galaxy',
+    fontStyle: 'bold',
+    stroke: '#000000',
+    strokeThickness: 5
+};
+
+const estiloExp = {
+    fontSize: '14px',
+    fill: '#ffffff',
+    fontFamily: 'Distant Galaxy',
+    fontStyle: 'bold',
+    stroke: '#000000',
+    strokeThickness: 5
+};
+
+this.add.text(posNivel.level.x, posNivel.level.y, `${stats.level}`, estiloNivel);
+this.add.text(posNivel.exp.x, posNivel.exp.y, `${xpRestante}`, estiloExp);
+
+const estiloStats = {
+    fontSize: '20px',
+    fill: '#ffffff',
+    fontFamily: 'Distant Galaxy',
+    fontStyle: 'bold',
+    stroke: '#000000',
+    strokeThickness: 5
+};
+
+this.add.text(pos.damage.x, pos.damage.y, `${stats.damage}`, estiloStats);
+this.add.text(pos.defense.x, pos.defense.y, `${stats.defense}`, estiloStats);
+this.add.text(pos.speed.x, pos.speed.y, `${stats.speed}`, estiloStats);
+this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
         // Botones interactivos en la UI
         const btnStyle = { fontSize: '12px', fill: '#00ffea', fontFamily: 'Distant Galaxy', fontStyle: 'bold' };
