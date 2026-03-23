@@ -20,7 +20,7 @@ export default class TitleScene extends Phaser.Scene {
         configuracion.setInteractive();
 
         playButton.on('pointerdown', () => {
-            this.scene.start('battle_scene');
+            this.scene.start('level3');
         });
 
     }

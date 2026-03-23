@@ -14,6 +14,8 @@ import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
 import outdoorMap from '../assets/images/mapaFuera.json'
 import tileset from '../assets/images/tilesetexterior.png'
+import tilesInterior from "../assets/images/tilesinterior.png"
+import tilesCafeteria from "../assets/images/tilesCafeteria.png"
 import boton_luchar from '../assets/images/boton_luchar.png'
 import boton_habilidades from '../assets/images/boton_habilidades.png'
 import boton_mochila from '../assets/images/boton_mochila.png'
@@ -69,6 +71,8 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
     this.load.image('tileset', tileset);
+    this.load.image('tilesinterior', tilesInterior);
+    this.load.image('tilesCafeteria', tilesCafeteria);
     this.load.image('boton_luchar', boton_luchar);
     this.load.image('boton_habilidades', boton_habilidades);
     this.load.image('boton_mochila', boton_mochila);

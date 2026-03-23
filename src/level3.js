@@ -3,21 +3,23 @@ import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 
 /**
- * Nivel 3: Escena de exploración con el mapa de tiles.
+ * Nivel 3: Escena de exploración con el mapa de tiles (mapa interior/camino).
  * El jugador llega aquí tras resolver el puzzle de circuito lógico en Level2.
+ * Al llegar al borde del camino (borde derecho del mapa) se transiciona a MapaFuera.
  * @extends Phaser.Scene
  */
 export default class Level3 extends Phaser.Scene {
     constructor() {
         super({ key: 'level3' });
+        this._transitionActive = false;
     }
 
     preload() {
-        // Los assets ya se han cargado en Boot, no es necesario recargarlos
     }
 
     create() {
-        // --- Mapa de tiles ---
+        this._transitionActive = false;
+
         const map = this.make.tilemap({ key: 'mainscene', tileWidth: 32, tileHeight: 32 });
         const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
@@ -36,11 +38,33 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player, groundLayer);
         this.physics.add.collider(this.player, objectsLayer);
 
+
+        const caminoCentroX = 592;
+        const caminoAncho = 160;
+        const exitZone = this.add.zone(
+            caminoCentroX,
+            20,
+            caminoAncho,
+            40
+        );
+        this.physics.world.enable(exitZone, Phaser.Physics.Arcade.STATIC_BODY);
+
+        this.physics.add.overlap(this.player, exitZone, () => {
+            if (!this._transitionActive) {
+                this._transitionActive = true;
+                this.cameras.main.fade(300, 0, 0, 0, false, (cam, progress) => {
+                    if (progress === 1) {
+                        // El jugador aparece en la parte superior del mapa exterior
+                        this.scene.start('outdoorMap', { spawnX: 512, spawnY: 80 });
+                    }
+                });
+            }
+        });
+
         // --- Cámara ---
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-        // Atajo para abrir el menú principal durante exploración
         this.input.keyboard.on('keydown-SPACE', () => {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
