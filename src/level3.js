@@ -1,6 +1,9 @@
 import Player from './player.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
+import Parada from './Parada.js'
+import Bus from './bus.js'
+import trigger_parada from './trigger_parada.js'
 
 /**
  * Nivel 3: Escena de exploración con el mapa de tiles (mapa interior/camino).
@@ -33,6 +36,29 @@ export default class Level3 extends Phaser.Scene {
 
         // --- Jugador ---
         this.player = new Player(this, 100, 400);
+         this.player.setVisible(false);
+        this.bus= new Bus(this,1800, 560,'bus');
+
+        //this.parada= map.createFromObjects('Parada',{gid:558,classType:Parada})
+        //this.parada = new Parada(this, 500, 590);
+
+        const parada2 = map.createFromObjects('triggers', {
+            gid: 558,    // ← ID del tile en el tileset
+            classType: Parada,             
+            key: 'tileset',        // ← key de la imagen cargada en Phaser
+            frame: 557              // ← frame dentro del tileset (gid - firstgid)
+        });
+
+        const trigger_pantalla = map.createFromObjects('triggers', {
+            name:'pantalla_nueva' ,
+            classType: trigger_parada
+        });
+        
+        this.bus.config(parada2[0]);
+
+        this.physics.add.overlap(trigger_pantalla,this.player,() => {
+            this.scene.start('level');
+        });
 
         // Colisión del jugador con las capas del mapa
         this.physics.add.collider(this.player, groundLayer);
@@ -71,13 +97,42 @@ export default class Level3 extends Phaser.Scene {
         });
     }
 
+    unfreeze(){
+        this.player.unfreeze();
+    }
+    drop_player(){
+
+        
+        this.time.addEvent({
+            delay: 400, // ms
+            callback:() => {
+                    
+                    var posi=this.bus.getCenter();
+                    this.player.setPosition(posi.x,posi.y-45);
+                    this.player.setVisible(true);
+                    this.player.freeze();
+            }
+        });  
+        this.time.addEvent({
+            delay: 2000, // ms
+            callback:() => {
+                this.bus.state='arrancar';
+            }
+        });
+        
+
+    }
+
     update(t, dt) {
         // actualizamos el contador global
         const sec = this.registry.get('horasJuego') || 0;
         this.registry.set('horasJuego', sec + dt / 1000);
 
+        //console.log(this.bus.state);
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }
     }
+
+   
 }

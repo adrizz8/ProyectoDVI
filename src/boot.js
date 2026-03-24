@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 
 import platform from '../assets/sprites/platform.png'
 import base from '../assets/sprites/base.png'
+import parada from '../assets/images/parada.png'
 import star from '../assets/sprites/star.png'
 import player from '../assets/sprites/protaOW.png'
 import logo from '../assets/images/logo.png'
@@ -25,7 +26,12 @@ import prota_battle from '../assets/sprites/prota_battle.png'
 import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
+<<<<<<< Updated upstream
 import estrategiaUI from '../assets/images/estrategiaui.png'
+=======
+import formulario from '../assets/images/formulario.png'
+import bus from  '../assets/sprites/bus_anim.png'
+>>>>>>> Stashed changes
 
 
 
@@ -68,11 +74,22 @@ export default class Boot extends Phaser.Scene {
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('bus', bus, { frameWidth: 384, frameHeight: 384 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
+<<<<<<< Updated upstream
     this.load.image('tileset', tileset);
     this.load.image('tilesinterior', tilesInterior);
     this.load.image('tilesCafeteria', tilesCafeteria);
+=======
+    this.load.spritesheet('tileset', tileset, {
+        frameWidth: 32,
+        frameHeight: 32
+    });
+   // this.load.image('tileset', tileset);
+    this.load.image('formulario',formulario);
+    this.load.image('parada',parada);
+>>>>>>> Stashed changes
     this.load.image('boton_luchar', boton_luchar);
     this.load.image('boton_habilidades', boton_habilidades);
     this.load.image('boton_mochila', boton_mochila);
@@ -82,7 +99,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player2_battle', player2_battle);
     this.load.image('player3_battle', player3_battle);
     this.load.image('player4_battle', player4_battle);
+<<<<<<< Updated upstream
     this.load.image('estrategiaUI', estrategiaUI);
+=======
+   
+>>>>>>> Stashed changes
   }
 
   /**
@@ -95,6 +116,6 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('TitleScene');
+    this.scene.start('level3');
   }
 }

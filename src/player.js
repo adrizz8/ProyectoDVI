@@ -20,6 +20,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
 // Prueba con valores pequeños, como el 50% del ancho y el 30% del alto del sprite
     this.body.setSize(this.width, this.height);
@@ -76,6 +77,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
+
+         if (this.frozen) {
+            this.body.setVelocity(0, 0);
+            this.anims.stop();
+            return;
+        }
 
         let moving = false;
 
@@ -147,5 +154,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
         return false;
     }
 
-
+    freeze(){
+        this.frozen=true;
+    }
+    unfreeze(){
+        this.frozen=false;
+    }
 }  
