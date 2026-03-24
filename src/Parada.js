@@ -9,7 +9,7 @@ export default class bus extends Phaser.GameObjects.Sprite{
      * @param {number} y Coordenada Y
      */
     constructor(scene, x, y) {
-        super(scene, x, y,'parada');
+        super(scene, x, y);
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
