@@ -9,6 +9,7 @@ import IntroScene from './IntroScene.js';
 import MenuPrincipal from './menuScenes/menuprincipal.js';
 import EstrategiaScene from './menuScenes/EstrategiaScene.js';
 import BattleScene from './battleScene/battle_scene.js';
+import MapaFuera from './MapaFuera.js'
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -30,7 +31,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, TitleScene, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, End, BattleScene],
+    scene: [Boot, TitleScene, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, End, BattleScene,MapaFuera],
     physics: {
         default: 'arcade',
         arcade: {

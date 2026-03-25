@@ -15,6 +15,8 @@ export default class bus extends Phaser.GameObjects.Sprite{
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
+        
+
         this.state = 'move';
         this.speed = 150;
 
@@ -43,8 +45,10 @@ export default class bus extends Phaser.GameObjects.Sprite{
     }
 
     drop_player(){
-        this.state='stop'
+        
+        this.state='stop';
         this.player.destroy();
+        this.scene.parar_soni();
         
     }
 
@@ -61,16 +65,17 @@ export default class bus extends Phaser.GameObjects.Sprite{
 
         
         const cam = this.scene.cameras.main;
-
+        
        if (this.x + this.width < cam.worldView.x) {
             this.scene.unfreeze();
+            this.scene.parar_carretera();
             this.destroy();
         }
         else{
             switch(this.state){
                 case 'move':
         
-                    this.body.setVelocityX(-this.speed*7);
+                    this.body.setVelocityX(-this.speed);
 
                 break;
                 case 'stop':
@@ -89,9 +94,10 @@ export default class bus extends Phaser.GameObjects.Sprite{
                     this.arranca();
                     this.body.setVelocityX(-this.speed);
                     if(this.speed>=150){
-                        console.log(this.state )
+                        
                         this.state='move';
-                        console.log(this.state )
+                        this.scene.carretera_soni();
+                       
                     }
 
                 break;
@@ -101,14 +107,15 @@ export default class bus extends Phaser.GameObjects.Sprite{
     }
 
     frenar(){
-        this.speed=parseInt(this.speed/2);
+        this.speed=parseInt(this.speed/1.005);
        
     }
     arranca(){
+        
         if(this.speed==0){
             this.speed=1;
         }
-        this.speed=this.speed*3
+        this.speed=this.speed*1.02
     }
 
     

@@ -26,6 +26,12 @@ export default class Level3 extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'mainscene', tileWidth: 32, tileHeight: 32 });
         const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
+        this.arrancar=this.sound.add('arrancar');
+        this.parar=this.sound.add('parar');
+        this.carretera=this.sound.add('carretera');
+        this.carre_join=this.sound.add('carre_join');
+        
+
         const backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
         const groundLayer = map.createLayer('Arboles', tileset, 0, 0);
         const objectsLayer = map.createLayer('Resto', tileset, 0, 0);
@@ -57,7 +63,7 @@ export default class Level3 extends Phaser.Scene {
         this.bus.config(parada2[0]);
 
         this.physics.add.overlap(trigger_pantalla,this.player,() => {
-            this.scene.start('level');
+            this.scene.start('level2');
         });
 
         // Colisión del jugador con las capas del mapa
@@ -95,8 +101,22 @@ export default class Level3 extends Phaser.Scene {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
+        this.carretera.play();
     }
 
+    parar_soni(){
+        this.parar.play();
+        this.carretera.stop();
+    }
+    carretera_soni(){
+        
+        this.carre_join.play();
+    }
+    parar_carretera(){
+        
+        this.carre_join.stop();
+    }
     unfreeze(){
         this.player.unfreeze();
     }
@@ -117,11 +137,15 @@ export default class Level3 extends Phaser.Scene {
             delay: 2000, // ms
             callback:() => {
                 this.bus.state='arrancar';
+                this.arrancar.play();
+                this.parar.stop();
             }
         });
         
 
     }
+
+    
 
     update(t, dt) {
         // actualizamos el contador global

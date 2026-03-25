@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 
 import platform from '../assets/sprites/platform.png'
 import base from '../assets/sprites/base.png'
-import parada from '../assets/images/parada.png'
 import star from '../assets/sprites/star.png'
 import player from '../assets/sprites/protaOW.png'
 import logo from '../assets/images/logo.png'
@@ -31,6 +30,10 @@ import estrategiaUI from '../assets/images/estrategiaui.png'
 
 import formulario from '../assets/images/formulario.png'
 import bus from  '../assets/sprites/bus_anim.png'
+import arrancar from '../assets/music/arrancar.wav'
+import parar from '../assets/music/parar.wav'
+import carretera from '../assets/music/carretera.wav'
+import carre_join from '../assets/music/carre_join.wav'
 
 
 
@@ -85,7 +88,6 @@ export default class Boot extends Phaser.Scene {
     });
    // this.load.image('tileset', tileset);
     this.load.image('formulario',formulario);
-    this.load.image('parada',parada);
 
     this.load.image('boton_luchar', boton_luchar);
     this.load.image('boton_habilidades', boton_habilidades);
@@ -98,7 +100,10 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player4_battle', player4_battle);
 
     this.load.image('estrategiaUI', estrategiaUI);
-
+    this.load.audio('arrancar',arrancar);
+    this.load.audio('parar',parar);
+    this.load.audio('carretera',carretera);
+    this.load.audio('carre_join',carre_join);
   }
 
   /**
