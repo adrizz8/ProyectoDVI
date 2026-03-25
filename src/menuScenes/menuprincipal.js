@@ -4,8 +4,8 @@ class MenuPrincipal extends Phaser.Scene {
     }
 
     create() {
-        // Creamos la imagen del menú con alpha 0 y la tweenamos para aparecer lentamente
-        const bg = this.add.image(608, 320, 'menuPrincipal').setAlpha(0);
+        // Creamos la imagen de fondo del menú con alpha 0 y la tweenamos para aparecer lentamente
+        const bg = this.add.image(608, 320, 'menuPrincipal').setName('menuPrincipal').setOrigin(0.5).setAlpha(0);
         this.tweens.add({
             targets: bg,
             alpha: 1,
@@ -20,28 +20,38 @@ class MenuPrincipal extends Phaser.Scene {
 
         const horasFormateadas = this.formatearHoras(horasJuego);
 
-        this.add.text(300, 150, `Tiempo: ${horasFormateadas}`, {
-            fontSize: '22px', fill: '#f5d442', fontFamily: 'Arial'
+        this.add.text(305, 150, `Tiempo: ${horasFormateadas}`, {
+            fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
         });
 
-        this.add.text(300, 185, `Dinero: €${dinero.toLocaleString()}`, {
-            fontSize: '22px', fill: '#f5d442', fontFamily: 'Arial'
+        this.add.text(305, 210, `Dinero: ${dinero.toLocaleString()}€`, {
+            fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
         });
 
         // ── Botones ────────────────────────────────────────────────────
         const botones = [
-            { key: 'estrategiaButton',  y: 400, scene: 'EstrategiaScene'   },
-            { key: 'mochilaButton',     y: 500, scene: 'MochilaScene'      },
-            { key: 'salirButton',       y: 600, scene: null                },  // salir
-            { key: 'equipamientoButton',y: 700, scene: 'EquipamientoScene' },
-            { key: 'opcionesButton',    y: 800, scene: 'OpcionesScene'     },
+            { x: 800, y: 275, scene: 'EstrategiaScene', text: 'Estrategia' },
+            { x: 800, y: 345, scene: 'MochilaScene',   text: 'Mochila'   },
+            { x: 800, y: 515, scene: null,             text: 'Salir'     },  
+            { x: 800, y: 425, scene: 'OpcionesScene',  text: 'Opciones'  },
         ];
 
-        botones.forEach(({ key, y, scene }) => {
-            const btn = this.add.image(608, y, key).setInteractive();
+        botones.forEach(({ x, y, scene, text }) => {
+            const btn = this.add.text(x, y, text, {
+                fontSize: '32px',
+                fill: '#ffffff',
+                fontFamily: 'Distant Galaxy',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 5
+            }).setOrigin(0.5).setInteractive();
 
-            btn.on('pointerover',  () => btn.setScale(1.05));
-            btn.on('pointerout',   () => btn.setScale(1));
+            btn.on('pointerover',  () => {
+                btn.setStyle({ fill: '#f5d442' });
+            });
+            btn.on('pointerout',   () => {
+                btn.setStyle({ fill: '#ffffff' });
+            });
             btn.on('pointerdown',  () => {
                 if (scene) {
                     this.scene.start(scene);
