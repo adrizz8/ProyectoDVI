@@ -18,11 +18,11 @@ class MenuPrincipal extends Phaser.Scene {
         const horasJuego = this.registry.get('horasJuego') ?? 0;
         const dinero     = this.registry.get('dinero')     ?? 0;
 
-        const horasFormateadas = this.formatearHoras(horasJuego);
-
-        this.add.text(305, 150, `Tiempo: ${horasFormateadas}`, {
+        this.horasText = this.add.text(305, 150, `Tiempo: ${this.formatearHoras(horasJuego)}`, {
             fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
         });
+
+        this.horasJuego = horasJuego;
 
         this.add.text(305, 210, `Dinero: ${dinero.toLocaleString()}€`, {
             fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
@@ -81,6 +81,12 @@ class MenuPrincipal extends Phaser.Scene {
                 }
             });
         });
+    }
+
+    update(time, dt) {
+        // Mantener en cada frame un display preciso del tiempo real de juego
+        const horasJuego = this.registry.get('horasJuego') ?? 0;
+        this.horasText.setText(`Tiempo: ${this.formatearHoras(horasJuego)}`);
     }
 
     // Convierte segundos totales → "Xh Ym"
