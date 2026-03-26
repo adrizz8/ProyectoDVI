@@ -1,4 +1,4 @@
-import Player from './player.js';
+import Player from './personajes/player.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 import Parada from './Parada.js'

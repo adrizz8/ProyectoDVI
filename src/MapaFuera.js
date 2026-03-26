@@ -1,4 +1,4 @@
-import Player from './player.js';
+import Player from './personajes/player.js';
 import Phaser from 'phaser';
 
 /**

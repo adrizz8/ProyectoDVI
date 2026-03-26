@@ -1,4 +1,4 @@
-import Player from './player.js';
+import Player from './personajes/player.js';
 import Boton from './boton.js';
 import Cable from './cable.js';
 import AndGate from './and_gate.js';

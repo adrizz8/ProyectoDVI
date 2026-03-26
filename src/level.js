@@ -1,7 +1,7 @@
-import Platform from './platform.js';
-import Player from './player.js';
+import Player from './personajes/player.js';
 import Toy from './toy.js';
 import DialogueManager from './dialogueManager.js';
+import NPCBattle from './personajes/npc_battle.js';
 import Phaser from 'phaser';
 
 
@@ -25,22 +25,32 @@ export default class Level extends Phaser.Scene {
      * Creación de los elementos de la escena principal de juego
      */
     create() {
-        this.stars = 10;
-        this.bases = this.add.group();
-        this.player = new Player(this, 200, 300);
+        this.player = new Player(this, 200, 450);
 
-        new Platform(this, this.player, this.bases, 150, 350);
-        new Platform(this, this.player, this.bases, 850, 350);
-        new Platform(this, this.player, this.bases, 500, 200);
-        new Platform(this, this.player, this.bases, 150, 100);
-        new Platform(this, this.player, this.bases, 850, 100);
-        this.spawn();
 
         // Canal de diálogo (Centralizado)
         this.dialogueManager = new DialogueManager(this);
 
         // Creamos un juguete interactivo en una posición específica
         new Toy(this, this.player, 500, 400, "¡Hola! Soy un juguete y puedo hablar.");
+
+        // --- ENEMIGOS (NPCBattle) ---
+        // Añadimos varios enemigos con los que interactuar para batallar
+        this.enemies = this.add.group();
+
+        const enemy1 = new NPCBattle(this, this.player, 300, 450, 'toy', {
+            name: 'Soldado de Juguete', hp: 50, maxHp: 50, damage: 8
+        });
+        const enemy2 = new NPCBattle(this, this.player, 700, 450, 'toy', {
+            name: 'General de Madera', hp: 120, maxHp: 120, damage: 15
+        });
+        const enemy3 = new NPCBattle(this, this.player, 500, 100, 'toy', {
+            name: 'Espía Silencioso', hp: 70, maxHp: 70, damage: 12
+        });
+
+        this.enemies.add(enemy1);
+        this.enemies.add(enemy2);
+        this.enemies.add(enemy3);
 
         // ── Abrir menú con ESPACIO ─────────────────────────────────────
         this.input.keyboard.on('keydown-SPACE', () => {

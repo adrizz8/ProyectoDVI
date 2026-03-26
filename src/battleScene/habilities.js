@@ -142,6 +142,7 @@ export const HABILITIES = {
             const buffAmount = Math.floor(source.baseDamage * 0.25);
             source.damage += buffAmount;
             return {
+                buff: { stat: 'damage', amount: buffAmount },
                 message: `${source.name} sube su propio ataque en ${buffAmount} puntos!`
             };
         }
@@ -158,6 +159,7 @@ export const HABILITIES = {
             const buffAmount = Math.floor(source.baseDefense * 0.25);
             source.defense += buffAmount;
             return {
+                buff: { stat: 'defense', amount: buffAmount },
                 message: `${source.name} sube su propia defensa en ${buffAmount} puntos!`
             };
         }
@@ -174,6 +176,7 @@ export const HABILITIES = {
             const buffAmount = Math.floor(source.baseSpeed * 0.25);
             source.speed += buffAmount;
             return {
+                buff: { stat: 'speed', amount: buffAmount },
                 message: `${source.name} sube su propia velocidad en ${buffAmount} puntos!`
             };
         }

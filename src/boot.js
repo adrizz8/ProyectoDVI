@@ -29,13 +29,19 @@ import player4_battle from '../assets/sprites/player4_battle.png'
 import estrategiaUI from '../assets/images/estrategiaui.png'
 
 import formulario from '../assets/images/formulario.png'
-import bus from  '../assets/sprites/bus_anim.png'
+import bus from '../assets/sprites/bus_anim.png'
 import arrancar from '../assets/music/arrancar.wav'
 import parar from '../assets/music/parar.wav'
 import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
 
-
+import music_battle from '../assets/music/batalla_normal_music.mp3'
+import music_boss from '../assets/music/batalla_boss_music.mp3'
+import music_exterior from '../assets/music/exterior_music.mp3'
+import music_interior from '../assets/music/interior_music_acreditar.mp3'
+//Puse 2 porque no me decidía
+import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
+import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
 
 
 /**
@@ -83,11 +89,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('tilesCafeteria', tilesCafeteria);
 
     this.load.spritesheet('tileset', tileset, {
-        frameWidth: 32,
-        frameHeight: 32
+      frameWidth: 32,
+      frameHeight: 32
     });
-   // this.load.image('tileset', tileset);
-    this.load.image('formulario',formulario);
+    // this.load.image('tileset', tileset);
+    this.load.image('formulario', formulario);
 
     this.load.image('boton_luchar', boton_luchar);
     this.load.image('boton_habilidades', boton_habilidades);
@@ -100,10 +106,17 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player4_battle', player4_battle);
 
     this.load.image('estrategiaUI', estrategiaUI);
-    this.load.audio('arrancar',arrancar);
-    this.load.audio('parar',parar);
-    this.load.audio('carretera',carretera);
-    this.load.audio('carre_join',carre_join);
+    this.load.audio('arrancar', arrancar);
+    this.load.audio('parar', parar);
+    this.load.audio('carretera', carretera);
+    this.load.audio('carre_join', carre_join);
+
+    this.load.audio('music_battle', music_battle);
+    this.load.audio('music_boss', music_boss);
+    this.load.audio('music_exterior', music_exterior);
+    this.load.audio('music_interior', music_interior);
+    this.load.audio('music_mazmorra', music_mazmorra);
+    this.load.audio('music_mazmorra2', music_mazmorra2);
   }
 
   /**
@@ -116,6 +129,6 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('level3');
+    this.scene.start('level');
   }
 }

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import Player from './player';
+import Player from './personajes/player.js';
 
 /**
  * Clase que representa un objeto interactivo en el escenario.
