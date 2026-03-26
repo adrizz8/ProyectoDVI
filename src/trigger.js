@@ -1,6 +1,6 @@
 import Phaser, { Physics } from 'phaser';
 
-export default class trigger_parada extends Phaser.GameObjects.Sprite{
+export default class trigger extends Phaser.GameObjects.Sprite{
 
     /**
      * Constructor del jugador

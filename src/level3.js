@@ -3,7 +3,7 @@ import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 import Parada from './Parada.js'
 import Bus from './bus.js'
-import trigger_parada from './trigger_parada.js'
+import trigger from './trigger.js'
 
 /**
  * Nivel 3: Escena de exploración con el mapa de tiles (mapa interior/camino).
@@ -57,13 +57,13 @@ export default class Level3 extends Phaser.Scene {
 
         const trigger_pantalla = map.createFromObjects('triggers', {
             name:'pantalla_nueva' ,
-            classType: trigger_parada
+            classType: trigger
         });
         
         this.bus.config(parada2[0]);
 
         this.physics.add.overlap(trigger_pantalla,this.player,() => {
-            this.scene.start('level2');
+            this.scene.start('MapaFuera');
         });
 
         // Colisión del jugador con las capas del mapa
