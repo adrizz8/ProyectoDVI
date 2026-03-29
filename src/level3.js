@@ -30,7 +30,9 @@ export default class Level3 extends Phaser.Scene {
         this.parar=this.sound.add('parar');
         this.carretera=this.sound.add('carretera');
         this.carre_join=this.sound.add('carre_join');
-        
+
+        this.dialogM = new DialogueManager(this);
+
 
         const backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
         const groundLayer = map.createLayer('Arboles', tileset, 0, 0);
@@ -108,10 +110,14 @@ export default class Level3 extends Phaser.Scene {
     parar_soni(){
         this.parar.play();
         this.carretera.stop();
+        this.dialogM.showDialogue("prueba 1");
+        this.dialogM.showDialogue("prueba 2");
     }
     carretera_soni(){
         
         this.carre_join.play();
+
+         
     }
     parar_carretera(){
         
@@ -119,6 +125,7 @@ export default class Level3 extends Phaser.Scene {
     }
     unfreeze(){
         this.player.unfreeze();
+        this.dialogM.showDialogue("prueba 4");
     }
     drop_player(){
 
@@ -126,7 +133,7 @@ export default class Level3 extends Phaser.Scene {
         this.time.addEvent({
             delay: 400, // ms
             callback:() => {
-                    
+                    this.dialogM.showDialogue("prueba 3");
                     var posi=this.bus.getCenter();
                     this.player.setPosition(posi.x,posi.y-45);
                     this.player.setVisible(true);
