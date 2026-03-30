@@ -49,11 +49,13 @@ export default class EstrategiaScene extends Phaser.Scene {
 
         // Controles
         this.input.keyboard.on('keydown-SPACE', () => {
-            this.scene.stop();
-            if (this.scene.isPaused('MenuPrincipal')) {
-                this.scene.resume('MenuPrincipal');
-            }
+            this.closeScene();
         });
+    }
+
+    closeScene() {
+        this.scene.stop();
+        this.scene.start('MenuPrincipal');
     }
 
     crearCardPersonaje(x, y, nombre, stats) {

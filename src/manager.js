@@ -96,10 +96,15 @@ export default class GameManager {
             { id: 'pocion', name: 'Poción', quantity: 5, type: 'consumable', heal: 50, description: 'Cura 50 HP.' },
             { id: 'eter', name: 'Éter', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP.' },
             { id: 'elixir', name: 'Elixir', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP.' },
-            { id: 'pocion_fuerza', name: 'Poción de Fuerza', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15.' },
-            { id: 'pocion_defensa', name: 'Poción de Defensa', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10.' },
-            { id: 'pocion_rapidez', name: 'Poción de Rapidez', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10.' },
-            { id: 'pocion_suerte', name: 'Poción de Suerte', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5.' }
+            { id: 'pocion_fuerza', name: 'Poción de Fuerza', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (solo batalla).' },
+            { id: 'pocion_defensa', name: 'Poción de Defensa', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (solo batalla).' },
+            { id: 'pocion_rapidez', name: 'Poción de Rapidez', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (solo batalla).' },
+            { id: 'pocion_suerte', name: 'Poción de Suerte', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5 (solo batalla).' },
+            { id: 'pocion_resistencia', name: 'Poción Restauradora', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo.' },
+            { id: 'pocion_nivel', name: 'Poción de Nivel', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje.' },
+            { id: 'espada_basica', name: 'Espada de Bronce', quantity: 1, type: 'equipment', description: 'Arma cuerpo a cuerpo +5 daño.' },
+            { id: 'armadura_lejana', name: 'Coraza ligera', quantity: 1, type: 'equipment', description: 'Armadura que ofrece +5 defensa.' },
+            { id: 'llave_caverna', name: 'Llave de la Caverna', quantity: 1, type: 'key', description: 'Abre la puerta de la caverna del Norte.' }
         ];
 
     }
@@ -128,11 +133,26 @@ export default class GameManager {
     useItem(itemId) {
         const item = this.backpack.find(i => i.id === itemId);
         if (!item || item.quantity <= 0) return false;
+        if (item.type !== 'consumable') return false;
         item.quantity--;
         if (item.quantity === 0) {
             this.backpack = this.backpack.filter(i => i.id !== itemId);
         }
         return true;
+    }
+
+    getItemsByType(type) {
+        return this.backpack.filter(i => i.type === type);
+    }
+
+    canUseItemOutsideBattle(item) {
+        if (!item || item.type !== 'consumable') return false;
+        return Boolean(item.heal || item.recMp || item.statusRecovery);
+    }
+
+    canUseItemInBattle(item) {
+        if (!item || item.type !== 'consumable') return false;
+        return Boolean(item.heal || item.recMp || item.statusRecovery || item.buffAtt || item.buffDef || item.buffSpd || item.buffLck || item.levelUp);
     }
 
     // ── Helpers de stats ──────────────────────────────────────────────────────
