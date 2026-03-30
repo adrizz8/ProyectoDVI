@@ -1,6 +1,7 @@
 import PlayerBattle from './player_battle.js';
 import EnemyBattle from './enemy_battle.js';
 import GameManager from '../manager.js';
+import { HABILITIES } from './habilities.js';
 
 /**
  * BattleManager
@@ -302,45 +303,51 @@ export default class BattleManager {
         const targetIdx = this.players.indexOf(target);
 
         if (action.type === 'skill') {
+            const skill = HABILITIES[action.skillName];
+            const isSelf = skill && skill.targetType === 'self';
+            const finalTargetIndex = isSelf ? currentEnemyData.index : targetIdx;
+            const finalTargetType = isSelf ? 'enemy' : 'player';
+
             // Ejecutar habilidad del enemigo
-            const result = currentEnemy.useSkill(action.skillName, target);
+            const result = currentEnemy.useSkill(action.skillName, isSelf ? currentEnemy : target);
 
             if (!result.success) {
                 // Habilidad fallida (sin MP): 70% guardia, 30% ataque básico
                 if (Math.random() < 0.70) {
                     this._runEnemyGuard(currentEnemyData, currentEnemy);
+                    return;
                 } else {
                     this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
                 }
-                return;
+            } else {
+                // Aplicar daño si lo hay
+                let damageTaken = 0;
+                if (result.damage) {
+                    const dmgResult = (isSelf ? currentEnemy : target).receiveDamage(result.damage);
+                    damageTaken = dmgResult.damageTaken;
+                }
+
+                // Aplicar curación si la hubiera
+                if (result.heal) {
+                    const healTarget = isSelf ? currentEnemy : target;
+                    healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + result.heal);
+                }
+
+                this._callbacks.onEnemyActionResult?.({
+                    actionName: result.actionName,
+                    damage: damageTaken,
+                    targetName: (isSelf ? currentEnemy : target).name,
+                    targetIndex: finalTargetIndex,
+                    targetType: finalTargetType,
+                    targetHP: (isSelf ? currentEnemy : target).hp,
+                    targetDead: (isSelf ? currentEnemy : target).isDead,
+                    attackerIndex: currentEnemyData.index,
+                    isCrit: result.isCrit || false,
+                    nerf: result.nerf || null,
+                    buff: result.buff || null,
+                    message: result.message
+                });
             }
-
-            // Aplicar daño si lo hay
-            let damageTaken = 0;
-            if (result.damage) {
-                const dmgResult = target.receiveDamage(result.damage);
-                damageTaken = dmgResult.damageTaken;
-            }
-
-            // Aplicar curación si la hubiera (habilidades de soporte enemigas futuras)
-            if (result.heal) {
-                currentEnemy.hp = Math.min(currentEnemy.maxHp, currentEnemy.hp + result.heal);
-            }
-
-            this._callbacks.onEnemyActionResult?.({
-                actionName: result.actionName,
-                damage: damageTaken,
-                targetName: target.name,
-                targetIndex: targetIdx,
-                targetHP: target.hp,
-                targetDead: target.isDead,
-                attackerIndex: currentEnemyData.index,
-                isCrit: result.isCrit || false,
-                nerf: result.nerf || null,
-                buff: result.buff || null,
-                message: result.message
-            });
-
         } else if (action.type === 'guard') {
             this._runEnemyGuard(currentEnemyData, currentEnemy);
             return;

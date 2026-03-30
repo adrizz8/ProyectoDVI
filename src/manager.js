@@ -107,6 +107,37 @@ export default class GameManager {
             { id: 'llave_caverna', name: 'Llave de la Caverna', quantity: 1, type: 'key', description: 'Abre la puerta de la caverna del Norte.' }
         ];
 
+        // ── Posición del jugador ──────────────────────────────────────────────
+        // Se guarda al salir de una escena o entrar en combate para recuperarla al volver.
+        this.playerPosition = null;
+
+    }
+
+    // ── Helpers de posición ───────────────────────────────────────────────────
+
+    /**
+     * Guarda la posición y dirección actual del jugador.
+     * @param {number} x
+     * @param {number} y
+     * @param {string} direction 'up', 'down', 'left', 'right'
+     */
+    setPlayerPosition(x, y, direction = 'down') {
+        this.playerPosition = { x, y, direction };
+    }
+
+    /**
+     * Recupera la última posición y dirección guardada del jugador.
+     * @returns {{x: number, y: number, direction: string} | null}
+     */
+    getPlayerPosition() {
+        return this.playerPosition;
+    }
+
+    /**
+     * Limpia la posición guardada (usar tras recuperarla).
+     */
+    clearPlayerPosition() {
+        this.playerPosition = null;
     }
 
     // ── Helpers de mochila ────────────────────────────────────────────────────

@@ -32,7 +32,7 @@ export default class BattleScene extends Phaser.Scene {
                 spriteKey: data.enemySpriteKey ?? 'toy',
                 expReward: data.expReward ?? 150,
                 habilidades: ['Ataque NERF', 'Golpe Debilitador']
-            },
+            }/*,
             {
                 name: data.enemyName ?? 'Toy',
                 hp: data.enemyHP ?? 120,
@@ -62,7 +62,7 @@ export default class BattleScene extends Phaser.Scene {
                 spriteKey: data.enemySpriteKey ?? 'toy',
                 expReward: data.expReward ?? 150,
                 habilidades: []
-            }];
+            }*/];
         this._originScene = data.originScene ?? 'level';
     }
 
@@ -122,6 +122,10 @@ export default class BattleScene extends Phaser.Scene {
 
         // Iniciar combate
         this.battle_manager.startBattle();
+
+        this.music_battle = this.sound.add('music_battle');
+        this.music_battle.play();
+
     }
 
     // ── UI Building ───────────────────────────────────────────────────────────
@@ -456,8 +460,9 @@ export default class BattleScene extends Phaser.Scene {
                 this._shakeSprite(enemySpr);
             }
             if (result.nerf) {
+                const stat = this._getStatName(result.nerf.stat);
                 this._nerfAnimation(enemySpr);
-                this._showFloatingText(enemySpr, `ATK -${result.nerf.amount}`, '#cc44ff');
+                this._showFloatingText(enemySpr, `${stat} -${result.nerf.amount}`, '#cc44ff');
             }
         } else if (result.targetType === 'player' && this._playerSprites[result.targetIndex]) {
             const spr = this._playerSprites[result.targetIndex];
@@ -476,10 +481,18 @@ export default class BattleScene extends Phaser.Scene {
                     color = 0x2266ff;
                     textCol = '#2266ff';
                     text = `+${result.usedItem.recMp} MP`;
-                } else {
+                } else if (result.usedItem.buffAtt) {
                     color = 0xffcc00;
                     textCol = '#ffcc00';
-                    text = 'UP!';
+                    text = `ATK +${result.usedItem.buffAtt}`;
+                } else if (result.usedItem.buffDef) {
+                    color = 0xffcc00;
+                    textCol = '#ffcc00';
+                    text = `DEF +${result.usedItem.buffDef}`;
+                } else if (result.usedItem.buffSpd) {
+                    color = 0xffcc00;
+                    textCol = '#ffcc00';
+                    text = `VEL +${result.usedItem.buffSpd}`;
                 }
 
                 this._powerUpSprite(spr, color);
@@ -487,19 +500,25 @@ export default class BattleScene extends Phaser.Scene {
             } else if (result.heal) {
                 this._powerUpSprite(spr, 0x22dd22);
                 this._showFloatingText(spr, `+${result.heal} HP`, '#22dd22');
-            } else if (result.actionName.includes('UP')) {
+            } else if (result.buff) {
+                const stat = this._getStatName(result.buff.stat);
                 this._powerUpSprite(spr, 0xffcc00);
-                this._showFloatingText(spr, 'UP!', '#ffcc00');
+                this._showFloatingText(spr, `${stat} +${result.buff.amount}`, '#ffcc00');
+            } else if (result.nerf) {
+                const stat = this._getStatName(result.nerf.stat);
+                this._nerfAnimation(spr);
+                this._showFloatingText(spr, `${stat} -${result.nerf.amount}`, '#cc44ff');
             } else {
                 this._powerUpSprite(spr, 0xffffff);
             }
         }
 
         // Si la habilidad dio buff al jugador atacante (ej: Golpe Vigorizante)
-        if (result.buff && result.attackerIndex !== undefined && this._playerSprites[result.attackerIndex]) {
+        if (result.buff && result.attackerIndex !== undefined && this._playerSprites[result.attackerIndex] && result.targetType !== 'player') {
             const attackerSpr = this._playerSprites[result.attackerIndex];
+            const stat = this._getStatName(result.buff.stat);
             this._powerUpSprite(attackerSpr, 0xffcc00);
-            this._showFloatingText(attackerSpr, `ATK +${result.buff.amount}`, '#ffcc00');
+            this._showFloatingText(attackerSpr, `${stat} +${result.buff.amount}`, '#ffcc00');
         }
 
         this._updateEnemiesHP();
@@ -520,25 +539,34 @@ export default class BattleScene extends Phaser.Scene {
             return;
         }
 
-        // Usar targetIndex si viene (habilidades), sino buscar por nombre (ataque básico)
+        let targetType = result.targetType ?? 'player';
         let targetIdx = result.targetIndex ?? -1;
-        if (targetIdx === -1) {
+
+        if (targetIdx === -1 && targetType === 'player') {
             const players = this.battle_manager.getAllPlayers();
             targetIdx = players.findIndex(p => p.name === result.targetName);
         }
 
-        if (targetIdx !== -1 && this._playerSprites[targetIdx]) {
-            const spr = this._playerSprites[targetIdx];
+        const targetSpr = (targetType === 'player') ? this._playerSprites[targetIdx] : this._enemySprites[targetIdx];
 
+        if (targetSpr) {
             // Animación de daño
             if (result.damage > 0) {
-                this._shakeSprite(spr);
+                this._shakeSprite(targetSpr);
             }
 
-            // Animación de nerf sobre el jugador
+            // Animación de nerf
             if (result.nerf) {
-                this._nerfAnimation(spr);
-                this._showFloatingText(spr, `ATK -${result.nerf.amount}`, '#cc44ff');
+                const stat = this._getStatName(result.nerf.stat);
+                this._nerfAnimation(targetSpr);
+                this._showFloatingText(targetSpr, `${stat} -${result.nerf.amount}`, '#cc44ff');
+            }
+
+            // Animación de buff
+            if (result.buff) {
+                const stat = this._getStatName(result.buff.stat);
+                this._powerUpSprite(targetSpr, 0xffcc00);
+                this._showFloatingText(targetSpr, `${stat} +${result.buff.amount}`, '#ffcc00');
             }
         }
 
@@ -557,6 +585,7 @@ export default class BattleScene extends Phaser.Scene {
         const msg = result.winner === 'player' ? "¡VICTORIA!" : result.winner === 'enemy' ? "DERROTA..." : "Has huido.";
         this._setMessage(msg);
         this.time.delayedCall(2000, () => {
+            this.music_battle.stop();
             this.scene.start(this._originScene);
         });
     }
@@ -615,6 +644,17 @@ export default class BattleScene extends Phaser.Scene {
         if (pct > 0.5) return 0x22dd22;
         if (pct > 0.25) return 0xffcc00;
         return 0xee2222;
+    }
+
+    _getStatName(stat) {
+        if (!stat) return 'STAT';
+        const stats = {
+            'damage': 'ATK',
+            'defense': 'DEF',
+            'speed': 'VEL',
+            'luck': 'SUERTE'
+        };
+        return stats[stat] || (typeof stat === 'string' ? stat.toUpperCase() : 'STAT');
     }
 
     _shakeSprite(sprite) {
