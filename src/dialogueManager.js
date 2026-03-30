@@ -4,8 +4,9 @@ import Phaser from 'phaser';
 class Datos {
     constructor(nombre, texto) {
         this.contador = 0;
-        this.textoSplit = texto;
         this.nombre = nombre;
+        this.textoSplit = texto;
+        
     }
 
     incrementar() {
@@ -56,8 +57,21 @@ export default class DialogueManager {
 
         this.dialogueBox.add([bg, this.dialogueText]);
 
+        // Caja del nombre
+        this.nameBg = this.scene.add.graphics();
+        this.nameBg.fillStyle(0x000000, 1);
+        this.nameBg.fillRoundedRect(-240, -80, 200, 40, 10); // posición relativa al container
+        this.nameBg.lineStyle(2, 0xffffff, 1);
+        this.nameBg.strokeRoundedRect(-240, -80, 200, 40, 10);
 
-         
+        // Texto del nombre
+        this.nameText = this.scene.add.text(-140, -60, "Nombre", {
+            fontSize: '16px',
+            fill: '#ffffff',
+            align: 'center'
+        }).setOrigin(0.5, 0.5);
+
+        this.dialogueBox.add([ this.nameBg, this.nameText]);
 
         // Evento para cerrar al pulsar cualquier tecla
         this.scene.input.keyboard.on('keydown', () => {
@@ -81,6 +95,12 @@ export default class DialogueManager {
                         
                     }
                 }else {
+                    if(this.full_message[this.ini].nombre==''){
+                        this.hideName();
+                    }else{
+                        this.nameText.setText(this.full_message[this.ini].nombre);
+                        this.showName();
+                    }
                     this.next_text();
                     this.dialogueText.setText(this.current_message);
                 }
@@ -95,10 +115,9 @@ export default class DialogueManager {
     /**
      * Muestra un mensaje en pantalla de forma indefinida
      */
-    showDialogue(message) {
+    showDialogue(message , nombre) {
         
-
-        this.full_message[this.fin]=new Datos('p1',message.split(' '));
+        this.full_message[this.fin]=new Datos(nombre,message.split(' '));
         this.fin+=1;
 
         if(!this.dialogueBox.visible){
@@ -113,6 +132,14 @@ export default class DialogueManager {
                 alpha: 1,
                 duration: 200
             });
+            if(nombre!=''){
+                this.nameBg.setVisible(true);
+                this.nameText.setVisible(true);
+                this.nameText.setText(nombre);
+            }else{
+                this.nameBg.setVisible(false);
+                this.nameText.setVisible(false);
+            }
         }
 
        
@@ -122,9 +149,10 @@ export default class DialogueManager {
     /**
      * Muestra un mensaje y ejecuta un codigo cuando se quita
      */
-    showDialogue(message,onFinish) {
+    showDialogueM(message,onFinish,nombre) {
 
-        this.full_message[this.fin]=new Datos('p1',message.split(' '));
+
+        this.full_message[this.fin]=new Datos(nombre,message.split(' '));
         this.fin+=1;
 
         if(!this.dialogueBox.visible){
@@ -140,6 +168,14 @@ export default class DialogueManager {
                 alpha: 1,
                 duration: 200
             });
+            if(nombre!=''){
+                this.nameBg.setVisible(true);
+                this.nameText.setVisible(true);
+            }
+            else{
+                this.nameBg.setVisible(false);
+                this.nameText.setVisible(false);
+            }
         }
         this.onFinish = onFinish;
         
@@ -154,6 +190,36 @@ export default class DialogueManager {
             alpha: 0,
             duration: 200,
             onComplete: () => this.dialogueBox.setVisible(false)
+        });
+    }
+
+    hideName(){
+        this.scene.tweens.add({
+            targets: this.nameBg,
+            alpha: 0,
+            duration: 200,
+            onComplete: () => this.nameBg.setVisible(false)
+        });
+        this.scene.tweens.add({
+            targets: this.nameText,
+            alpha: 0,
+            duration: 200,
+            onComplete: () => this.nameText.setVisible(false)
+        });
+    }
+
+    showName(){
+        this.scene.tweens.add({
+            targets: this.nameBg,
+            alpha: 1,
+            duration: 200,
+            onComplete: () => this.nameBg.setVisible(true)
+        });
+        this.scene.tweens.add({
+            targets: this.nameText,
+            alpha: 1,
+            duration: 200,
+            onComplete: () => this.nameText.setVisible(true)
         });
     }
 

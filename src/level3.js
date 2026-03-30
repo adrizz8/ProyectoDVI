@@ -110,8 +110,8 @@ export default class Level3 extends Phaser.Scene {
     parar_soni(){
         this.parar.play();
         this.carretera.stop();
-        this.dialogM.showDialogue("prueba 1");
-        this.dialogM.showDialogue("prueba 2");
+        this.dialogM.showDialogue("prueba 1","");
+        this.dialogM.showDialogue("prueba 2",'Pepe');
     }
     carretera_soni(){
         
@@ -125,7 +125,7 @@ export default class Level3 extends Phaser.Scene {
     }
     unfreeze(){
         this.player.unfreeze();
-        this.dialogM.showDialogue("prueba 4");
+        this.dialogM.showDialogue("prueba 4",'');
     }
     drop_player(){
 
@@ -133,7 +133,7 @@ export default class Level3 extends Phaser.Scene {
         this.time.addEvent({
             delay: 400, // ms
             callback:() => {
-                    this.dialogM.showDialogue("prueba 3");
+                    this.dialogM.showDialogue("prueba 3","Maria");
                     var posi=this.bus.getCenter();
                     this.player.setPosition(posi.x,posi.y-45);
                     this.player.setVisible(true);
