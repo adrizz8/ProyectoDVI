@@ -1,5 +1,6 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
+import GameManager from './manager.js';
 
 /**
  * Escena del mapa exterior (mapaFuera).
@@ -31,22 +32,47 @@ export default class MapaFuera extends Phaser.Scene {
         decoracionLayer.setCollisionByProperty({ collides: true });
 
         // --- Jugador ---
-        // Si venimos desde level3 (transición), el jugador aparece arriba en el centro-derecha del mapa
-        // El camino de mapaFuera baja desde la parte superior
-        const spawnX = (data && data.spawnX !== undefined) ? data.spawnX : map.widthInPixels / 2;
-        const spawnY = (data && data.spawnY !== undefined) ? data.spawnY : 80;
+        const savedPos = GameManager.getInstance().getPlayerPosition();
+        
+        let spawnX, spawnY;
+        if (savedPos) {
+            spawnX = savedPos.x;
+            spawnY = savedPos.y;
+        } else {
+            // Si venimos de la transición (level3) se usa data.spawnX/Y
+            spawnX = (data && data.spawnX !== undefined) ? data.spawnX : map.widthInPixels / 2;
+            spawnY = (data && data.spawnY !== undefined) ? data.spawnY : 80;
+        }
+
         this.player = new Player(this, spawnX, spawnY);
+
+        // Restaurar dirección si existía
+        if (savedPos && savedPos.direction) {
+            this.player.setDirection(savedPos.direction);
+        }
+
+        // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
+        if (savedPos) GameManager.getInstance().clearPlayerPosition();
 
         this.physics.add.collider(this.player, facultadLayer);
         this.physics.add.collider(this.player, decoracionLayer);
+
+        this.dialogueManager = new DialogueManager(this);
 
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+    }
+
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
+        }
     }
 
     update(t, dt) {

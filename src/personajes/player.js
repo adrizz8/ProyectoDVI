@@ -22,17 +22,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
-// Prueba con valores pequeños, como el 50% del ancho y el 30% del alto del sprite
-    this.body.setSize(this.width, this.height);
+        this.body.setSize(this.width, this.height);
 
-// 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
-// Tienes que mover la caja manualmente para que quede abajo
-    this.body.setOffset(this.width * 0.25, this.height * 0.7);
-        // Queremos que el jugador no se salga de los límites del mundo
+        // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
+        this.body.setOffset(this.width * 0.25, this.height * 0.7);
         this.body.setCollideWorldBounds();
         this.speed = 300;
 
-        this.cursors = this.scene.input.keyboard.createCursorKeys();
+        this.cursors = this.scene.input.keyboard.addKeys({ up: Phaser.Input.Keyboard.KeyCodes.W, down: Phaser.Input.Keyboard.KeyCodes.S, left: Phaser.Input.Keyboard.KeyCodes.A, right: Phaser.Input.Keyboard.KeyCodes.D });
         this.interactKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
         // Definición de animaciones direccionales
@@ -68,6 +65,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.play('idle-down');
     }
 
+    /**
+     * Establece la dirección en la que mira el jugador
+     * @param {string} dir 'up', 'down', 'left', 'right'
+     */
+    setDirection(dir) {
+        this.lastDirection = dir;
+        this.play(`idle-${dir}`);
+    }
+
 
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
@@ -78,7 +84,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
 
-         if (this.frozen) {
+        if (this.frozen) {
             this.body.setVelocity(0, 0);
             this.anims.stop();
             return;
@@ -123,18 +129,19 @@ export default class Player extends Phaser.GameObjects.Sprite {
         const distance = Phaser.Math.Distance.Between(this.x, this.y, object.x, object.y);
         const threshold = 80;
         if (distance < threshold) {
-           if (this.iamlookingat(object)) {
+            if (this.iamlookingat(object)) {
                 object.setScale(1.1);
 
                 // Si pulsa la tecla de interacción (E)
-                if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                object.interact();
+                // Solo si el jugador NO está congelado (para no re-interactuar al cerrar diálogos)
+                if (Phaser.Input.Keyboard.JustDown(this.interactKey) && !this.frozen) {
+                    object.interact();
                 }
             } else {
                 object.setScale(1);
             }
-            } else {
-            object.setScale(1); 
+        } else {
+            object.setScale(1);
         }
     }
 
@@ -154,10 +161,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
         return false;
     }
 
-    freeze(){
-        this.frozen=true;
+    freeze() {
+        this.frozen = true;
     }
-    unfreeze(){
-        this.frozen=false;
+    unfreeze() {
+        this.frozen = false;
     }
 }  

@@ -8,6 +8,7 @@ import XorGate from './xor_gate.js';
 import OrGate from './or_gate.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
+import GameManager from './manager.js';
 
 export default class Level2 extends Phaser.Scene {
     constructor() {
@@ -19,15 +20,21 @@ export default class Level2 extends Phaser.Scene {
     }
 
     create() {
-        /*var map = this.make.tilemap({ key: 'mainscene', tileHeight: 32, tileWidth: 32 });
-        var tileset = map.addTilesetImage('tilesetexterior', 'tileset');
-        var backgroundLayer = map.createLayer('Suelo', tileset, 0, 0);
-        var groundLayer = map.createLayer('Arboles', tileset, 0, 0);
-        var objectsLayer = map.createLayer('Resto', tileset, 0, 0);
-        groundLayer.setCollisionByProperty({ collides: true });
-        backgroundLayer.setCollisionByProperty({ collides: true });
-        objectsLayer.setCollisionByProperty({ collides: true });*/
-        this.player = new Player(this, 100, 400);
+        // Recuperar posición guardada o usar la de defecto
+        const gm = GameManager.getInstance();
+        const savedPos = gm.getPlayerPosition();
+        const startX = savedPos ? savedPos.x : 100;
+        const startY = savedPos ? savedPos.y : 400;
+        
+        this.player = new Player(this, startX, startY);
+
+        // Restaurar dirección si existía
+        if (savedPos && savedPos.direction) {
+            this.player.setDirection(savedPos.direction);
+        }
+
+        // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
+        if (savedPos) gm.clearPlayerPosition();
         this.player.setDepth(1);
         this.dialogueManager = new DialogueManager(this);
 
@@ -122,6 +129,7 @@ export default class Level2 extends Phaser.Scene {
 
         // Listener para abrir el menú principal con la tecla ESPACIO
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
@@ -135,5 +143,11 @@ export default class Level2 extends Phaser.Scene {
         this.circuitComponents.forEach(component => {
             if (component.updateLogic) component.updateLogic();
         });
+    }
+
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
+        }
     }
 }

@@ -1,5 +1,6 @@
 import NPC from './npc.js';
 import Player from './player.js';
+import GameManager from '../manager.js';
 
 /**
  * Clase que representa un NPC con el que se puede batallar.
@@ -13,38 +14,38 @@ export default class NPCBattle extends NPC {
      * @param {string} texture Clave de la textura (podría ser 'toy' o el que asignes)
      * @param {object} stats Estadísticas del enemigo para el combate
      */
-    constructor(scene, player, x, y, texture, stats = {}) {
-        super(scene, x, y, texture);
-        
-        this.player = player;
+    constructor(scene, player, x, y, texture, stats = {}, message = null, onFinish = null, itemId = null) {
+        const name = stats.name ?? 'Enemigo';
+        super(scene, player, x, y, texture, message, onFinish, itemId, name);
+
         this.stats = {
-            name: stats.name ?? 'Enemigo',
+            name: name,
             hp: stats.hp ?? 100,
             maxHp: stats.maxHp ?? 100,
             damage: stats.damage ?? 10,
             spriteKey: stats.spriteKey ?? texture
         };
-
-        // Ponemos el NPC como interactuable
-        this.scene.physics.add.collider(this, player);
     }
-
     /**
-     * Actualización para chequear si el jugador puede interactuar con el NPC
-     */
-    preUpdate(t, dt) {
-        super.preUpdate(t, dt);
-        this.player.isinteractuable(this);
-    }
-
-    /**
-     * Método que se llama cuando el jugador pulsa la tecla de interacción 'E'
+     * Reacción al interactuar: muestra diálogo si existe y luego inicia combate
      */
     interact() {
+        if (this.message) {
+            this.say(this.message, () => this.startBattle());
+        } else {
+            this.startBattle();
+        }
+    }
+
+    /**
+     * Inicia la escena de combate
+     */
+    startBattle() {
         console.log(`Iniciando combate contra ${this.stats.name}`);
         
-        // Iniciamos la escena de combate pasando los parámetros necesarios
-        // La escena 'battle_scene' se encarga de gestionar el combate
+        // Guardamos la posición y dirección antes de ir a batalla
+        GameManager.getInstance().setPlayerPosition(this.player.x, this.player.y, this.player.lastDirection);
+
         this.scene.scene.start('battle_scene', {
             enemyName: this.stats.name,
             enemyHP: this.stats.hp,

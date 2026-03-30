@@ -1,18 +1,17 @@
 import Phaser from 'phaser';
 
-
 class Datos {
     constructor(nombre, texto) {
         this.contador = 0;
         this.nombre = nombre;
         this.textoSplit = texto;
-        
     }
 
     incrementar() {
         this.contador++;
     }
 }
+
 /**
  * Clase que gestiona el sistema de diálogos de forma centralizada.
  */
@@ -29,221 +28,194 @@ export default class DialogueManager {
      * Crea los elementos visuales del cuadro de diálogo
      */
     setupDialogue() {
+        this.full_message = [];
+        this.ini = 0;
+        this.fin = 0;
+        this.current_message = '';
+        this.onFinish = null;
 
-        this.full_message=[];
-        this.ini=0;
-        this.fin=0;
-        this.current_message='';
+        // Posicionamos en el centro horizontal (1216 / 2 = 608) y cerca de la parte inferior (640 - 90 = 550)
+        this.dialogueBox = this.scene.add.container(608, 550).setDepth(2000).setVisible(false);
 
-        this.onFinish=null;
-
-        this.dialogueBox = this.scene.add.container(400, 440).setDepth(100).setVisible(false);
-
-        // Fondo del diálogo con bordes redondeados
+        // Fondo del diálogo
         const bg = this.scene.add.graphics();
+        const bgWidth = 900;
+        const bgHeight = 100;
         bg.fillStyle(0x000000, 0.85);
-        bg.fillRoundedRect(-250, -35, 900, 100, 15);
+        bg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
         bg.lineStyle(2, 0xffffff, 1);
-        bg.strokeRoundedRect(-250, -35, 900, 100, 15);
+        bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
 
         this.dialogueText = this.scene.add.text(0, 0, "", {
-            fontSize: '18px',
+            fontSize: '22px',
             fill: '#ffffff',
             align: 'center',
-            wordWrap: { width: 875 }
-        }).setOrigin(0.26,0.26);
-
-        
+            wordWrap: { width: bgWidth - 60 }
+        }).setOrigin(0.5, 0.5);
 
         this.dialogueBox.add([bg, this.dialogueText]);
 
         // Caja del nombre
-        this.nameBg = this.scene.add.graphics();
+        this.nameBg = this.scene.add.graphics().setVisible(false);
         this.nameBg.fillStyle(0x000000, 1);
-        this.nameBg.fillRoundedRect(-240, -80, 200, 40, 10); // posición relativa al container
+        this.nameBg.fillRoundedRect(-(bgWidth / 2) + 10, -bgHeight / 2 - 45, 200, 40, 10);
         this.nameBg.lineStyle(2, 0xffffff, 1);
-        this.nameBg.strokeRoundedRect(-240, -80, 200, 40, 10);
+        this.nameBg.strokeRoundedRect(-(bgWidth / 2) + 10, -bgHeight / 2 - 45, 200, 40, 10);
 
         // Texto del nombre
-        this.nameText = this.scene.add.text(-140, -60, "Nombre", {
-            fontSize: '16px',
+        this.nameText = this.scene.add.text(-(bgWidth / 2) + 110, -bgHeight / 2 - 25, "", {
+            fontSize: '18px',
             fill: '#ffffff',
             align: 'center'
-        }).setOrigin(0.5, 0.5);
+        }).setOrigin(0.5, 0.5).setVisible(false);
 
-        this.dialogueBox.add([ this.nameBg, this.nameText]);
+        this.dialogueBox.add([this.nameBg, this.nameText]);
 
-        // Evento para cerrar al pulsar cualquier tecla
-        this.scene.input.keyboard.on('keydown', () => {
+        // Evento para avanzar diálogo
+        this.scene.input.keyboard.on('keydown', (event) => {
+            // Solo procesamos si el cuadro está visible y no está en medio de una animación de cierre
+            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8) return;
 
             this.next_text();
                 
-            if(this.current_message==''){
+            if (this.current_message === '') {
+                this.ini += 1;
+                if (this.ini === this.fin) {
+                    this.ini = 0;
+                    this.fin = 0;
+                    this.hideDialogue();
 
-                this.ini+=1;
-                if(this.ini==this.fin){
-
-                    this.ini=0;
-                    this.fin=0;
-                    if (this.dialogueBox.visible) {
-                        this.hideDialogue();
-
-                        if (this.onFinish!=null) {
-                            this.onFinish();
-                            this.onFinish=null;     
-                        }
-                        
+                    if (this.onFinish !== null) {
+                        const callback = this.onFinish;
+                        this.onFinish = null; 
+                        callback();
                     }
-                }else {
-                    if(this.full_message[this.ini].nombre==''){
+                } else {
+                    const nextMsg = this.full_message[this.ini];
+                    if (!nextMsg || nextMsg.nombre === '') {
                         this.hideName();
-                    }else{
-                        this.nameText.setText(this.full_message[this.ini].nombre);
+                    } else {
+                        this.nameText.setText(nextMsg.nombre);
                         this.showName();
                     }
                     this.next_text();
                     this.dialogueText.setText(this.current_message);
                 }
-            
-            }else{
+            } else {
                 this.dialogueText.setText(this.current_message);
             }
-            
         });
     }
 
     /**
-     * Muestra un mensaje en pantalla de forma indefinida
+     * Muestra un mensaje en pantalla (Formato unificado)
      */
-    showDialogue(message , nombre) {
-        
-        this.full_message[this.fin]=new Datos(nombre,message.split(' '));
-        this.fin+=1;
+    showDialogue(message, nombre = '', onFinish = null) {
+        // Manejamos si el segundo parámetro es el callback (estilo antiguo)
+        if (typeof nombre === 'function') {
+            onFinish = nombre;
+            nombre = '';
+        }
 
-        if(!this.dialogueBox.visible){
+        // Aseguramos que nombre sea un string si es null/undefined
+        if (!nombre) nombre = '';
+
+        this.full_message[this.fin] = new Datos(nombre, message.split(' '));
+        this.fin += 1;
+
+        if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.1) {
+            if (this.scene.player) {
+                this.scene.player.freeze();
+            }
+
+            this.onFinish = onFinish;
+            this.ini = 0;
             this.next_text();
             this.dialogueText.setText(this.current_message);
             this.dialogueBox.setVisible(true);
             this.dialogueBox.setAlpha(0);
 
-            // Animación de aparición (fade in)
+            this.scene.tweens.killTweensOf(this.dialogueBox);
             this.scene.tweens.add({
                 targets: this.dialogueBox,
                 alpha: 1,
                 duration: 200
             });
-            if(nombre!=''){
-                this.nameBg.setVisible(true);
-                this.nameText.setVisible(true);
+
+            if (nombre !== '') {
                 this.nameText.setText(nombre);
-            }else{
-                this.nameBg.setVisible(false);
-                this.nameText.setVisible(false);
+                this.showName();
+            } else {
+                this.nameText.setText('');
+                this.hideName();
             }
         }
-
-       
-
-       
-    }
-    /**
-     * Muestra un mensaje y ejecuta un codigo cuando se quita
-     */
-    showDialogueM(message,onFinish,nombre) {
-
-
-        this.full_message[this.fin]=new Datos(nombre,message.split(' '));
-        this.fin+=1;
-
-        if(!this.dialogueBox.visible){
-            this.next_text();
-            this.dialogueText.setText(this.current_message);
-            this.dialogueBox.setVisible(true);
-            this.dialogueBox.setAlpha(0);
-           
-
-            // Animación de aparición (fade in)
-            this.scene.tweens.add({
-                targets: this.dialogueBox,
-                alpha: 1,
-                duration: 200
-            });
-            if(nombre!=''){
-                this.nameBg.setVisible(true);
-                this.nameText.setVisible(true);
-            }
-            else{
-                this.nameBg.setVisible(false);
-                this.nameText.setVisible(false);
-            }
-        }
-        this.onFinish = onFinish;
-        
     }
 
     /**
-     * Oculta el cuadro de diálogo con una animación
+     * Método alternativo para compatibilidad (usado en prematricula_scene)
      */
+    showDialogueM(message, onFinish, nombre = '') {
+        this.showDialogue(message, nombre, onFinish);
+    }
+
     hideDialogue() {
+        this.scene.tweens.killTweensOf(this.dialogueBox);
         this.scene.tweens.add({
             targets: this.dialogueBox,
             alpha: 0,
             duration: 200,
-            onComplete: () => this.dialogueBox.setVisible(false)
+            onComplete: () => {
+                this.dialogueBox.setVisible(false);
+                if (this.scene.player) {
+                    this.scene.player.unfreeze();
+                }
+            }
         });
     }
 
-    hideName(){
+    hideName() {
+        this.scene.tweens.killTweensOf([this.nameBg, this.nameText]);
         this.scene.tweens.add({
-            targets: this.nameBg,
+            targets: [this.nameBg, this.nameText],
             alpha: 0,
-            duration: 200,
-            onComplete: () => this.nameBg.setVisible(false)
-        });
-        this.scene.tweens.add({
-            targets: this.nameText,
-            alpha: 0,
-            duration: 200,
-            onComplete: () => this.nameText.setVisible(false)
+            duration: 150,
+            onComplete: () => {
+                this.nameBg.setVisible(false);
+                this.nameText.setVisible(false);
+            }
         });
     }
 
-    showName(){
+    showName() {
+        this.scene.tweens.killTweensOf([this.nameBg, this.nameText]);
+        this.nameBg.setVisible(true);
+        this.nameText.setVisible(true);
         this.scene.tweens.add({
-            targets: this.nameBg,
+            targets: [this.nameBg, this.nameText],
             alpha: 1,
-            duration: 200,
-            onComplete: () => this.nameBg.setVisible(true)
-        });
-        this.scene.tweens.add({
-            targets: this.nameText,
-            alpha: 1,
-            duration: 200,
-            onComplete: () => this.nameText.setVisible(true)
+            duration: 150
         });
     }
 
-    next_text(){
-        var cont=0;
-        var queda_text=true;
-        this.current_message='';
-       
-        while(cont<200&&queda_text){
-            if(this.full_message[this.ini].contador>=this.full_message[this.ini].textoSplit.length){
-                queda_text=false;
-            }else{
-                
-                cont+= this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador].length+1;
-               
-                if(cont<200){
-                    this.current_message+=this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador]+' '; 
-                    this.full_message[this.ini].contador+=1;
-                    
-                } 
-            }  
+    next_text() {
+        var cont = 0;
+        var queda_text = true;
+        this.current_message = '';
+
+        if (!this.full_message[this.ini]) return;
+
+        while (cont < 200 && queda_text) {
+            if (this.full_message[this.ini].contador >= this.full_message[this.ini].textoSplit.length) {
+                queda_text = false;
+            } else {
+                cont += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador].length + 1;
+
+                if (cont < 200) {
+                    this.current_message += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador] + ' ';
+                    this.full_message[this.ini].contador += 1;
+                }
+            }
         }
     }
-        
 }
-
-

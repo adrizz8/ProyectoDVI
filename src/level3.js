@@ -1,6 +1,7 @@
 import Player from './personajes/player.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
+import GameManager from './manager.js';
 import Parada from './Parada.js'
 import Bus from './bus.js'
 import trigger from './trigger.js'
@@ -43,8 +44,27 @@ export default class Level3 extends Phaser.Scene {
         objectsLayer.setCollisionByProperty({ collides: true });
 
         // --- Jugador ---
-        this.player = new Player(this, 100, 400);
-         this.player.setVisible(false);
+        const gm = GameManager.getInstance();
+        const savedPos = gm.getPlayerPosition();
+        const startX = savedPos ? savedPos.x : 100;
+        const startY = savedPos ? savedPos.y : 400;
+        
+        this.player = new Player(this, startX, startY);
+
+        // Restaurar dirección si existía
+        if (savedPos && savedPos.direction) {
+            this.player.setDirection(savedPos.direction);
+        }
+
+        // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
+        if (savedPos) gm.clearPlayerPosition();
+        
+        // Si hay posición guardada, es que venimos de una batalla, lo hacemos visible
+        if (savedPos) {
+            this.player.setVisible(true);
+        } else {
+            this.player.setVisible(false);
+        }
         this.bus= new Bus(this,1800, 560,'bus');
 
         //this.parada= map.createFromObjects('Parada',{gid:558,classType:Parada})
@@ -100,6 +120,7 @@ export default class Level3 extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
@@ -164,6 +185,9 @@ export default class Level3 extends Phaser.Scene {
             this.player.update(t, dt);
         }
     }
-
-   
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogM) {
+            this.dialogM.showDialogue(message, nombre, onFinish);
+        }
+    }
 }
