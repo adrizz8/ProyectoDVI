@@ -37,7 +37,6 @@ import arrancar from '../assets/music/arrancar.wav'
 import parar from '../assets/music/parar.wav'
 import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
-import placeholder_pj from '../assets/images/placeholder_personajes.png'
 import MapaFueraAux from '../assets/images/mapa_aux.json'
 
 import music_battle from '../assets/music/batalla_normal_music.mp3'
@@ -128,7 +127,6 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
 
-    this.load.image('placholder_pj',placeholder_pj);
     this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
 
   }
