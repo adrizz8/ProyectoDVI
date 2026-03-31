@@ -1,84 +1,65 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
-import GameManager from './manager.js';
 
 /**
- * Escena del mapa exterior (mapaFuera).
- * El jugador llega aquí al salir del camino en el mapaDePrueba.
+ * Escena del mapa exterior.
  * @extends Phaser.Scene
  */
 export default class MapaFuera extends Phaser.Scene {
     constructor() {
-        super({ key: 'MapaFuera' });
+        super({ key: 'outdoorMap' });
     }
 
-    preload() {
-        // Los assets ya se han cargado en Boot
-    }
-
-    /**
-     * @param {{ spawnX?: number, spawnY?: number }} data  Datos opcionales de spawn
-     */
     create(data) {
-        const map = this.make.tilemap({ key: 'outdoorMap', tileWidth: 32, tileHeight: 32 });
-        const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
+        // Carga del mapa y tilesets
+        const map = this.make.tilemap({ key: 'outdoorMap' });
+        const tileset1 = map.addTilesetImage('tilesetexterior', 'tileset');
+        // El JSON de mapaFuera tiene dos entradas para el mismo tileset con diferentes GIDs
+        const tilesets = [tileset1];
 
-        const fondoLayer = map.createLayer('fondo', tileset, 0, 0);
-        const facultadLayer = map.createLayer('facultad', tileset, 0, 0);
-        const decoracionLayer = map.createLayer('decoracion', tileset, 0, 0);
-        // 'bebidas' omitida: contiene GIDs de tilesets externos no cargados en el proyecto
+        // Capas del mapa
+        const fondo = map.createLayer('fondo', tilesets, 0, 0);
+        const facultad = map.createLayer('facultad', tilesets, 0, 0);
+        const decoracion = map.createLayer('decoracion', tilesets, 0, 0);
+        const bebidas = map.createLayer('bebidas', tilesets, 0, 0);
 
-        facultadLayer.setCollisionByProperty({ collides: true });
-        decoracionLayer.setCollisionByProperty({ collides: true });
+        const colisiones = map.createLayer('colisiones', tilesets, 0, 0);
 
-        // --- Jugador ---
-        const savedPos = GameManager.getInstance().getPlayerPosition();
-        
-        let spawnX, spawnY;
-        if (savedPos) {
-            spawnX = savedPos.x;
-            spawnY = savedPos.y;
-        } else {
-            // Si venimos de la transición (level3) se usa data.spawnX/Y
-            spawnX = (data && data.spawnX !== undefined) ? data.spawnX : map.widthInPixels / 2;
-            spawnY = (data && data.spawnY !== undefined) ? data.spawnY : 80;
-        }
+        // Colisiones
+        colisiones.setCollisionByExclusion([-1]);
+        colisiones.setVisible(false);
+
+        // Posición de spawn (por defecto abajo a la derecha si no viene en data)
+        const spawnX = data.spawnX || 950;
+        const spawnY = data.spawnY || 950;
 
         this.player = new Player(this, spawnX, spawnY);
 
-        // Restaurar dirección si existía
-        if (savedPos && savedPos.direction) {
-            this.player.setDirection(savedPos.direction);
-        }
+        // Colisiones del jugador con la capa dedicada
+        this.physics.add.collider(this.player, colisiones);
 
-        // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
-        if (savedPos) GameManager.getInstance().clearPlayerPosition();
+        // Zonas de transición a Cafetería
+        // La facultad está en la parte superior. Puerta aproximada en X=350, Y=220
+        const doorZone = this.add.zone(350, 220, 100, 60);
 
-        this.physics.add.collider(this.player, facultadLayer);
-        this.physics.add.collider(this.player, decoracionLayer);
+        this.physics.world.enable(doorZone, Phaser.Physics.Arcade.STATIC_BODY);
+        this.physics.add.overlap(this.player, doorZone, () => {
+            // Spawn en la cafetería (cerca de la puerta)
+            this.scene.start('cafeteria', { spawnX: 300, spawnY: 200 });
+        });
 
-        this.dialogueManager = new DialogueManager(this);
-
+        // Cámara
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
+        // Tecla de menú (Espacio)
         this.input.keyboard.on('keydown-SPACE', () => {
-            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
     }
 
-    showDialogue(message, nombre = '', onFinish = null) {
-        if (this.dialogueManager) {
-            this.dialogueManager.showDialogue(message, nombre, onFinish);
-        }
-    }
-
     update(t, dt) {
-        const sec = this.registry.get('horasJuego') || 0;
-        this.registry.set('horasJuego', sec + dt / 1000);
-
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }

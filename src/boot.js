@@ -13,8 +13,10 @@ import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
 import outdoorMap from '../assets/images/mapaFuera.json'
+import cafeteria from '../assets/images/cafeteria.json'
 import tileset from '../assets/images/tilesetexterior.png'
 import tilesInterior from "../assets/images/tilesinterior.png"
+import tilesInterior2 from "../assets/images/tilesInterior2.png"
 import tilesCafeteria from "../assets/images/tilesCafeteria.png"
 import boton_luchar from '../assets/images/boton_luchar.png'
 import boton_habilidades from '../assets/images/boton_habilidades.png'
@@ -86,14 +88,15 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('bus', bus, { frameWidth: 384, frameHeight: 384 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
+    this.load.tilemapTiledJSON('cafeteria', cafeteria);
     this.load.image('tilesinterior', tilesInterior);
+    this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
 
     this.load.spritesheet('tileset', tileset, {
       frameWidth: 32,
       frameHeight: 32
     });
-    // this.load.image('tileset', tileset);
     this.load.image('formulario', formulario);
 
     this.load.image('boton_luchar', boton_luchar);
@@ -131,6 +134,6 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('level');
+    this.scene.start('level3');
   }
 }

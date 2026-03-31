@@ -27,10 +27,10 @@ export default class Level3 extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'mainscene', tileWidth: 32, tileHeight: 32 });
         const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
-        this.arrancar=this.sound.add('arrancar');
-        this.parar=this.sound.add('parar');
-        this.carretera=this.sound.add('carretera');
-        this.carre_join=this.sound.add('carre_join');
+        this.arrancar = this.sound.add('arrancar');
+        this.parar = this.sound.add('parar');
+        this.carretera = this.sound.add('carretera');
+        this.carre_join = this.sound.add('carre_join');
 
         this.dialogM = new DialogueManager(this);
 
@@ -48,7 +48,7 @@ export default class Level3 extends Phaser.Scene {
         const savedPos = gm.getPlayerPosition();
         const startX = savedPos ? savedPos.x : 100;
         const startY = savedPos ? savedPos.y : 400;
-        
+
         this.player = new Player(this, startX, startY);
 
         // Restaurar dirección si existía
@@ -58,35 +58,38 @@ export default class Level3 extends Phaser.Scene {
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
         if (savedPos) gm.clearPlayerPosition();
-        
+
         // Si hay posición guardada, es que venimos de una batalla, lo hacemos visible
         if (savedPos) {
             this.player.setVisible(true);
         } else {
             this.player.setVisible(false);
         }
-        this.bus= new Bus(this,1800, 560,'bus');
+        this.bus = new Bus(this, 1800, 560, 'bus');
 
         //this.parada= map.createFromObjects('Parada',{gid:558,classType:Parada})
         //this.parada = new Parada(this, 500, 590);
 
         const parada2 = map.createFromObjects('triggers', {
             gid: 558,    // ← ID del tile en el tileset
-            classType: Parada,             
+            classType: Parada,
             key: 'tileset',        // ← key de la imagen cargada en Phaser
             frame: 557              // ← frame dentro del tileset (gid - firstgid)
         });
 
         const trigger_pantalla = map.createFromObjects('triggers', {
-            name:'pantalla_nueva' ,
+            name: 'pantalla_nueva',
             classType: trigger
         });
-        
+
         this.bus.config(parada2[0]);
 
-        this.physics.add.overlap(trigger_pantalla,this.player,() => {
-            this.scene.start('MapaFuera');
+        this.physics.add.overlap(trigger_pantalla, this.player, () => {
+            // Transición a MapaFuera (Outdoor Map) al centro-arriba
+            this.scene.start('outdoorMap', { spawnX: 950, spawnY: 950 });
         });
+
+
 
         // Colisión del jugador con las capas del mapa
         this.physics.add.collider(this.player, groundLayer);
@@ -128,52 +131,52 @@ export default class Level3 extends Phaser.Scene {
         this.carretera.play();
     }
 
-    parar_soni(){
+    parar_soni() {
         this.parar.play();
         this.carretera.stop();
-        this.dialogM.showDialogue("prueba 1","");
-        this.dialogM.showDialogue("prueba 2",'Pepe');
+        this.dialogM.showDialogue("prueba 1", "");
+        this.dialogM.showDialogue("prueba 2", 'Pepe');
     }
-    carretera_soni(){
-        
+    carretera_soni() {
+
         this.carre_join.play();
 
-         
+
     }
-    parar_carretera(){
-        
+    parar_carretera() {
+
         this.carre_join.stop();
     }
-    unfreeze(){
+    unfreeze() {
         this.player.unfreeze();
-        this.dialogM.showDialogue("prueba 4",'');
+        this.dialogM.showDialogue("prueba 4", '');
     }
-    drop_player(){
+    drop_player() {
 
-        
+
         this.time.addEvent({
             delay: 400, // ms
-            callback:() => {
-                    this.dialogM.showDialogue("prueba 3","Maria");
-                    var posi=this.bus.getCenter();
-                    this.player.setPosition(posi.x,posi.y-45);
-                    this.player.setVisible(true);
-                    this.player.freeze();
+            callback: () => {
+                this.dialogM.showDialogue("prueba 3", "Maria");
+                var posi = this.bus.getCenter();
+                this.player.setPosition(posi.x, posi.y - 45);
+                this.player.setVisible(true);
+                this.player.freeze();
             }
-        });  
+        });
         this.time.addEvent({
             delay: 2000, // ms
-            callback:() => {
-                this.bus.state='arrancar';
+            callback: () => {
+                this.bus.state = 'arrancar';
                 this.arrancar.play();
                 this.parar.stop();
             }
         });
-        
+
 
     }
 
-    
+
 
     update(t, dt) {
         // actualizamos el contador global
