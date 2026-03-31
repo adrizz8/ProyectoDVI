@@ -12,6 +12,7 @@ import MochilaScene from './menuScenes/mochilaScene.js';
 import BattleScene from './battleScene/battle_scene.js';
 import MapaFuera from './MapaFuera.js'
 import Prematricula from './prematricula_scene.js'
+import MapaFueraAux from './MapaFueraAux.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -34,7 +35,7 @@ let config = {
     },
     pixelArt: true,
     
-    scene: [Boot, TitleScene, Prematricula,IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera],
+    scene: [Boot, TitleScene, Prematricula,IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera,MapaFueraAux],
 
     physics: {
         default: 'arcade',

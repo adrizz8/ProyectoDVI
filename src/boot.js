@@ -35,6 +35,8 @@ import arrancar from '../assets/music/arrancar.wav'
 import parar from '../assets/music/parar.wav'
 import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
+import placeholder_pj from '../assets/images/placeholder_personajes.png'
+import MapaFueraAux from '../assets/images/mapa_aux.json'
 
 import music_battle from '../assets/music/batalla_normal_music.mp3'
 import music_boss from '../assets/music/batalla_boss_music.mp3'
@@ -43,6 +45,7 @@ import music_interior from '../assets/music/interior_music_acreditar.mp3'
 //Puse 2 porque no me decidía
 import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
+import estudianteprimero from '../assets/sprites/estudianteprimero.png'
 
 
 /**
@@ -70,6 +73,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', base);
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('estudianteprimero',estudianteprimero,{frameWidth: 64, frameHeight: 64})
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
@@ -108,6 +112,7 @@ export default class Boot extends Phaser.Scene {
 
     this.load.image('menuPrincipal', menuPrincipal);
     this.load.image('estrategiaUI', estrategiaUI);
+
     this.load.audio('arrancar', arrancar);
     this.load.audio('parar', parar);
     this.load.audio('carretera', carretera);
@@ -119,6 +124,10 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_interior', music_interior);
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
+
+    this.load.image('placholder_pj',placeholder_pj);
+    this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
+
   }
 
   /**
@@ -131,6 +140,8 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('level');
+
+    this.scene.start('prematricula');
+
   }
 }
