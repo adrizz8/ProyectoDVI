@@ -28,10 +28,10 @@ export default class Level3 extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'mainscene', tileWidth: 32, tileHeight: 32 });
         const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
-        this.arrancar=this.sound.add('arrancar');
-        this.parar=this.sound.add('parar');
-        this.carretera=this.sound.add('carretera');
-        this.carre_join=this.sound.add('carre_join');
+        this.arrancar = this.sound.add('arrancar');
+        this.parar = this.sound.add('parar');
+        this.carretera = this.sound.add('carretera');
+        this.carre_join = this.sound.add('carre_join');
 
 
 
@@ -68,7 +68,7 @@ export default class Level3 extends Phaser.Scene {
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
         if (savedPos) gm.clearPlayerPosition();
-        
+
         // Si hay posición guardada, es que venimos de una batalla, lo hacemos visible
         if (savedPos) {
             this.player.setVisible(true);
@@ -103,13 +103,15 @@ export default class Level3 extends Phaser.Scene {
         }
 
         const trigger_pantalla = map.createFromObjects('triggers', {
-            name:'pantalla_nueva' ,
+            name: 'pantalla_nueva',
             classType: trigger
         });
         
         this.physics.add.overlap(trigger_pantalla,this.player,() => {
             this.scene.start('MapaFueraAux',{posi:'up'});
         });
+
+
 
         // Colisión del jugador con las capas del mapa
         this.physics.add.collider(this.player, groundLayer);
@@ -154,27 +156,27 @@ export default class Level3 extends Phaser.Scene {
        
     }
 
-    parar_soni(){
+    parar_soni() {
         this.parar.play();
         this.carretera.stop();
     }
-    carretera_soni(){
-        
+    carretera_soni() {
+
         this.carre_join.play();
 
-         
+
     }
-    parar_carretera(){
-        
+    parar_carretera() {
+
         this.carre_join.stop();
     }
-    unfreeze(){
+    unfreeze() {
         this.player.unfreeze();
         
     }
-    drop_player(){
+    drop_player() {
 
-        
+
         this.time.addEvent({
             delay: 400, // ms
             callback:() => {
@@ -183,20 +185,20 @@ export default class Level3 extends Phaser.Scene {
                     this.player.setVisible(true);
                     this.player.freeze();
             }
-        });  
+        });
         this.time.addEvent({
             delay: 2000, // ms
-            callback:() => {
-                this.bus.state='arrancar';
+            callback: () => {
+                this.bus.state = 'arrancar';
                 this.arrancar.play();
                 this.parar.stop();
             }
         });
-        
+
 
     }
 
-    
+
 
     update(t, dt) {
         // actualizamos el contador global

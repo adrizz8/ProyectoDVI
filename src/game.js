@@ -11,6 +11,7 @@ import EstrategiaScene from './menuScenes/EstrategiaScene.js';
 import MochilaScene from './menuScenes/mochilaScene.js';
 import BattleScene from './battleScene/battle_scene.js';
 import MapaFuera from './MapaFuera.js'
+import Cafeteria from './Cafeteria.js'
 import Prematricula from './prematricula_scene.js'
 import MapaFueraAux from './MapaFueraAux.js';
 
@@ -35,7 +36,7 @@ let config = {
     },
     pixelArt: true,
     
-    scene: [Boot, TitleScene, Prematricula,IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera,MapaFueraAux],
+    scene: [Boot, TitleScene, Prematricula,IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera,Cafeteria,MapaFueraAux],
 
     physics: {
         default: 'arcade',
