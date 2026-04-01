@@ -17,6 +17,10 @@ export default class EstrategiaScene extends Phaser.Scene {
     create() {
         const gm = GameManager.getInstance();
 
+        // Asegurar que no hay panel abierto al inicializar
+        this.closePanel();
+        this.panelActivo = null;
+
         // Fondo con UI de estrategia
         this.add.image(608, 320, 'estrategiaUI').setDisplaySize(1216, 640);
 
@@ -54,6 +58,7 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     closeScene() {
+        this.closePanel();
         this.scene.stop();
         this.scene.start('MenuPrincipal');
     }
@@ -189,17 +194,31 @@ this.add.text(pos.speed.x, pos.speed.y, `${stats.speed}`, estiloStats);
 this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
         // Botones interactivos en la UI
-        const btnStyle = { fontSize: '12px', fill: '#00ffea', fontFamily: 'Distant Galaxy', fontStyle: 'bold' };
+        const btnStyle = { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5 };
 
-        // Ajustamos ubicación de botones dentro del cuadro visual (sobre imagen)
-        const botonesY = y + 205;
-        const verHab = this.add.text(x + 16, botonesY, 'VER HABILIDADES', btnStyle).setInteractive({ useHandCursor: true });
-        const verEq = this.add.text(x + 16, botonesY + 20, 'VER EQUIPAMIENTO', Object.assign({}, btnStyle, { fill: '#5aa6ff' })).setInteractive({ useHandCursor: true });
+        // Posiciones predefinidas por personaje (similar al estilo de coordenadasNivel)
+        const coordenadasBotones = {
+            Jugador1: { habilidades: { x: 373, y: 226 }, equipamiento: { x: 373, y: 270 } },
+            Jugador2: { habilidades: { x: 373, y: 550 }, equipamiento: { x: 373, y: 594 } },
+            Jugador3: { habilidades: { x: 920, y: 226 }, equipamiento: { x: 920, y: 270 } },
+            Jugador4: { habilidades: { x: 920, y: 550 }, equipamiento: { x: 920, y: 594 } }
+        };
+
+        const defaultBotones = {
+            habilidades: { x: x + 16, y: y + 205 },
+            equipamiento: { x: x + 16, y: y + 225 }
+        };
+
+        const gm = GameManager.getInstance();
+        const configBotones = coordenadasBotones[nombre] || defaultBotones;
+        const posHabilidades = configBotones.habilidades || defaultBotones.habilidades;
+        const posEquipamiento = configBotones.equipamiento || defaultBotones.equipamiento;
+
+        const verHab = this.add.text(posHabilidades.x, posHabilidades.y, 'VER HABILIDADES', btnStyle).setInteractive({ useHandCursor: true });
+        const verEq = this.add.text(posEquipamiento.x, posEquipamiento.y, 'VER EQUIPAMIENTO', Object.assign({}, btnStyle, { fill: '#5aa6ff' })).setInteractive({ useHandCursor: true });
 
         verHab.on('pointerdown', () => this.showHabilidadesPanel(nombre, stats));
         verEq.on('pointerdown', () => this.showEquipamientoPanel(nombre, stats));
-
-      
     }
 
     showHabilidadesPanel(nombre, stats) {
@@ -294,9 +313,11 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
         const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${nombre}`, {
             fontSize: '20px',
-            fill: '#f5d442',
+            fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 5
         }).setOrigin(0.5, 0);
         group.add(titulo);
 

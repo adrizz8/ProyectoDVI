@@ -28,7 +28,7 @@ import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
 
-import estrategiaUI from '../assets/images/estrategiaui.png'
+import estrategiaUI from '../assets/images/estrategiaui4.png'
 import menuPrincipal from '../assets/images/menuprincipal.png'
 
 import formulario from '../assets/images/formulario.png'
