@@ -13,7 +13,7 @@ export default class trigger extends Phaser.GameObjects.Sprite{
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        //this.setDepth(-1);
+        this.setDepth(-1);
 
     }
 

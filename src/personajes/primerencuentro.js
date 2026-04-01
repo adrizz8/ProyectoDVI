@@ -13,8 +13,9 @@ export default class primerencuentro extends NPCBattle {
     constructor(scene, player, x, y, texture, stats = {}, message = null, onFinish = null, itemId = null) {
         super(scene, player, x, y, texture, stats , message , onFinish , itemId);
 
-        console.log(this.body);
+        
         this.lastDirection='';
+        this.recolocando=false;
 
        
         this.frozen = true;
@@ -66,11 +67,9 @@ export default class primerencuentro extends NPCBattle {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
 
-        const cam = this.scene.cameras.main;
 
-        if (this.y - this.height > cam.worldView.y + cam.height) {
+        if (this.y - this.height > this.scene.physics.world.bounds.height) {
             this.scene.unfreeze();
-            
             this.destroy();
         } else {
 
@@ -93,13 +92,22 @@ export default class primerencuentro extends NPCBattle {
                 moving = true;
             }
             else if (this.lastDirection=='right') {
+                
                 this.body.setVelocityX(this.speed);
                 this.body.setVelocityY(0);
+                if(this.recolocando){
+                    if(this.x>=this.player.x){
+                        this.lastDirection='down';
+                        this.recolocando=false;
+                    }
+                }
                 moving = true;
             }
             else if (this.lastDirection=='down') {
+               
                 this.body.setVelocityY(this.speed);
                 this.body.setVelocityX(0);
+                
                 moving = true;
             } else {
                 this.body.setVelocityX(0);
@@ -119,6 +127,10 @@ export default class primerencuentro extends NPCBattle {
         this.frozen = false;
     }
 
+    recolocar(){
+        this.recolocando=true;
+        this.lastDirection='right'
+    }
     
 
 }

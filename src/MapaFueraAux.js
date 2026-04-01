@@ -118,12 +118,6 @@ export default class MapaFueraAux extends Phaser.Scene {
     
             }
             else{
-                // --- Jugador ---
-                // Si venimos desde level3 (transición), el jugador aparece arriba en el centro-derecha del mapa
-                // El camino de mapaFuera baja desde la parte superior
-                const spawnX = (data && data.spawnX !== undefined) ? data.spawnX : map.widthInPixels / 2;
-                const spawnY = (data && data.spawnY !== undefined) ? data.spawnY : 80;
-
 
                 this.parar_jug = map.createFromObjects('triggers', {
                     name:'parar_jug' ,
@@ -147,7 +141,6 @@ export default class MapaFueraAux extends Phaser.Scene {
                     
                     this.player.freeze();
                     this.player2.setVisible(true);
-                    //this.player2=new Player(this,181,400);
                     this.player2.unfreeze();
                     this.player2.setDirection('down');
                     this.dialogueManager.showDialogue("¡No me carga el repositorio, no me cargaaaa!",'Enemigo');
@@ -173,12 +166,11 @@ export default class MapaFueraAux extends Phaser.Scene {
             }
         }
 
-       
-
         this.input.keyboard.on('keydown-SPACE', () => {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
     }
 
     update(t, dt) {
@@ -193,7 +185,6 @@ export default class MapaFueraAux extends Phaser.Scene {
         }
        
     }
-
     
     showDialogue(message, nombre = '', onFinish = null) {
         if (this.dialogueManager) {
