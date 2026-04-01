@@ -4,7 +4,7 @@ import trigger from './trigger.js';
 import primerencuentro from './personajes/primerencuentro.js';
 import GameManager from './manager.js';
 import DialogueManager from './dialogueManager.js';
-import menuprincipal from './menuScenes/MenuPrincipal.js';
+
 
 /**
  * Escena del mapa exterior (mapaFuera).
