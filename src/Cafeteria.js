@@ -1,6 +1,5 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
-import trigger from './trigger.js';
 
 /**
  * Escena de la Cafetería.
@@ -15,11 +14,11 @@ export default class Cafeteria extends Phaser.Scene {
         // Carga del mapa y tilesets
         const map = this.make.tilemap({ key: 'cafeteria' });
 
-        var entradas= new Map();
-        entradas.set('salida_autobus',{x:820,y:980,direccion:'up'});
-        entradas.set('puerta_izq',{x:110,y:240,direccion:'down'});
-        entradas.set('puerta_der',{x:1100,y:240,direccion:'down'});
-        
+        var entradas = new Map();
+        entradas.set('salida_autobus', { x: 820, y: 980, direccion: 'up' });
+        entradas.set('puerta_izq', { x: 110, y: 240, direccion: 'down' });
+        entradas.set('puerta_der', { x: 1100, y: 240, direccion: 'down' });
+
         this.physics.world.setBounds(
             0,
             0,
@@ -52,10 +51,10 @@ export default class Cafeteria extends Phaser.Scene {
         colisiones.setCollisionByExclusion([-1]);
         colisiones.setVisible(false);
 
-        const posi= entradas.get(data.entrada);
+        const posi = entradas.get(data.entrada);
         const spawnX = posi.x;
         const spawnY = posi.y;
-        const direccion=posi.direccion;
+        const direccion = posi.direccion;
 
         this.player = new Player(this, spawnX, spawnY);
         this.player.setDirection(direccion);
@@ -67,22 +66,29 @@ export default class Cafeteria extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
-        this.puerta_der=map.createFromObjects('triggers',{
-            name:'puerta_der',
-            classType:trigger
+        // Zonas de salida con rectángulos verdes visibles para debug de posición
+        // El mapa es 38x20 tiles de 32px = 1216x640px
+        // Los huecos de la capa colisiones están en los extremos izquierdo y derecho, filas 4-5 (y=128-192)
+
+        // puerta_der → pasillo (extremo derecho del mapa, filas 4-5)
+        const zonaDer = this.add.zone(1200, 160, 48, 128);
+        this.physics.world.enable(zonaDer, Phaser.Physics.Arcade.STATIC_BODY);
+        // Rectángulo verde debug — eliminar cuando funcione
+        this.add.rectangle(1200, 160, 48, 128, 0x00ff00, 0.5).setDepth(99);
+
+        // puerta_izq → mapa exterior (extremo izquierdo del mapa, filas 4-5)
+        const zonaIzq = this.add.zone(16, 160, 48, 128);
+        this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
+        // Rectángulo verde debug — eliminar cuando funcione
+        this.add.rectangle(16, 160, 48, 128, 0x00ff00, 0.5).setDepth(99);
+
+        this.physics.add.overlap(zonaDer, this.player, () => {
+            this.scene.start('pasillo', { entrada: 'desde_cafeteria' });
         });
-        this.puerta_izq=map.createFromObjects('triggers',{
-            name:'puerta_izq',
-            classType:trigger
+        this.physics.add.overlap(zonaIzq, this.player, () => {
+            this.scene.start('outdoorMap', { entrada: 'entrada_der' });
         });
 
-        this.physics.add.overlap(this.puerta_der,this.player,()=>{
-            this.scene.start('outdoorMap',{entrada:'entrada_izq'});
-        });
-        this.physics.add.overlap(this.puerta_izq,this.player,()=>{
-            this.scene.start('outdoorMap',{entrada:'entrada_der'});
-        });
-       
         /*
         // Transición a MapaFuera (usando la zona de la puerta visual)
         const exitZone = this.add.zone(150, 150, 200, 100);
