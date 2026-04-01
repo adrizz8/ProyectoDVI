@@ -67,6 +67,7 @@ export default class MapaFuera extends Phaser.Scene {
         
 
         gm.addNivel('outdoorMap');
+        gm.CompleteNivel('outdoorMap');
         
         this.salida_bus= map.createFromObjects('triggers',{
             name:'salida_autobus',
@@ -114,7 +115,7 @@ export default class MapaFuera extends Phaser.Scene {
                 
                 const posi= this.getPosiPostComb(savedPos);
 
-                this.player2=new primerencuentro(this,null,posi.x,posi.y,'estudianteprimero',{},null,null,null);
+                this.player2=new primerencuentro(this,null,posi.x,posi.y,'estudianteprimero',0,{},null,null,null);
                 this.player2.setVisible(true);
                 this.player2.setDirection(posi.direction);
                     
@@ -171,7 +172,7 @@ export default class MapaFuera extends Phaser.Scene {
                 const spawnY2 = posi2.y;
                 //const direccion2=posi2.direccion;
 
-                this.player2=new primerencuentro(this,this.player,spawnX2,spawnY2,'estudianteprimero',{hp:1}," ¿Quien eres tu?, te vas a enterar.",null,null);
+                this.player2=new primerencuentro(this,this.player,spawnX2,spawnY2,'estudianteprimero',0,{hp:1}," ¿Quien eres tu?, te vas a enterar.",null,null);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug,this.player,()=>{
@@ -227,7 +228,7 @@ export default class MapaFuera extends Phaser.Scene {
         }
     }
 
-     showDialogue(message, nombre = '', onFinish = null) {
+    showDialogue(message, nombre = '', onFinish = null) {
         if (this.dialogueManager) {
             this.dialogueManager.showDialogue(message, nombre, onFinish);
         }

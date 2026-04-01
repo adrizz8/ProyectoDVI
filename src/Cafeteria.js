@@ -1,7 +1,10 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
 import trigger from './trigger.js';
-
+import npc from './personajes/npc.js'
+import DialogueManager from './dialogueManager.js';
+import cafeteria_loco from './personajes/cafeteria_loco.js';
+import miron from './personajes/miron.js';
 /**
  * Escena de la Cafetería.
  * @extends Phaser.Scene
@@ -17,8 +20,8 @@ export default class Cafeteria extends Phaser.Scene {
 
         var entradas= new Map();
         entradas.set('salida_autobus',{x:820,y:980,direccion:'up'});
-        entradas.set('puerta_izq',{x:110,y:240,direccion:'down'});
-        entradas.set('puerta_der',{x:1100,y:240,direccion:'down'});
+        entradas.set('puerta_izq',{x:85,y:160,direccion:'down'});
+        entradas.set('puerta_der',{x:1145,y:160,direccion:'down'});
         
         this.physics.world.setBounds(
             0,
@@ -64,6 +67,12 @@ export default class Cafeteria extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
+        this.dialogueManager= new DialogueManager(this);
+    
+
+        this.enemies = this.add.group();
+        this.generarnpcs();
+
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
@@ -103,6 +112,59 @@ export default class Cafeteria extends Phaser.Scene {
     update(t, dt) {
         if (this.player && this.player.update) {
             this.player.update(t, dt);
+        }
+    }
+
+    generarnpcs(){
+        
+        const npcData = [
+            { x: 270, y: 210, texture: 'npc1',frame:8,message:'a.',onFinish:null,ItemId:null, name: 'Juan' },
+            { x: 334, y: 210, texture: 'npc2',frame:4,message:'b.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 380, y: 340, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 520, y: 590, texture: 'npc1',frame:4,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 464, y: 590, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 680, y: 470, texture: 'npc2',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 1015, y: 340, texture: 'npc1',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 820, y: 160, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 860, y: 185, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 900, y: 208, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 890, y: 156, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 950, y: 155, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 995, y: 142, texture: 'npc1',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 950, y: 208, texture: 'npc2',frame:4,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 1070, y: 225, texture: 'npc1',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 1083, y: 285, texture: 'npc2',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 1200, y: 262, texture: 'npc4',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
+            { x: 1015, y: 188, texture: 'npc2',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' }
+            
+        ];
+
+       this.npcArray = npcData.map(data => 
+            new npc(
+                this,
+                this.player,
+                data.x,
+                data.y,
+                data.texture,
+                data.frame,
+                data.message,
+                data.onFinish,
+                data.ItemId,
+                data.name
+            )
+        );
+
+        // añadir al grupo
+        this.npcArray.forEach(npc => this.enemies.add(npc));
+        const loco= new cafeteria_loco(this,this.player,450,320,null,null,{name:'Marcos'},'',null,null);
+        this.enemies.add(loco);
+        const per_miron = new miron(this,this.player,707,340,null,0,{},'',null,null);
+        this.enemies.add(per_miron);
+        
+    }
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
         }
     }
 }

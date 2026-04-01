@@ -14,9 +14,9 @@ export default class NPCBattle extends NPC {
      * @param {string} texture Clave de la textura (podría ser 'toy' o el que asignes)
      * @param {object} stats Estadísticas del enemigo para el combate
      */
-    constructor(scene, player, x, y, texture, stats = {}, message = null, onFinish = null, itemId = null) {
+    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null) {
         const name = stats.name ?? 'Enemigo';
-        super(scene, player, x, y, texture, message, onFinish, itemId, name);
+        super(scene, player, x, y, texture,frame, message, onFinish, itemId, name);
 
         this.stats = {
             name: name,

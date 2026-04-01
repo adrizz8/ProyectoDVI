@@ -17,9 +17,10 @@ export default class NPC extends Phaser.GameObjects.Sprite {
      * @param {string} itemId ID del ítem que da el NPC (opcional)
      * @param {string} name Nombre del NPC (opcional)
      */
-    constructor(scene, player, x, y, texture, message = null, onFinish = null, itemId = null, name = '') {
+    constructor(scene, player, x, y, texture,frame=0, message = null, onFinish = null, itemId = null, name = '') {
         super(scene, x, y, texture);
 
+        this.setFrame(frame); 
         this.player = player;
         this.message = message;
         this.onFinish = onFinish;

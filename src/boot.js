@@ -47,6 +47,10 @@ import music_interior from '../assets/music/interior_music_acreditar.mp3'
 import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
 import estudianteprimero from '../assets/sprites/estudianteprimero.png'
+import npc1 from '../assets/sprites/npc1.png';
+import npc2 from '../assets/sprites/npc2.png';
+import npc3 from '../assets/sprites/npc3.png';
+import npc4 from '../assets/sprites/npc4.png';
 
 
 /**
@@ -75,6 +79,10 @@ export default class Boot extends Phaser.Scene {
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 68, frameHeight: 72 });
     this.load.spritesheet('estudianteprimero',estudianteprimero,{frameWidth: 64, frameHeight: 64})
+    this.load.spritesheet('npc1',npc1,{frameWidth: 64, frameHeight: 64})
+    this.load.spritesheet('npc2',npc2,{frameWidth: 64, frameHeight: 64})
+    this.load.spritesheet('npc3',npc3,{frameWidth: 64, frameHeight: 64})
+    this.load.spritesheet('npc4',npc4,{frameWidth: 68, frameHeight: 72 })
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
@@ -143,7 +151,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('prematricula');
+    this.scene.start('cafeteria',{entrada:'puerta_izq'});
 
   }
 }
