@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 
 class Datos {
-    constructor(nombre, texto) {
+    constructor(nombre, texto,onFinish) {
         this.contador = 0;
         this.nombre = nombre;
         this.textoSplit = texto;
+        this.onFinish=onFinish;
     }
 
     incrementar() {
@@ -32,10 +33,11 @@ export default class DialogueManager {
         this.ini = 0;
         this.fin = 0;
         this.current_message = '';
-        this.onFinish = null;
+
+        
 
         // Posicionamos en el centro horizontal (1216 / 2 = 608) y cerca de la parte inferior (640 - 90 = 550)
-        this.dialogueBox = this.scene.add.container(608, 550).setDepth(2000).setVisible(false);
+        this.dialogueBox = this.scene.add.container(0, 0).setDepth(2000).setVisible(false);
 
         // Fondo del diálogo
         const bg = this.scene.add.graphics();
@@ -79,17 +81,20 @@ export default class DialogueManager {
             this.next_text();
                 
             if (this.current_message === '') {
+                const onFinish=this.full_message[this.ini].onFinish;
+               
                 this.ini += 1;
                 if (this.ini === this.fin) {
                     this.ini = 0;
                     this.fin = 0;
                     this.hideDialogue();
 
-                    if (this.onFinish !== null) {
-                        const callback = this.onFinish;
-                        this.onFinish = null; 
+                    if (onFinish !== null) {
+                        const callback = onFinish;
                         callback();
                     }
+
+                    
                 } else {
                     const nextMsg = this.full_message[this.ini];
                     if (!nextMsg || nextMsg.nombre === '') {
@@ -103,7 +108,9 @@ export default class DialogueManager {
                 }
             } else {
                 this.dialogueText.setText(this.current_message);
+                
             }
+            
         });
     }
 
@@ -119,16 +126,16 @@ export default class DialogueManager {
 
         // Aseguramos que nombre sea un string si es null/undefined
         if (!nombre) nombre = '';
+        console.log(onFinish);
 
-        this.full_message[this.fin] = new Datos(nombre, message.split(' '));
+        this.full_message[this.fin] = new Datos(nombre, message.split(' '),onFinish);
         this.fin += 1;
 
-        if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.1) {
-            if (this.scene.player) {
-                this.scene.player.freeze();
-            }
+        if (!this.dialogueBox.visible) {
+            
+            const cam = this.scene.cameras.main;
 
-            this.onFinish = onFinish;
+            this.dialogueBox.setPosition(cam.worldView.x+608,cam.worldView.y+550);
             this.ini = 0;
             this.next_text();
             this.dialogueText.setText(this.current_message);
@@ -167,9 +174,6 @@ export default class DialogueManager {
             duration: 200,
             onComplete: () => {
                 this.dialogueBox.setVisible(false);
-                if (this.scene.player) {
-                    this.scene.player.unfreeze();
-                }
             }
         });
     }

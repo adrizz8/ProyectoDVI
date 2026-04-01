@@ -15,17 +15,19 @@ export default class Player extends Phaser.GameObjects.Sprite {
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
      */
-    constructor(scene, x, y) {
+    constructor(scene, x, y,direccion='down') {
         super(scene, x, y);
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
+
         this.body.setSize(this.width, this.height);
 
         // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
         this.body.setOffset(this.width * 0.25, this.height * 0.7);
+
         this.body.setCollideWorldBounds();
         this.speed = 300;
 
@@ -61,8 +63,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             }
         });
 
-        this.lastDirection = 'down';
-        this.play('idle-down');
+        this.setDirection(direccion);
     }
 
     /**
@@ -161,10 +162,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
         return false;
     }
 
-    freeze() {
-        this.frozen = true;
+
+    freeze(){
+        this.play('idle-'+this.lastDirection,true);
+        this.frozen=true;
     }
     unfreeze() {
         this.frozen = false;
     }
+
+    
 }  

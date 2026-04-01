@@ -111,6 +111,9 @@ export default class GameManager {
         // Se guarda al salir de una escena o entrar en combate para recuperarla al volver.
         this.playerPosition = null;
 
+
+        this.niveles= new Map();
+
     }
 
     // ── Helpers de posición ───────────────────────────────────────────────────
@@ -248,5 +251,19 @@ export default class GameManager {
                 ...this.playerStats[name]
             };
         });
+    }
+
+
+    addNivel(nombre){
+        if (!this.niveles.has(nombre)) {
+            this.niveles.set(nombre,false);
+        }
+    }
+    CompleteNivel(nombre){
+        this.niveles.set(nombre,true);
+    }
+
+    estadoNivel(nombre){
+        return this.niveles.get(nombre);
     }
 }
