@@ -97,6 +97,7 @@ export default class Boot extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32
     });
+    this.load.image('tilesetexterior', tileset);
     this.load.image('formulario', formulario);
 
     this.load.image('boton_luchar', boton_luchar);

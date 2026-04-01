@@ -18,19 +18,19 @@ export default class Cafeteria extends Phaser.Scene {
         const tilesInterior2 = map.addTilesetImage('tilesInterior2', 'tilesInterior2');
         const tilesInterior = map.addTilesetImage('tilesinterior', 'tilesinterior');
         const tilesCafeteria = map.addTilesetImage('tilesCafeteria', 'tilesCafeteria');
-        const tilesExterior = map.addTilesetImage('tilesetexterior', 'tileset');
+        const tilesExterior = map.addTilesetImage('tilesetexterior', 'tilesetexterior');
 
         const allTilesets = [tilesInterior2, tilesInterior, tilesCafeteria, tilesExterior];
 
-        // Capas del mapa
+        // Capas del mapa (orden de abajo a arriba, igual que en Tiled)
         const fondo = map.createLayer('fondo', allTilesets, 0, 0);
         const pared = map.createLayer('pared', allTilesets, 0, 0);
         const puerta = map.createLayer('puerta', allTilesets, 0, 0);
         const barra = map.createLayer('barra', allTilesets, 0, 0);
-        const mesas = map.createLayer('mesas', allTilesets, 0, 0);
         const sillas = map.createLayer('sillas', allTilesets, 0, 0);
-        const sillas2 = map.createLayer('sillas2', allTilesets, 0, 0);
+        const mesas = map.createLayer('mesas', allTilesets, 0, 0);
         const decoracion = map.createLayer('decoracion', allTilesets, 0, 0);
+        const sillas2 = map.createLayer('sillas2', allTilesets, 0, 0);
 
         const colisiones = map.createLayer('colisiones', allTilesets, 0, 0);
 
