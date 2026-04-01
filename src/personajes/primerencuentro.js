@@ -24,7 +24,7 @@ export default class primerencuentro extends NPCBattle {
         this.body.setSize(this.width, this.height);
         
 
-        //this.body.setCollideWorldBounds();
+        this.body.moves = true;
         this.speed = 300;
 
         // Definición de animaciones direccionales

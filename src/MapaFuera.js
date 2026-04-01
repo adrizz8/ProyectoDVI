@@ -127,10 +127,10 @@ export default class MapaFuera extends Phaser.Scene {
                     name:'irse2' ,
                     classType: trigger
                 });
-                this.physics.add.overlap(this.irse1,this.player2,()=>{
+                const ir1=this.physics.add.overlap(this.irse1,this.player2,()=>{
                     this.player2.setDirection('down');
                 });
-                this.physics.add.overlap(this.irse2,this.player2,()=>{
+                const ir2=this.physics.add.overlap(this.irse2,this.player2,()=>{
                     this.player2.setDirection('down');
                 });
 
@@ -139,8 +139,10 @@ export default class MapaFuera extends Phaser.Scene {
                     callback:() => {
                         this.dialogueManager.showDialogue("Comoo!!!! PASO DE TI",'Enemigo',() => {
                             if(this.player2.x>810){
+                                ir2.destroy();
                                 this.player2.setDirection('left');
                             }else{
+                                ir2.destroy();
                                 this.player2.setDirection('right');
                             }  
                             this.player2.unfreeze();

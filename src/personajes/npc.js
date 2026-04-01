@@ -27,6 +27,8 @@ export default class NPC extends Phaser.GameObjects.Sprite {
         this.name = name; // Guardamos el nombre
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this); // Estático por defecto
+        this.body.setImmovable(true);
+        this.body.moves = false;
         if (this.player) {
             this.collider=this.scene.physics.add.collider(this, this.player);
         }
