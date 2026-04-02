@@ -38,13 +38,14 @@ export default class GameManager {
                 mp: 50,
                 maxMp: 50,
                 damage: 25,
-                speed: 15,     // para decidir quién ataca primero
+                speed: 15,
                 defense: 10,
                 luck: 25,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego', 'Ataque NERF', 'Golpe Debilitador', 'Golpe Vigorizante']
+                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego', 'Ataque NERF', 'Golpe Debilitador', 'Golpe Vigorizante'],
+                objeto: 'espada_basica'
             },
             'Jugador2': {
                 hp: 100,
@@ -52,13 +53,14 @@ export default class GameManager {
                 mp: 50,
                 maxMp: 50,
                 damage: 25,
-                speed: 12,     // para decidir quién ataca primero
+                speed: 12,
                 defense: 10,
                 luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Defensa UP', 'Cura']
+                habilidades: ['Defensa UP', 'Cura'],
+                objeto: ''
             },
             'Jugador3': {
                 hp: 100,
@@ -66,13 +68,14 @@ export default class GameManager {
                 mp: 50,
                 maxMp: 50,
                 damage: 25,
-                speed: 10,     // para decidir quién ataca primero
+                speed: 10,
                 defense: 10,
                 luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Velocidad UP', 'Ataque Potente']
+                habilidades: ['Velocidad UP', 'Ataque Potente'],
+                objeto: ''
             },
             'Jugador4': {
                 hp: 100,
@@ -80,13 +83,14 @@ export default class GameManager {
                 mp: 50,
                 maxMp: 50,
                 damage: 25,
-                speed: 6,     // para decidir quién ataca primero
+                speed: 6,
                 defense: 10,
                 luck: 1,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Fuego']
+                habilidades: ['Fuego'],
+                objeto: ''
             },
         };
 
@@ -112,7 +116,7 @@ export default class GameManager {
         this.playerPosition = null;
 
 
-        this.niveles= new Map();
+        this.niveles = new Map();
 
     }
 
@@ -254,16 +258,16 @@ export default class GameManager {
     }
 
 
-    addNivel(nombre){
+    addNivel(nombre) {
         if (!this.niveles.has(nombre)) {
-            this.niveles.set(nombre,false);
+            this.niveles.set(nombre, false);
         }
     }
-    CompleteNivel(nombre){
-        this.niveles.set(nombre,true);
+    CompleteNivel(nombre) {
+        this.niveles.set(nombre, true);
     }
 
-    estadoNivel(nombre){
+    estadoNivel(nombre) {
         return this.niveles.get(nombre);
     }
 }

@@ -43,10 +43,44 @@ export default class PlayerBattle {
         this.exp = stats.exp;
         this.expNext = stats.expNext;
         this.habilidades = stats.habilidades || [];
+        this.objeto = stats.objeto || '';
+
+        this._load_equipment();
 
         // Estado interno de la batalla
         this._guardActive = false;  // ¿tiene la guardia activa este turno?
     }
+
+
+    _load_equipment() {
+        if (this.objeto != '' && this.objeto.type === 'equipment' && this.objeto.bonusStats) {
+            if (this.objeto.bonusStats.damage) {
+                this.baseDamage += this.objeto.bonusStats.damage;
+                this.damage += this.objeto.bonusStats.damage;
+            }
+            if (this.objeto.bonusStats.defense) {
+                this.baseDefense += this.objeto.bonusStats.defense;
+                this.defense += this.objeto.bonusStats.defense;
+            }
+            if (this.objeto.bonusStats.speed) {
+                this.baseSpeed += this.objeto.bonusStats.speed;
+                this.speed += this.objeto.bonusStats.speed;
+            }
+            if (this.objeto.bonusStats.luck) {
+                this.luck += this.objeto.bonusStats.luck;
+            }
+            if (this.objeto.bonusStats.maxHp) {
+                this.maxHp += this.objeto.bonusStats.maxHp;
+                this.hp = Math.min(this.hp + this.objeto.bonusStats.maxHp, this.maxHp);
+            }
+            if (this.objeto.bonusStats.maxMp) {
+                this.maxMp += this.objeto.bonusStats.maxMp;
+                this.mp = Math.min(this.mp + this.objeto.bonusStats.maxMp, this.maxMp);
+            }
+        }
+
+    }
+
 
     // ── Acciones del jugador en su turno ─────────────────────────────────────
 
@@ -58,7 +92,7 @@ export default class PlayerBattle {
     attack() {
         const potencia = 10;
         const isCrit = Math.random() < (this.luck / 50);
-        
+
         // (Ataque * Potencia)
         const rawDamage = Math.floor(this.damage * potencia);
         const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
@@ -111,10 +145,10 @@ export default class PlayerBattle {
     receiveDamage(rawDamage) {
         const guarded = this._guardActive;
         const currentDefense = Math.max(1, this.defense); // Prevent division by zero
-        
-        // Nueva Fórmula: Resultado = (Ataque * Potencia) / Defensa
+
+        // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
         const damageAfterDefense = Math.max(1, Math.floor(rawDamage / currentDefense));
-        
+
         let damageTaken = guarded ? Math.floor(damageAfterDefense / 2) : damageAfterDefense;
         damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado
 

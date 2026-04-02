@@ -40,8 +40,42 @@ export default class EnemyBattle {
         this.mp = stats.mp ?? 30;
         this.maxMp = stats.maxMp ?? 30;
         this.habilidades = stats.habilidades || [];
+        this.objeto = stats.objeto || '';
+
+        this._load_equipment();
 
         this._guardActive = false;
+    }
+
+
+
+    _load_equipment() {
+        if (this.objeto != '' && this.objeto.type === 'equipment' && this.objeto.bonusStats) {
+            if (this.objeto.bonusStats.damage) {
+                this.baseDamage += this.objeto.bonusStats.damage;
+                this.damage += this.objeto.bonusStats.damage;
+            }
+            if (this.objeto.bonusStats.defense) {
+                this.baseDefense += this.objeto.bonusStats.defense;
+                this.defense += this.objeto.bonusStats.defense;
+            }
+            if (this.objeto.bonusStats.speed) {
+                this.baseSpeed += this.objeto.bonusStats.speed;
+                this.speed += this.objeto.bonusStats.speed;
+            }
+            if (this.objeto.bonusStats.luck) {
+                this.luck += this.objeto.bonusStats.luck;
+            }
+            if (this.objeto.bonusStats.maxHp) {
+                this.maxHp += this.objeto.bonusStats.maxHp;
+                this.hp = Math.min(this.hp + this.objeto.bonusStats.maxHp, this.maxHp);
+            }
+            if (this.objeto.bonusStats.maxMp) {
+                this.maxMp += this.objeto.bonusStats.maxMp;
+                this.mp = Math.min(this.mp + this.objeto.bonusStats.maxMp, this.maxMp);
+            }
+        }
+
     }
 
     /**

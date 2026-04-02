@@ -33,7 +33,7 @@ export default class Level extends Phaser.Scene {
         const startX = savedPos ? savedPos.x : 200;
         const startY = savedPos ? savedPos.y : 450;
 
-        this.player = new Player(this, startX, startY);
+        this.player = new Player(this, startX, startY, 'down', true);
 
         // Restaurar dirección si existía
         if (savedPos && savedPos.direction) {

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import EncounterManager from '../encounters/encounter_manager.js';
 
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
@@ -15,7 +16,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
      */
-    constructor(scene, x, y,direccion='down') {
+    constructor(scene, x, y, direccion = 'down', encounter = false) {
         super(scene, x, y);
 
         this.scene.add.existing(this);
@@ -30,6 +31,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.body.setCollideWorldBounds();
         this.speed = 300;
+        this.encounter = encounter;
+        if (encounter) {
+            this.encounterManager = new EncounterManager();
+        }
 
         this.cursors = this.scene.input.keyboard.addKeys({ up: Phaser.Input.Keyboard.KeyCodes.W, down: Phaser.Input.Keyboard.KeyCodes.S, left: Phaser.Input.Keyboard.KeyCodes.A, right: Phaser.Input.Keyboard.KeyCodes.D });
         this.interactKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
@@ -121,9 +126,38 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityY(0);
         }
 
+        if (moving) {
+            // Calculamos cuántos píxeles se ha movido en este frame exacto
+            // dt está en milisegundos, por eso dividimos por 1000
+            const distanciaFrame = this.speed * (dt / 1000);
+
+            if (this.encounter) {
+                // Avisamos al manager y comprobamos si salta el combate
+                const hayCombate = this.encounterManager.actualizarDistancia(distanciaFrame);
+
+                if (hayCombate) {
+                    console.log("Combateeeeeeeee");
+                    this.iniciarCombate();
+                }
+            }
+        }
+
         // Reproducir la animación correspondiente: walk o idle según la última dirección
         const animState = moving ? 'walk' : 'idle';
         this.play(`${animState}-${this.lastDirection}`, true);
+    }
+
+    iniciarCombate() {
+        this.frozen = true;
+        this.body.setVelocity(0, 0);
+
+        // Transición de cámara
+        this.scene.cameras.main.fadeOut(500, 0, 0, 0);
+
+        this.scene.cameras.main.once('camerafadeoutcomplete', () => {
+            // Solo pasamos la escena de origen para saber a dónde volver al terminar
+            this.scene.scene.start('battle_scene', { originScene: this.scene.scene.key });
+        });
     }
 
     isinteractuable(object) {
@@ -163,13 +197,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
 
-    freeze(){
-        this.play('idle-'+this.lastDirection,true);
-        this.frozen=true;
+    freeze() {
+        this.play('idle-' + this.lastDirection, true);
+        this.frozen = true;
     }
     unfreeze() {
         this.frozen = false;
     }
 
-    
+
 }  

@@ -79,11 +79,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', base);
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 68, frameHeight: 72 });
-    this.load.spritesheet('estudianteprimero',estudianteprimero,{frameWidth: 64, frameHeight: 64})
-    this.load.spritesheet('npc1',npc1,{frameWidth: 64, frameHeight: 64})
-    this.load.spritesheet('npc2',npc2,{frameWidth: 64, frameHeight: 64})
-    this.load.spritesheet('npc3',npc3,{frameWidth: 64, frameHeight: 64})
-    this.load.spritesheet('npc4',npc4,{frameWidth: 68, frameHeight: 72 })
+    this.load.spritesheet('estudianteprimero', estudianteprimero, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc1', npc1, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 })
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
@@ -153,7 +153,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('cafeteria',{entrada:'puerta_izq'});
+    this.scene.start('level');
 
   }
 }
