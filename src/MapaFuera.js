@@ -37,13 +37,14 @@ export default class MapaFuera extends Phaser.Scene {
         // Capas del mapa
         const fondo = map.createLayer('fondo', tilesets, 0, 0);
         const facultad = map.createLayer('facultad', tilesets, 0, 0);
+        const Cornisas = map.createLayer('Cornisas', tilesets, 0, 0);
         const decoracion = map.createLayer('decoracion', tilesets, 0, 0);
         const bebidas = map.createLayer('bebidas', tilesets, 0, 0);
-
+        const bebidas2 = map.createLayer('bebidas2', tilesets, 0, 0);
         const colisiones = map.createLayer('colisiones', tilesets, 0, 0);
 
         // Colisiones
-        colisiones.setCollisionByExclusion([-1]);
+        colisiones.setCollisionByProperty({ collides: true });
         colisiones.setVisible(false);
 
         // Posición de spawn (por defecto abajo a la derecha si no viene en data)

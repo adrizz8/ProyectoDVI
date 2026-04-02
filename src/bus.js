@@ -18,7 +18,7 @@ export default class bus extends Phaser.GameObjects.Sprite{
         
 
         this.state = 'move';
-        this.speed = 150;
+        this.speed = 500; //ESTABA A 150
 
         this.scene.anims.create({
 
