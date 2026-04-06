@@ -53,6 +53,13 @@ import npc2 from '../assets/sprites/npc2.png';
 import npc3 from '../assets/sprites/npc3.png';
 import npc4 from '../assets/sprites/npc4.png';
 
+import or_gate from '../assets/images/or.png';
+import and_gate from '../assets/images/and.png';
+import not_gate from '../assets/images/not.png';
+import xor_gate from '../assets/images/xor.png';
+import cable_off from '../assets/images/cable_off.png';
+import cable_on from '../assets/images/cable_on.png';
+
 
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
@@ -87,11 +94,12 @@ export default class Boot extends Phaser.Scene {
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
-    this.load.image('or_gate', fondo);
-    this.load.image('and_gate', fondo);
-    this.load.image('not_gate', fondo);
-    this.load.image('xor_gate', fondo);
-    this.load.image('cable', base);
+    this.load.image('or_gate', or_gate);
+    this.load.image('and_gate', and_gate);
+    this.load.image('not_gate', not_gate);
+    this.load.image('xor_gate', xor_gate);
+    this.load.image('cable_off', cable_off);
+    this.load.image('cable_on', cable_on);
     this.load.image('boton', star);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
@@ -153,7 +161,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('level3');
+    this.scene.start('level2');
 
   }
 }

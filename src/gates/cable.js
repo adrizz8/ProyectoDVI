@@ -2,11 +2,9 @@ import Phaser from 'phaser'
 
 export default class Cable extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
-        super(scene, x, y, 'cable');
+        super(scene, x, y, 'cable_off');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
-        this.setTint(0x444444);
-        this.setDisplaySize(100, 10);
 
         this.signal = false;
         this.inputSource = null;
@@ -33,7 +31,7 @@ export default class Cable extends Phaser.GameObjects.Sprite {
             this.outputTarget.target[this.outputTarget.inputName] = this.signal;
         }
 
-        this.setTint(this.signal ? 0xfffb00 : 0x444444);
+        this.setTexture(this.signal ? 'cable_on' : 'cable_off');
         return this.signal;
     }
 }

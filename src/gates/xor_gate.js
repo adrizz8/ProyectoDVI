@@ -14,8 +14,6 @@ export default class XorGate extends Phaser.GameObjects.Sprite {
         super(scene, x, y, 'xor_gate');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
-        this.setTint(0xff00ff); // Magenta para XOR
-        this.setDisplaySize(64, 64);
 
         this.inputA = false;
         this.inputB = false;

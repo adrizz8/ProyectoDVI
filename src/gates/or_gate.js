@@ -14,9 +14,6 @@ export default class OrGate extends Phaser.GameObjects.Sprite {
         super(scene, x, y, 'or_gate');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
-        this.setTint(0x0000ff); // Azul para OR
-        this.setDisplaySize(64, 64);
-
         this.inputA = false;
         this.inputB = false;
         this.output = false;

@@ -1,11 +1,11 @@
 import Player from './personajes/player.js';
 import Boton from './boton.js';
-import Cable from './cable.js';
-import AndGate from './and_gate.js';
-import NotGate from './not_gate.js';
+import Cable from './gates/cable.js';
+import AndGate from './gates/and_gate.js';
+import NotGate from './gates/not_gate.js';
 import Bombilla from './bombilla.js';
-import XorGate from './xor_gate.js';
-import OrGate from './or_gate.js';
+import XorGate from './gates/xor_gate.js';
+import OrGate from './gates/or_gate.js';
 import DialogueManager from './dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from './manager.js';
@@ -25,7 +25,7 @@ export default class Level2 extends Phaser.Scene {
         const savedPos = gm.getPlayerPosition();
         const startX = savedPos ? savedPos.x : 100;
         const startY = savedPos ? savedPos.y : 400;
-        
+
         this.player = new Player(this, startX, startY);
 
         // Restaurar dirección si existía
@@ -52,15 +52,23 @@ export default class Level2 extends Phaser.Scene {
         this.and_gate1 = new AndGate(this, 500, 200, this.player);
         this.and_gate1.setDisplaySize(120, 120);
         this.and_gate1.setDepth(1);
+        this.and_gate1.setOrigin(0.5, 0.5);
+        this.and_gate1.angle = 90;
         this.and_gate2 = new AndGate(this, 500, 400, this.player);
         this.and_gate2.setDisplaySize(120, 120);
         this.and_gate2.setDepth(1);
+        this.and_gate2.setOrigin(0.5, 0.5);
+        this.and_gate2.angle = 90;
         this.not_gate1 = new NotGate(this, 400, 150, this.player);
         this.not_gate1.setDisplaySize(50, 50);
         this.not_gate1.setDepth(1);
+        this.not_gate1.setOrigin(0.5, 0.5);
+        this.not_gate1.angle = 90;
         this.and_gate3 = new AndGate(this, 650, 300, this.player);
         this.and_gate3.setDisplaySize(120, 120);
         this.and_gate3.setDepth(1);
+        this.and_gate3.setOrigin(0.5, 0.5);
+        this.and_gate3.angle = 90;
 
         // 3. Cables (Aquí corregimos los nombres de las propiedades de destino)
         this.cable1 = new Cable(this, 350, 150);
