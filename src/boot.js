@@ -60,6 +60,12 @@ import xor_gate from '../assets/images/xor.png';
 import cable_off from '../assets/images/cable_off.png';
 import cable_on from '../assets/images/cable_on.png';
 
+import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
+import p1RightMazmorra from '../assets/images/p1derechadungeon.json';
+import p1LeftMazmorra from '../assets/images/p1izquierdadungeon.json';
+import entradaMazmorra from '../assets/images/entradadungeon.json';
+import salaLanchares from '../assets/images/salalanchares.json';
+import salaMiniBoss from '../assets/images/salaminiboss.json';
 
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
@@ -148,6 +154,14 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
     this.load.tilemapTiledJSON('pasillo', pasillo);
 
+    // Dungeon Assets
+    this.load.image('tilesMazmorra', tilesMazmorra);
+    this.load.tilemapTiledJSON('entradaMazmorra', entradaMazmorra);
+    this.load.tilemapTiledJSON('p1RightMazmorra', p1RightMazmorra);
+    this.load.tilemapTiledJSON('p1LeftMazmorra', p1LeftMazmorra);
+    this.load.tilemapTiledJSON('salaLanchares', salaLanchares);
+    this.load.tilemapTiledJSON('salaMiniBoss', salaMiniBoss);
+
   }
 
   /**
@@ -161,7 +175,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('level2');
+    this.scene.start('p1LeftMazmorra');
 
   }
 }
