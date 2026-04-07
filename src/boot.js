@@ -47,6 +47,7 @@ import music_interior from '../assets/music/interior_music_acreditar.mp3'
 //Puse 2 porque no me decidía
 import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
+import music_ambiente from '../assets/music/musicaambiente.mp3'
 import estudianteprimero from '../assets/sprites/estudianteprimero.png'
 import npc1 from '../assets/sprites/npc1.png';
 import npc2 from '../assets/sprites/npc2.png';
@@ -150,6 +151,7 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_interior', music_interior);
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
+    this.load.audio('music_ambiente', music_ambiente);
 
     this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
     this.load.tilemapTiledJSON('pasillo', pasillo);
@@ -175,7 +177,8 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('p1LeftMazmorra');
+    this.scene.start('level3');
+
 
   }
 }
