@@ -1,5 +1,5 @@
 import Player from './personajes/player.js';
-import Boton from './boton.js';
+import Boton from './gates/boton.js';
 import Cable from './gates/cable.js';
 import AndGate from './gates/and_gate.js';
 import NotGate from './gates/not_gate.js';
