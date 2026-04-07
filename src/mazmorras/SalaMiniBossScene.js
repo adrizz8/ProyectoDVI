@@ -41,6 +41,11 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
+        // Música de mazmorra
+        this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
     }
 
     update(t, dt) {

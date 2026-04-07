@@ -18,11 +18,15 @@ export default class Cafeteria extends Phaser.Scene {
         // Carga del mapa y tilesets
         const map = this.make.tilemap({ key: 'cafeteria' });
 
-        var entradas= new Map();
-        entradas.set('salida_autobus',{x:820,y:980,direccion:'up'});
-        entradas.set('puerta_izq',{x:85,y:160,direccion:'down'});
-        entradas.set('puerta_der',{x:1145,y:160,direccion:'down'});
-        
+        var entradas = new Map();
+        entradas.set('salida_autobus', { x: 820, y: 980, direccion: 'up' });
+        // Entrada desde exterior: x coincide con el trigger en mapaFuera.json
+        entradas.set('puerta_izq', { x: 161, y: 580, direccion: 'up' });
+        entradas.set('puerta_der', { x: 896, y: 580, direccion: 'up' });
+        // Vuelta desde el pasillo
+        entradas.set('desde_pasillo_izq', { x: 85, y: 160, direccion: 'down' });
+        entradas.set('desde_pasillo_der', { x: 1145, y: 160, direccion: 'down' });
+
         this.physics.world.setBounds(
             0,
             0,
@@ -59,6 +63,8 @@ export default class Cafeteria extends Phaser.Scene {
         const spawnX = posi.x;
         const spawnY = posi.y;
         const direccion = posi.direccion;
+        // Venimos del exterior si la entrada es por una puerta del outdoor
+        const desdeExterior = (data.entrada === 'puerta_izq' || data.entrada === 'puerta_der');
 
         this.player = new Player(this, spawnX, spawnY);
         this.player.setDirection(direccion);
@@ -67,8 +73,8 @@ export default class Cafeteria extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-        this.dialogueManager= new DialogueManager(this);
-    
+        this.dialogueManager = new DialogueManager(this);
+
 
         this.enemies = this.add.group();
         this.generarnpcs();
@@ -76,44 +82,68 @@ export default class Cafeteria extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
-        // Zonas de salida con rectángulos verdes visibles para debug de posición
-        // El mapa es 38x20 tiles de 32px = 1216x640px
-        // Los huecos de la capa colisiones están en los extremos izquierdo y derecho, filas 4-5 (y=128-192)
-
-        // puerta_der → pasillo (extremo derecho del mapa, filas 4-5)
-        const zonaDer = this.add.zone(1200, 160, 48, 128);
+        // puerta_der → pasillo 
+        const zonaDer = this.add.zone(1200, 160, 60, 128);
         this.physics.world.enable(zonaDer, Phaser.Physics.Arcade.STATIC_BODY);
-        // Rectángulo verde debug — eliminar cuando funcione
-        this.add.rectangle(1200, 160, 48, 128, 0x00ff00, 0.5).setDepth(99);
 
-        // puerta_izq → mapa exterior (extremo izquierdo del mapa, filas 4-5)
-        const zonaIzq = this.add.zone(16, 160, 48, 128);
+        // puerta_izq → pasillo
+        const zonaIzq = this.add.zone(16, 160, 60, 128);
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
-        // Rectángulo verde debug — eliminar cuando funcione
-        this.add.rectangle(16, 160, 48, 128, 0x00ff00, 0.5).setDepth(99);
+
+        // Zona de salida baja derecha → volver al exterior (x=896, coincide con trigger en mapaFuera)
+        const zonaExitDer = this.add.zone(896, 635, 100, 32);
+        this.physics.world.enable(zonaExitDer, Phaser.Physics.Arcade.STATIC_BODY);
+
+        // Zona de salida baja izquierda → volver al exterior (x=161, coincide con trigger en mapaFuera)
+        const zonaExitIzq = this.add.zone(161, 635, 100, 32);
+        this.physics.world.enable(zonaExitIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
         this.physics.add.overlap(zonaDer, this.player, () => {
-            this.scene.start('pasillo', { entrada: 'desde_cafeteria' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+            });
         });
         this.physics.add.overlap(zonaIzq, this.player, () => {
-            this.scene.start('outdoorMap', { entrada: 'entrada_der' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('pasillo', { entrada: 'desde_cafeteria_izq' });
+            });
         });
-
-        /*
-        // Transición a MapaFuera (usando la zona de la puerta visual)
-        const exitZone = this.add.zone(150, 150, 200, 100);
-        this.physics.world.enable(exitZone, Phaser.Physics.Arcade.STATIC_BODY);
-        this.physics.add.overlap(this.player, exitZone, () => {
-            // Spawn en el mapa exterior (delante del edificio de la facultad)
-            this.scene.start('outdoorMap', { spawnX: 350, spawnY: 280 });
+        this.physics.add.overlap(zonaExitDer, this.player, () => {
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('outdoorMap', { entrada: 'entrada_der' });
+            });
         });
-        */
+        this.physics.add.overlap(zonaExitIzq, this.player, () => {
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
+            });
+        });
 
         // Tecla de menú (Espacio)
         this.input.keyboard.on('keydown-SPACE', () => {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
+        // Fade-in al entrar en la escena
+        this.cameras.main.fadeIn(400, 0, 0, 0);
+
+        // Si venimos del exterior: freeze breve + walk para que se vea entrar al personaje
+        if (desdeExterior) {
+            this.player.freeze();
+            this.cameras.main.once('camerafadeincomplete', () => {
+                this.player.unfreeze();
+            });
+        }
+
+        // Música ambiente
+        this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
     }
 
     update(t, dt) {
@@ -122,31 +152,31 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-    generarnpcs(){
-        
+    generarnpcs() {
+
         const npcData = [
-            { x: 270, y: 210, texture: 'npc1',frame:8,message:'a.',onFinish:null,ItemId:null, name: 'Juan' },
-            { x: 334, y: 210, texture: 'npc2',frame:4,message:'b.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 380, y: 340, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 520, y: 590, texture: 'npc1',frame:4,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 464, y: 590, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 680, y: 470, texture: 'npc2',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 1015, y: 340, texture: 'npc1',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 820, y: 160, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 860, y: 185, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 900, y: 208, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 890, y: 156, texture: 'npc3',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 950, y: 155, texture: 'npc4',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 995, y: 142, texture: 'npc1',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 950, y: 208, texture: 'npc2',frame:4,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 1070, y: 225, texture: 'npc1',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 1083, y: 285, texture: 'npc2',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 1200, y: 262, texture: 'npc4',frame:12,message:'c.',onFinish:null,ItemId:null, name: 'Maria' },
-            { x: 1015, y: 188, texture: 'npc2',frame:8,message:'c.',onFinish:null,ItemId:null, name: 'Maria' }
-            
+            { x: 270, y: 210, texture: 'npc1', frame: 8, message: 'a.', onFinish: null, ItemId: null, name: 'Juan' },
+            { x: 334, y: 210, texture: 'npc2', frame: 4, message: 'b.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 380, y: 340, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 520, y: 590, texture: 'npc1', frame: 4, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 464, y: 590, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 680, y: 470, texture: 'npc2', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 1015, y: 340, texture: 'npc1', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 820, y: 160, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 860, y: 185, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 900, y: 208, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 890, y: 156, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 950, y: 155, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 995, y: 142, texture: 'npc1', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 950, y: 208, texture: 'npc2', frame: 4, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 1070, y: 225, texture: 'npc1', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 1083, y: 285, texture: 'npc2', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 1200, y: 262, texture: 'npc4', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
+            { x: 1015, y: 188, texture: 'npc2', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' }
+
         ];
 
-       this.npcArray = npcData.map(data => 
+        this.npcArray = npcData.map(data =>
             new npc(
                 this,
                 this.player,
@@ -163,11 +193,11 @@ export default class Cafeteria extends Phaser.Scene {
 
         // añadir al grupo
         this.npcArray.forEach(npc => this.enemies.add(npc));
-        const loco= new cafeteria_loco(this,this.player,450,320,null,null,{name:'Marcos'},'',null,null);
+        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, '', null, null);
         this.enemies.add(loco);
-        const per_miron = new miron(this,this.player,707,340,null,0,{},'',null,null);
+        const per_miron = new miron(this, this.player, 707, 340, null, 0, {}, '', null, null);
         this.enemies.add(per_miron);
-        
+
     }
     showDialogue(message, nombre = '', onFinish = null) {
         if (this.dialogueManager) {
