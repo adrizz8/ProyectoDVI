@@ -175,7 +175,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('p1LeftMazmorra');
+    this.scene.start('p1RightMazmorra');
 
   }
 }
