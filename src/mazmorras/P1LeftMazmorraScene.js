@@ -13,18 +13,22 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
         // Capas
+        //const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
         const suelo = map.createLayer('Suelo', tileset, 0, 0);
         const paredes = map.createLayer('Paredes', tileset, 0, 0);
-        const decoracion = map.createLayer('Decoracion', tileset, 0, 0);
-        const basePuertas = map.createLayer('Basepuertas', tileset, 0, 0);
+        const decoracionypuerta = map.createLayer('Decoracionypuerta', tileset, 0, 0);
+        const puertasLogicas = map.createLayer('PuertasLogicas', tileset, 0, 0);
 
         // Colisiones
+        //colisiones.setCollisionByExclusion([-1]);
+        //colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
 
         // Jugador
         this.player = new Player(this, 1000, 400);
+        //this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
-        this.physics.add.collider(this.player, decoracion);
+        this.physics.add.collider(this.player, decoracionypuerta);
 
         // Cámara
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
