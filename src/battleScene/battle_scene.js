@@ -22,14 +22,28 @@ export default class BattleScene extends Phaser.Scene {
         const gm = GameManager.getInstance();
         const allNames = Object.keys(gm.playerStats);
         this._playerStats = gm.getPlayersForBattle(gm.ActualPlayers);
-        this.npcid=data.npcid;
-        this.nivel=data.nivel;
+        this.npcid = data?.npcid;
+        this.nivel = data?.nivel;
 
-        // Si es un encuentro aleatorio (no vienen enemigos predefinidos)
-        if (!data || !data.enemies) {
-            this._enemiesStats = this.generarGrupoEnemigos(gm);
-        } else {
+        // Si es un combate contra un enemigo concreto, usar los datos recibidos.
+        if (data && data.enemyName) {
+            this._enemiesStats = [{
+                name: data.enemyName,
+                hp: data.enemyHP,
+                maxHp: data.enemyMaxHp,
+                damage: data.enemyDamage,
+                spriteKey: data.enemySpriteKey ?? 'toybatalla',
+                speed: data.enemySpeed ?? 5,
+                defense: data.enemyDefense ?? 10,
+                mp: data.enemyMp ?? 30,
+                maxMp: data.enemyMaxMp ?? data.enemyMP ?? 30,
+                habilidades: data.enemyHabilidades ?? [],
+                objeto: data.enemyObjeto ?? ''
+            }];
+        } else if (data && data.enemies) {
             this._enemiesStats = data.enemies;
+        } else {
+            this._enemiesStats = this.generarGrupoEnemigos(gm);
         }
 
         this._originScene = data?.originScene ?? 'level';
@@ -246,7 +260,7 @@ export default class BattleScene extends Phaser.Scene {
             const y = 155;
 
             const sprite = this.add.image(x, y, enemy.spriteKey)
-                .setScale(2.8) // el originial era 4
+                .setScale(1) // el originial era 4
                 .setDepth(2)
                 .setInteractive({ useHandCursor: true });
 

@@ -33,6 +33,7 @@ export default class GameManager {
         // Al entrar en combate se copian a PlayerBattle.
         this.playerStats = {
             'Jugador1': {
+                displayName: 'J1',
                 hp: 100,
                 maxHp: 100,
                 mp: 50,
@@ -48,6 +49,7 @@ export default class GameManager {
                 objeto: 'espada_basica'
             },
             'Jugador2': {
+                displayName: 'Fernando',
                 hp: 100,
                 maxHp: 100,
                 mp: 50,
@@ -63,6 +65,7 @@ export default class GameManager {
                 objeto: ''
             },
             'Jugador3': {
+                displayName: 'Angela',
                 hp: 100,
                 maxHp: 100,
                 mp: 50,
@@ -78,6 +81,7 @@ export default class GameManager {
                 objeto: ''
             },
             'Jugador4': {
+                displayName: 'Victor',
                 hp: 100,
                 maxHp: 100,
                 mp: 50,

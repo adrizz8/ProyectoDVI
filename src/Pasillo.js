@@ -103,6 +103,10 @@ export default class Pasillo extends Phaser.Scene {
             this.scene.pause();
         });
 
+            this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
         // Fade in
         this.cameras.main.fadeIn(400, 0, 0, 0);
     }

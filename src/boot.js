@@ -28,6 +28,7 @@ import prota_battle from '../assets/sprites/prota_battle.png'
 import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
+import toybatalla from '../assets/sprites/toybatalla.png'
 
 import estrategiaUI1 from '../assets/images/estrategiaui1.png'
 import estrategiaUI2 from '../assets/images/estrategiaui2.png'
@@ -43,12 +44,12 @@ import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
 import pasillo from '../assets/images/pasillo.json'
 
-import music_battle from '../assets/music/batalla_normal_music.mp3'
+import music_battle from '../assets/music/vespidaze-upbeat-rpg-battle-460971.mp3'
 import music_boss from '../assets/music/batalla_boss_music.mp3'
 import music_exterior from '../assets/music/exterior_music.mp3'
 import music_interior from '../assets/music/interior_music_acreditar.mp3'
 //Puse 2 porque no me decidía
-import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
+import music_mazmorra from '../assets/music/interior_music_acreditar.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
 import music_ambiente from '../assets/music/musicaambiente.mp3'
 import estudianteprimero from '../assets/sprites/estudianteprimero.png'
@@ -56,6 +57,7 @@ import npc1 from '../assets/sprites/npc1.png';
 import npc2 from '../assets/sprites/npc2.png';
 import npc3 from '../assets/sprites/npc3.png';
 import npc4 from '../assets/sprites/npc4.png';
+import estudiantebattle from '../assets/sprites/estudianteconprisa.png';
 
 import or_gate from '../assets/images/or.png';
 import and_gate from '../assets/images/and.png';
@@ -133,6 +135,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('tilesinterior', tilesInterior);
     this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
+    this.load.image('toybatalla', toybatalla);
 
     this.load.spritesheet('tileset', tileset, {
       frameWidth: 32,
@@ -150,6 +153,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player2_battle', player2_battle);
     this.load.image('player3_battle', player3_battle);
     this.load.image('player4_battle', player4_battle);
+    this.load.image('estudiantebattle', estudiantebattle);
 
     this.load.image('menuPrincipal', menuPrincipal);
     this.load.image('estrategiaUI1', estrategiaUI1);
@@ -192,7 +196,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('level3');
+    this.scene.start('TitleScene');
 
   }
 }

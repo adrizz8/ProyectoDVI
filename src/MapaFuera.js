@@ -187,7 +187,8 @@ export default class MapaFuera extends Phaser.Scene {
                 const spawnY2 = posi2.y;
                 //const direccion2=posi2.direccion;
 
-                this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, { hp: 1 }, " ¿Quien eres tu?, te vas a enterar.", null, null);
+                this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {spriteKey: 'estudiantebattle',
+    name: 'Estudiante con prisa' }, " ¿Quien eres tu?, te vas a enterar.", null, null);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug, this.player, () => {
@@ -197,7 +198,7 @@ export default class MapaFuera extends Phaser.Scene {
                     this.player2.setVisible(true);
                     this.player2.unfreeze();
                     this.player2.setDirection('right');
-                    this.dialogueManager.showDialogue("¡No me carga el repositorio, no me cargaaaa!", 'Enemigo');
+                    this.dialogueManager.showDialogue("¡No me carga el repositorio, no me cargaaaa!", 'Estudiante con prisa');
 
                 });
                 this.physics.add.overlap(this.mov_abajo, this.player2, () => {

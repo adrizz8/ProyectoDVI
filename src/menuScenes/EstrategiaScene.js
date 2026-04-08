@@ -61,16 +61,16 @@ export default class EstrategiaScene extends Phaser.Scene {
         // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
 
         const coordenadasNombres = {
-            Jugador1: { x: 170, y: 112 },
+            Jugador1: { x: 211, y: 15 },
             Jugador3: { x: 720, y: 112 },
-            Jugador2: { x: 170, y: 442 },
+            Jugador2: { x: 211, y: 250 },
             Jugador4: { x: 720, y: 442 }
         };
         const posNombre = coordenadasNombres[nombre] || { x: 170, y: 112 };
 
-        const labelText = `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
-        this.add.text(posNombre.x, posNombre.y, labelText, {
-            fontSize: '16px',
+        const displayName = stats.displayName || `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
+        this.add.text(posNombre.x, posNombre.y, displayName, {
+            fontSize: '25px',
             fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
             fontStyle: 'bold',
@@ -236,7 +236,8 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         fondo.setStrokeStyle(2, 0x87ceeb);
         group.add(fondo);
 
-        const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${nombre}`, {
+        const displayName = stats.displayName || nombre;
+        const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${displayName}`, {
             fontSize: '20px',
             fill: '#f5d442',
             fontFamily: 'Distant Galaxy',
@@ -312,7 +313,8 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         fondo.setStrokeStyle(2, 0x5aa6ff);
         group.add(fondo);
 
-        const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${nombre}`, {
+        const displayName = stats.displayName || nombre;
+        const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${displayName}`, {
             fontSize: '20px',
             fill: '#ffffff',
             fontFamily: 'Distant Galaxy',

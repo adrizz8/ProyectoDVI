@@ -95,6 +95,10 @@ export default class Level3 extends Phaser.Scene {
             this.scene.pause();
         });
 
+        this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
 
     }
 
