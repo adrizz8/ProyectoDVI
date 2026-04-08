@@ -5,6 +5,7 @@ import primerencuentro from './personajes/primerencuentro.js';
 import DialogueManager from './dialogueManager.js';
 import GameManager from './manager.js';
 import npc from './personajes/npc.js';
+import amigo1 from './personajes/amigo1.js';
 
 /**
  * Escena del mapa exterior.
@@ -90,7 +91,7 @@ export default class MapaFuera extends Phaser.Scene {
             this.scene.start('level3');
         });
         this.physics.add.overlap(this.entrada_der, this.player, () => {
-            this.scene.start('cafeteria', { entrada: 'puerta_der' });
+            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
         });
         // COMENTADO: overlap izquierda desactivado de momento
         // this.physics.add.overlap(this.entrada_izq, this.player, () => {
@@ -99,7 +100,14 @@ export default class MapaFuera extends Phaser.Scene {
 
 
         // Colisiones del jugador con la capa dedicada
-        this.physics.add.collider(this.player, colisiones);
+        this.colisiones = colisiones;
+        this.physics.add.collider(this.player, this.colisiones);
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
+        }
 
 
         //entra en if si nivel no ha sido completado
@@ -242,6 +250,9 @@ export default class MapaFuera extends Phaser.Scene {
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }
+        if (this.amigo1 && this.amigo1.update) {
+            this.amigo1.update(t, dt);
+        }
         if (this.player2 && this.player2.update) {
             this.player2.update(t, dt);
         }
@@ -301,7 +312,7 @@ export default class MapaFuera extends Phaser.Scene {
             'Carlos'
         );
         this.dialogueManager.showDialogue(
-            'Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando, vuestro HUD y vuestra voz en el pinganillo... pero la implementación final os toca a vosotros.',
+            'Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando, vuestra voz en el pinganillo... pero la implementación final os toca a vosotros.',
             'Ismael'
         );
         this.dialogueManager.showDialogue(
@@ -320,12 +331,12 @@ export default class MapaFuera extends Phaser.Scene {
      */
     _spawnNPCsPostBoss() {
         const npcData = [
-            { x: 250, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo! Pero sigo esperando que mi código compile... lleva 3 días en "Pending".' },
-            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Dicen que un novato tumbó al guarda de la cafetería. Yo intenté tirarle un Exception, pero me devolvió un "Access Denied" en la cara.' },
-            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar. ¿Fumar? No, es que mi sistema de refrigeración está fallando.' },
-            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas de arriba. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
-            { x: 200, y: 600, texture: 'npc2', frame: 12, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en las puertas de salida.' },
-            { x: 600, y: 650, texture: 'npc3', frame: 4, message: '¿Ves ese árbol? Pues tiene mejores gráficos que mi último proyecto de Gráficos por Computador.' },
+            { x: 250, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!.' },
+            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Si vas para dentro, pídeme otro cubo de tercios.' },
+            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar.' },
+            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
+            { x: 200, y: 600, texture: 'npc2', frame: 12, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en seguir pidiendo botellines.' },
+            { x: 600, y: 650, texture: 'npc3', frame: 4, message: 'Esta tarde, sangriada.' },
         ];
 
         this._outdoorNpcs = npcData.map(data =>

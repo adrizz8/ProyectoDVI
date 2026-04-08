@@ -38,7 +38,6 @@ import arrancar from '../assets/music/arrancar.wav'
 import parar from '../assets/music/parar.wav'
 import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
-import MapaFueraAux from '../assets/images/mapa_aux.json'
 import pasillo from '../assets/images/pasillo.json'
 
 import music_battle from '../assets/music/batalla_normal_music.mp3'
@@ -165,7 +164,6 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_mazmorra2', music_mazmorra2);
     this.load.audio('music_ambiente', music_ambiente);
 
-    this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
     this.load.tilemapTiledJSON('pasillo', pasillo);
 
     // Dungeon Assets
@@ -188,7 +186,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('p1RightMazmorra');
+    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
 
   }
 }

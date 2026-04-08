@@ -7,8 +7,8 @@ import GameManager from '../manager.js';
 export default class amigo1 extends NPC {
 
 
-    constructor(scene, player, x, y, texture,frame=0, message = null, onFinish = null, itemId = null, name = '')  {
-        super(scene, player, x, y, texture,frame, message , onFinish , itemId , name);
+    constructor(scene, player, x, y, texture, frame = 0, message = null, onFinish = null, itemId = null, name = '') {
+        super(scene, player, x, y, texture, frame, message, onFinish, itemId, name);
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
@@ -20,7 +20,7 @@ export default class amigo1 extends NPC {
         // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
         this.body.setOffset(this.width * 0.25, this.height * 0.7);
 
-        this.gm= GameManager.getInstance();
+        this.gm = GameManager.getInstance();
 
         // ¿Ya se unió P1 al grupo?
         this._unidoAlGrupo = this.gm.ActualPlayers.includes('Jugador2');
@@ -68,7 +68,7 @@ export default class amigo1 extends NPC {
 
 
     /**
-     * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
+     * Métodos preUpdate de Phaser. Gestiona el seguimiento del jugador si está en el grupo.
      * @override
      */
     preUpdate(t, dt) {
@@ -76,15 +76,46 @@ export default class amigo1 extends NPC {
 
         if (this.frozen) {
             this.body.setVelocity(0, 0);
-            this.anims.stop();
             return;
         }
 
-        let moving = false;
+        if (this._unidoAlGrupo) {
+            // Desactivar el colisionador con el jugador para que no le estorbe
+            if (this.collider && this.collider.active) {
+                this.collider.active = false;
+            }
 
-        // Reproducir la animación correspondiente: walk o idle según la última dirección
-        const animState = moving ? 'walk5' : 'idle5';
-        this.play(`${animState}-${this.lastDirection}`, true);
+            const dist = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
+            const stopDist = 60;
+            const followDist = 80;
+
+            if (dist > followDist) {
+                // Moverse hacia el jugador
+                const angle = Phaser.Math.Angle.Between(this.x, this.y, this.player.x, this.player.y);
+                const speed = 150;
+                this.body.setVelocityX(Math.cos(angle) * speed);
+                this.body.setVelocityY(Math.sin(angle) * speed);
+
+                // Actualizar dirección para animación
+                const deg = Phaser.Math.RadToDeg(angle);
+                const absDeg = Math.abs(deg);
+
+                if (absDeg < 45) this.lastDirection = 'right';
+                else if (absDeg > 135) this.lastDirection = 'left';
+                else if (deg > 0) this.lastDirection = 'down';
+                else this.lastDirection = 'up';
+
+                this.play(`walk5-${this.lastDirection}`, true);
+            } else {
+                // Parar cerca del jugador
+                this.body.setVelocity(0, 0);
+                this.play(`idle5-${this.lastDirection}`, true);
+            }
+        } else {
+            // No unido: estático
+            this.body.setVelocity(0, 0);
+            this.play(`idle5-${this.lastDirection}`, true);
+        }
     }
 
 
@@ -115,22 +146,15 @@ export default class amigo1 extends NPC {
             this.player.name || 'Tú',
             () => {
                 this.scene.showDialogue(
-                    'Bah, otro lunes normal. Ese conserje mutante de la puerta es solo un Cortafuegos Físico. Ya intenté salir, pero mi velocidad de bus no da para esquivarlo.',
+                    'Chill bro, cómo se nota que eres novato.',
                     'P1',
                     () => {
-                        // Entra Ismael por radio/megáfono
                         this.scene.showDialogue(
-                            '¡P1! Sigues vivo. Novato, P1 tiene la mochila reforzada con placas base y la paciencia de quien ha repetido Computadores cuatro veces. Él absorberá los golpes.',
-                            'Ismael',
+                            'Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
+                            'P1',
                             () => {
-                                this.scene.showDialogue(
-                                    'Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
-                                    'P1',
-                                    () => {
-                                        // Reclutamiento de P1
-                                        this.unirse();
-                                    }
-                                );
+                                // Reclutamiento de P1
+                                this.unirse();
                             }
                         );
                     }
@@ -139,16 +163,18 @@ export default class amigo1 extends NPC {
         );
     }
 
-    contrario_player(){
 
-        if(this.player.lastDirection=='right'){
-            return 'left';
-        }else{
-            return 'right';
-        }
+
+    contrario_player() {
+        const dir = this.player.lastDirection;
+        if (dir === 'right') return 'left';
+        if (dir === 'left') return 'right';
+        if (dir === 'up') return 'down';
+        if (dir === 'down') return 'up';
+        return 'right';
     }
 
-    unirse(){
+    unirse() {
         this._unidoAlGrupo = true;
         this.gm.AddCompañero('Jugador2');
     }

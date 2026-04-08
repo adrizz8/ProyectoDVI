@@ -13,7 +13,6 @@ import BattleScene from './battleScene/battle_scene.js';
 import MapaFuera from './MapaFuera.js'
 import Cafeteria from './Cafeteria.js'
 import Prematricula from './prematricula_scene.js'
-import MapaFueraAux from './MapaFueraAux.js';
 import Pasillo from './Pasillo.js';
 import EntradaMazmorra from './mazmorras/EntradaMazmorraScene.js';
 import P1RightMazmorra from './mazmorras/P1RightMazmorraScene.js';
@@ -42,7 +41,7 @@ let config = {
     },
     pixelArt: true,
 
-    scene: [Boot, TitleScene, Prematricula, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera, Cafeteria, MapaFueraAux, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
+    scene: [Boot, TitleScene, Prematricula, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
 
     physics: {
         default: 'arcade',

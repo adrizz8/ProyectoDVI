@@ -91,7 +91,8 @@ export default class Cafeteria extends Phaser.Scene {
         }
 
         // Colisiones del jugador con la capa dedicada
-        this.physics.add.collider(this.player, colisiones);
+        this.colisiones = colisiones;
+        this.physics.add.collider(this.player, this.colisiones);
 
         // Comprobamos si la cafetería ya ha sido completada (boss derrotado)
         const cafeteriaCompletada = this.gm.estadoNivel('cafeteria');
@@ -103,6 +104,16 @@ export default class Cafeteria extends Phaser.Scene {
         } else {
             // Cafetería liberada: NPCs normales andando tranquilos (menos, más relajados)
             this._generarCafeteriaLibeada();
+        }
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga (si no ha sido spawneado ya como NPC en caos)
+        if (this.gm.ActualPlayers.includes('Jugador2') && !this.amigo1) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+        }
+
+        // Colisiones para los NPC que siguen al jugador (P1)
+        if (this.amigo1) {
+            this.physics.add.collider(this.amigo1, this.colisiones);
         }
 
         // El mapa es 38x20 tiles de 32px = 1216x640px
@@ -121,6 +132,13 @@ export default class Cafeteria extends Phaser.Scene {
 
             this.physics.add.overlap(zonaDer, this.player, () => {
                 if (this._transitioning) return;
+
+                // Bloqueo de progresión: requiere derrotar al boss y a los otros dos npcs
+                if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf') || !this.gm.isDefeated('npc_miron_caf')) {
+                    this.showDialogue("¡Espera! No puedes pasar al pasillo todavía. El conserje y esos dos tipos raros siguen dando problemas. ¡Encárgate de ellos primero!", "Veterano de Rugby");
+                    return;
+                }
+
                 this._transitioning = true;
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -134,7 +152,8 @@ export default class Cafeteria extends Phaser.Scene {
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
         // puerta exterior con color para que se note que hay una puerta
-        this.add.rectangle(895, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
+        this.add.rectangle(161, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
+        this.add.rectangle(896, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
 
         // Zona de salida baja derecha → volver al exterior (x=896, coincide con trigger en mapaFuera)
         const zonaExitDer = this.add.zone(896, 635, 100, 32);
@@ -146,6 +165,19 @@ export default class Cafeteria extends Phaser.Scene {
         this.physics.add.overlap(zonaIzq, this.player, () => {
             // Solo activar si el jugador entró (no si spaweó encima)
             if (this._transitioning || this._zonaIzqMustExit) return;
+
+            // Bloqueo de progresión: requiere derrotar al boss y a los otros dos npcs
+            if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf') || !this.gm.isDefeated('npc_miron_caf')) {
+                // Crear al veterano solo si no existe ya
+                if (!this.veteranoRugby) {
+                    this.veteranoRugby = new npc(this, this.player, 100, 100, 'npc2', 2, "¡Eh! Ni se te ocurra intentar pasar al pasillo. Aquí aplicamos la ley de la melé: nadie avanza hasta que el campo esté despejado. ¡Lárgate y derrota a esos tres!", null, null, "Veterano de Rugby");
+                }
+
+                this._zonaIzqMustExit = true; // Forzamos a que el jugador salga de la zona antes de volver a activar el diálogo
+                this.showDialogue("¿A dónde vas, novato? Nadie pasa al pasillo hasta que la cafetería esté limpia de bugs... y de porteros pesados. ¡Vuelve al lío!", "Veterano de Rugby");
+                return;
+            }
+
             this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -178,11 +210,22 @@ export default class Cafeteria extends Phaser.Scene {
         // Fade-in al entrar en la escena
         this.cameras.main.fadeIn(400, 0, 0, 0);
 
-        // Si venimos del exterior: freeze breve + walk para que se vea entrar al personaje
-        if (desdeExterior) {
+        // Si venimos del exterior (y no es un retorno de batalla): freeze breve + diálogo de bienvenida una sola vez
+        if (desdeExterior && !this.savedPos) {
             this.player.freeze();
             this.cameras.main.once('camerafadeincomplete', () => {
                 this.player.unfreeze();
+
+                // Diálogo automático al entrar (solo una vez, si el nivel está en caos)
+                if (!cafeteriaCompletada && !this.gm.isDefeated('bienvenida_caf_once')) {
+                    this.time.delayedCall(500, () => {
+                        this.showDialogue(
+                            'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.',
+                            'Estudiante'
+                        );
+                        this.gm.markDefeated('bienvenida_caf_once');
+                    });
+                }
             });
         }
 
@@ -222,7 +265,7 @@ export default class Cafeteria extends Phaser.Scene {
     _generarCafeteriaConCaos() {
 
         // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
-        const conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {}, 'No pasaras!!', null, null, 'conserje_caf');
+        this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {}, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
             // Acabamos de derrotar al conserje boss → escena de victoria
@@ -230,7 +273,7 @@ export default class Cafeteria extends Phaser.Scene {
             this.gm.CompleteNivel('cafeteria');
 
             this.showDialogue('¡SISTEMA SOBRECARGADO! No puede ser... ¡PROCESO TERMINADO!', 'Conserje', () => {
-                conserj.huir();
+                this.conserj.huir();
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
                     this.showDialogue(
@@ -258,17 +301,17 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- NPCs de fondo asustados (moviéndose nerviosos) ---
         const npcData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡Dios mío! ¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
-            { x: 200, y: 320, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos Físico en la puerta!' },
-            { x: 450, y: 320, texture: 'npc3', frame: 8, message: '¡He bebido tanto que ahora veo los punteros en 3D... y no son a NULL precisamente!' },
-            { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'He intentado salir a fumar, pero el humo se ha quedado en un búfer circular y no sale del edificio.' },
-            { x: 150, y: 580, texture: 'npc4', frame: 8, message: 'Llevo 48 horas seguidas con la práctica de DVI. Mis ojos están en 8 bits ahora mismo.' },
-            { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige la indentación.' },
-            { x: 800, y: 200, texture: 'npc4', frame: 8, message: '¿Alguien tiene un cargador de tipo C? Me he quedado sin batería social.' },
-            { x: 840, y: 220, texture: 'npc3', frame: 8, message: '¡Mi código no funciona y no sé por qué! ¡Mi código funciona Y NO SÉ POR QUÉ! ¡Necesito un cubata!' },
-            { x: 920, y: 200, texture: 'npc4', frame: 8, message: '¿Seguro que no es un sueño? He visto a un puntero perdiendo su referencia y ha sido traumático.' },
-            { x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo. ¡Eran de los de primero, ni siquiera habían compilado nada todavía!' },
-            { x: 970, y: 280, texture: 'npc4', frame: 8, message: '¡Me da igual suspender! ¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Estadística!' },
+            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
+            { x: 200, y: 320, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos en la puerta!' },
+            { x: 450, y: 320, texture: 'npc3', frame: 8, message: 'Cómo no puedo salir me voy a tomar un café y lo que surja' },
+            { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'Nos falta uno para un mus, ¿te vienes?.' },
+            { x: 100, y: 580, texture: 'npc4', frame: 8, message: 'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.' },
+            { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
+            { x: 860, y: 200, texture: 'npc4', frame: 8, message: '¿Alguien tiene un cargador de tipo C? Me he quedado sin batería.' },
+            { x: 850, y: 270, texture: 'npc3', frame: 8, message: '¡Mi código no funciona y no sé por qué! ¡Mi código funciona Y NO SÉ POR QUÉ!' },
+            { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
+            { x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
+            { x: 970, y: 280, texture: 'npc4', frame: 8, message: '¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Ingeniería del Software!' },
             { x: 1050, y: 320, texture: 'npc2', frame: 12, message: '¿Y los profesores? ¡Han perdido la cabeza! ¡Creen que somos bugs que hay que debugear con fuego!' },
         ];
 
@@ -293,7 +336,7 @@ export default class Cafeteria extends Phaser.Scene {
         this.npcArray.forEach(npc => this.enemies.add(npc));
 
         // --- NPC Loco (cafeteria_loco) --- 
-        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, 'AHHHHHHHH', null, null, 'npc_loco_caf');
+        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 
         if (this.gm.isJustDefeated('npc_loco_caf')) {
             const posi = this.getPosiPostComb(this.savedPos);
@@ -328,13 +371,13 @@ export default class Cafeteria extends Phaser.Scene {
         this.enemies.add(per_miron);
 
         // --- Andrés en la barra (da el Pincho de Tortilla) ---
-        const andres = new npc(
+        this.andres = new npc(
             this,
             this.player,
             310, 140,   // cerca de la barra, fuera de la colisión de la fila 3
             'npc2',
             8,
-            'Bienvenido, chaval. Primer día, ¿eh? Toma, un Pincho de Tortilla. En este caos hay que mantener las fuerzas. ¡La grasa es el combustible del héroe!',
+            'Bienvenido, chaval. Primer día, ¿eh? Toma, un Pincho de Tortilla. En este caos hay que mantener las fuerzas.',
             () => {
                 // Da el pincho de tortilla la primera vez
                 if (!this.gm.isDefeated('andres_dio_pincho')) {
@@ -357,13 +400,28 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
         // P1 es amigo1 pero con los diálogos del lore del GDD
-        this.amigo1 = new amigo1(this, this.player, 1040, 470, '', 0, null, null, null, 'P1');
+        this.amigo1 = new amigo1(this, this.player, 1040, 470, 'amigo1', 0, null, null, null, 'P1');
+
     }
 
     /**
      * Genera NPCs normales en la cafetería después de derrotar al boss (post-victoria inmediata).
      */
     _generarNPCsPostVictoria() {
+        // Limpiamos los NPCs del estado de caos para que no se solapen con los nuevos
+        if (this.enemies) {
+            this.enemies.clear(true, true);
+        }
+        if (this.andres) {
+            this.andres.destroy();
+            this.andres = null;
+        }
+        if (this.amigo1) {
+            this.amigo1.destroy();
+            this.amigo1 = null;
+        }
+        this._wanderingNpcs = [];
+
         const postBossNpcs = [
             { x: 400, y: 300, texture: 'npc1', frame: 0, message: '¡Por fin! ¡El conserje ha caído! ¡Somos libres!' },
             { x: 600, y: 400, texture: 'npc3', frame: 0, message: '¡No me lo puedo creer! ¡Habéis tumbado al guarda!' },
@@ -381,13 +439,13 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarCafeteriaLibeada() {
         const npcPostData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Lanchares controla el piso de arriba. No subas solo. Dicen que si te pilla, te hace un backup del cerebro sin comprimir y te estalla la cabeza.' },
-            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues mi última nota en su examen fue un error de segmentación.' },
-            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada! Mi café sabe a Java... y no del bueno.' },
-            { x: 900, y: 450, texture: 'npc3', frame: 0, message: 'He intentado compilar mi cena pero me ha dado 404: Filete Not Found.' },
-            { x: 500, y: 580, texture: 'npc1', frame: 8, message: 'Si vais a subir al piso de arriba, reunid un equipo. Yo me quedo aquí, mi procesador social está al 100% de uso.' },
-            { x: 1000, y: 200, texture: 'npc2', frame: 0, message: '¿Borracho? No, no... es que mi sistema de equilibrio está en modo de compatibilidad con Windows 95.' },
-            { x: 200, y: 400, texture: 'npc4', frame: 4, message: 'Llevo tanto tiempo aquí que mi piel ha empezado a renderizarse en baja resolución.' },
+            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Lanchares controla la planta entera. Dicen que si te pilla, te hace un backup del cerebro y te estalla la cabeza.' },
+            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues en el parcial saqué un 1.' },
+            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada!' },
+            { x: 900, y: 450, texture: 'npc3', frame: 0, message: 'Pues ahora que estamos aqui a salvo habrá que echarse una cerveza.' },
+            { x: 500, y: 580, texture: 'npc1', frame: 8, message: 'A mi me da igual que haya enemigo o no, no iba a salir de la cafetería de todas formas.' },
+            { x: 1000, y: 200, texture: 'npc2', frame: 0, message: '¿Borracha? No, no... es que tengo el horario tan partido que me esta volviendo loca.' },
+            { x: 200, y: 400, texture: 'npc4', frame: 4, message: 'Relajate un poco, ¿quieres un piti?.' },
         ];
 
         this._wanderingNpcs = npcPostData.map(data =>

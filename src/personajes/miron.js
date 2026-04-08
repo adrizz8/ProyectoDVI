@@ -10,26 +10,26 @@ import NPCBattle from './npc_battle';
 
 export default class miron extends NPCBattle {
 
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,NpcId) {
-        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,NpcId);
-    
-        this.lastDirection='';
-        
+    constructor(scene, player, x, y, texture, frame, stats = {}, message = null, onFinish = null, itemId = null, NpcId) {
+        super(scene, player, x, y, texture, frame, stats, message, onFinish, itemId, NpcId);
+
+        this.lastDirection = '';
+
         this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
 
         this.body.setSize(this.width, this.height);
 
-        this.luchar=false;
-        
+        this.luchar = false;
+
         this.body.moves = true;
         this.speed = 225;
 
-        
+
         // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
         this.body.setOffset(this.width * 0.25, this.height * 0.7);
 
-        this.move_x=0;
+        this.move_x = 0;
 
         // Definición de animaciones direccionales
         const animsConfig = [
@@ -72,7 +72,7 @@ export default class miron extends NPCBattle {
     }
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        
+
 
         if (this.frozen) {
             this.body.setVelocity(0, 0);
@@ -81,78 +81,78 @@ export default class miron extends NPCBattle {
         }
         let moving = false;
 
-        if(!this.luchar){
-            
-            if (this.lastDirection=='right') {
+        if (!this.luchar) {
 
-                if(10<this.player.x-this.x&&this.player.x-this.x<155&&Math.abs(this.y-this.player.y)<=25){
+            if (this.lastDirection == 'right') {
+
+                if (10 < this.player.x - this.x && this.player.x - this.x < 155 && Math.abs(this.y - this.player.y) <= 25) {
                     console.log('derecha');
                     this.pillado();
                 }
 
-                this.move_x-=1;
-                if(this.move_x<=0){
-                    this.lastDirection='left';
+                this.move_x -= 1;
+                if (this.move_x <= 0) {
+                    this.lastDirection = 'left';
                 }
-                
-            }
-            else if (this.lastDirection=='left') {
 
-                if(this.player.x-this.x<-10&&-155<this.player.x-this.x &&Math.abs(this.y-this.player.y)<=25){
+            }
+            else if (this.lastDirection == 'left') {
+
+                if (this.player.x - this.x < -10 && -155 < this.player.x - this.x && Math.abs(this.y - this.player.y) <= 25) {
                     console.log('izquierda');
                     this.pillado();
                 }
 
-                this.move_x+=1;
-                if(this.move_x>150){
-                    this.lastDirection='right';
+                this.move_x += 1;
+                if (this.move_x > 150) {
+                    this.lastDirection = 'right';
                 }
-                
-            } 
+
+            }
             else {
                 this.body.setVelocityX(0);
                 this.body.setVelocityY(0);
             }
 
-        }else{
-            if(this.lastDirection=='right'){
-                moving=true;
+        } else {
+            if (this.lastDirection == 'right') {
+                moving = true;
                 this.body.setVelocityX(this.speed);
-                if(Math.abs(this.player.x-this.x)<60){
+                if (Math.abs(this.player.x - this.x) < 60) {
                     this.freeze();
                     this.interact();
                     this.player.setDirection('left');
                 }
             }
-            else{
-                moving=true;
+            else {
+                moving = true;
                 this.body.setVelocityX(-this.speed);
 
-                if(Math.abs(this.player.x-this.x)<60){
+                if (Math.abs(this.player.x - this.x) < 60) {
                     this.freeze();
                     this.interact();
                     this.player.setDirection('right');
                 }
             }
-            
+
         }
 
         // Reproducir la animación correspondiente: walk o idle según la última dirección
         const animState = moving ? 'walk4' : 'idle4';
         this.play(`${animState}-${this.lastDirection}`, true);
-    
+
     }
-    freeze(){
-        this.play('idle4-'+this.lastDirection,true);
-        this.frozen=true;
+    freeze() {
+        this.play('idle4-' + this.lastDirection, true);
+        this.frozen = true;
     }
     unfreeze() {
         this.frozen = false;
     }
 
-    pillado(){
+    pillado() {
         this.player.freeze();
 
-        this.luchar=true;
+        this.luchar = true;
     }
 }

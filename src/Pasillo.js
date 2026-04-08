@@ -4,6 +4,7 @@ import trigger from './trigger.js';
 import npc from './personajes/npc.js';
 import DialogueManager from './dialogueManager.js';
 import GameManager from './manager.js';
+import amigo1 from './personajes/amigo1.js';
 
 /**
  * Escena del Pasillo (Planta 1).
@@ -64,7 +65,8 @@ export default class Pasillo extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         // Colisiones del jugador con la capa dedicada
-        this.physics.add.collider(this.player, colisiones);
+        this.colisiones = colisiones;
+        this.physics.add.collider(this.player, this.colisiones);
 
         // DialogueManager
         this.dialogueManager = new DialogueManager(this);
@@ -72,6 +74,12 @@ export default class Pasillo extends Phaser.Scene {
 
         // --- NPCs del lore de la Planta 1 ---
         this._spawnNPCsPlanta1();
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (this.gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
+        }
 
         // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
         const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
@@ -276,6 +284,9 @@ export default class Pasillo extends Phaser.Scene {
     update(t, dt) {
         if (this.player && this.player.update) {
             this.player.update(t, dt);
+        }
+        if (this.amigo1 && this.amigo1.update) {
+            this.amigo1.update(t, dt);
         }
     }
 }
