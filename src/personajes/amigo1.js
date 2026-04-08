@@ -151,7 +151,7 @@ export default class amigo1 extends NPC {
                     'P1',
                     () => {
                         this.scene.showDialogue(
-                            'Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
+                            'Me llamo Fernando, soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
                             'P1',
                             () => {
                                 // Reclutamiento de P1
@@ -178,7 +178,7 @@ export default class amigo1 extends NPC {
     unirse() {
         this._unidoAlGrupo = true;
         this.gm.AddCompañero('Jugador2');
-        
+
         // Habilitar movimiento físico para que pueda seguir al jugador
         if (this.body) {
             this.body.moves = true;

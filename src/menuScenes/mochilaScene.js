@@ -88,6 +88,7 @@ export default class MochilaScene extends Phaser.Scene {
 
     closeScene() {
         this.scene.start('MenuPrincipal');
+        this.scene.bringToTop('MenuPrincipal');
     }
 
     refreshView() {

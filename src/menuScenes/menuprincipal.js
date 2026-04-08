@@ -3,7 +3,13 @@ class MenuPrincipal extends Phaser.Scene {
         super('MenuPrincipal');
     }
 
-    create() {
+    create(data) {
+        // Flag para evitar que el mismo pulsado de tecla que abre el menú lo cierre
+        this.canClose = false;
+        this.time.delayedCall(100, () => { this.canClose = true; });
+
+        this.scene.bringToTop('MenuPrincipal');
+
         // Creamos la imagen de fondo del menú con alpha 0 y la tweenamos para aparecer lentamente
         const bg = this.add.image(608, 320, 'menuPrincipal').setName('menuPrincipal').setOrigin(0.5).setAlpha(0);
         this.tweens.add({
@@ -16,7 +22,7 @@ class MenuPrincipal extends Phaser.Scene {
         // ── Stats del jugador ──────────────────────────────────────────
         // Recupera los datos guardados en el registro global del juego
         const horasJuego = this.registry.get('horasJuego') ?? 0;
-        const dinero     = this.registry.get('dinero')     ?? 0;
+        const dinero = this.registry.get('dinero') ?? 0;
 
         this.horasText = this.add.text(305, 150, `Tiempo: ${this.formatearHoras(horasJuego)}`, {
             fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
@@ -31,9 +37,9 @@ class MenuPrincipal extends Phaser.Scene {
         // ── Botones ────────────────────────────────────────────────────
         const botones = [
             { x: 800, y: 275, scene: 'EstrategiaScene', text: 'Estrategia' },
-            { x: 800, y: 345, scene: 'MochilaScene',   text: 'Mochila'   },
-            { x: 800, y: 515, scene: null,             text: 'Salir'     },  
-            { x: 800, y: 425, scene: 'OpcionesScene',  text: 'Opciones'  },
+            { x: 800, y: 345, scene: 'MochilaScene', text: 'Mochila' },
+            { x: 800, y: 515, scene: null, text: 'Salir' },
+            { x: 800, y: 425, scene: 'OpcionesScene', text: 'Opciones' },
         ];
 
         botones.forEach(({ x, y, scene, text }) => {
@@ -46,15 +52,16 @@ class MenuPrincipal extends Phaser.Scene {
                 strokeThickness: 5
             }).setOrigin(0.5).setInteractive();
 
-            btn.on('pointerover',  () => {
+            btn.on('pointerover', () => {
                 btn.setStyle({ fill: '#f5d442' });
             });
-            btn.on('pointerout',   () => {
+            btn.on('pointerout', () => {
                 btn.setStyle({ fill: '#ffffff' });
             });
-            btn.on('pointerdown',  () => {
+            btn.on('pointerdown', () => {
                 if (scene) {
                     this.scene.start(scene);
+                    this.scene.bringToTop(scene);
                 } else {
                     this.game.destroy(true);
                 }
@@ -63,9 +70,11 @@ class MenuPrincipal extends Phaser.Scene {
 
         // ── Abrir / cerrar con ESPACIO ─────────────────────────────────
         // Guardamos el nombre de la escena que abrió el menú (se recibe en data al lanzarlo)
-        const previousScene = this.scene.settings.data?.from;
+        const previousScene = data?.from || this.scene.settings.data?.from;
 
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (!this.canClose) return;
+
             // Ocultamos la imagen con un tween y solo entonces cerramos la escena
             const bg = this.children.getByName('menuPrincipal') || this.add.image(608, 320, 'menuPrincipal');
             this.tweens.add({
@@ -77,6 +86,7 @@ class MenuPrincipal extends Phaser.Scene {
                     this.scene.stop();
                     if (previousScene) {
                         this.scene.resume(previousScene);
+                        this.scene.bringToTop(previousScene); // Por si acaso
                     }
                 }
             });

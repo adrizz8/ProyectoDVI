@@ -203,7 +203,9 @@ export default class Cafeteria extends Phaser.Scene {
 
         // Tecla de menú (Espacio)
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
         });
 
@@ -236,6 +238,10 @@ export default class Cafeteria extends Phaser.Scene {
     }
 
     update(t, dt) {
+        // Actualizar el contador global de tiempo
+        const sec = this.registry.get('horasJuego') || 0;
+        this.registry.set('horasJuego', sec + dt / 1000);
+
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }

@@ -49,7 +49,7 @@ export default class Level3 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-        this.dialogM = new DialogueManager(this);
+        this.dialogueManager = new DialogueManager(this);
 
         if (!gm.estadoNivel('level3')) {
 
@@ -88,10 +88,10 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player, groundLayer);
         this.physics.add.collider(this.player, objectsLayer);
 
-
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
         });
 
@@ -145,8 +145,8 @@ export default class Level3 extends Phaser.Scene {
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
-        if (this.dialogM) {
-            this.dialogM.showDialogue(message, nombre, onFinish);
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
         }
     }
 }

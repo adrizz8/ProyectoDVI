@@ -61,6 +61,7 @@ export default class EstrategiaScene extends Phaser.Scene {
         this.closePanel();
         this.scene.stop();
         this.scene.start('MenuPrincipal');
+        this.scene.bringToTop('MenuPrincipal');
     }
 
     crearCardPersonaje(x, y, nombre, stats) {
