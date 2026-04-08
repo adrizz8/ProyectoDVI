@@ -47,6 +47,7 @@ import music_interior from '../assets/music/interior_music_acreditar.mp3'
 //Puse 2 porque no me decidía
 import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
+import music_ambiente from '../assets/music/musicaambiente.mp3'
 import estudianteprimero from '../assets/sprites/estudianteprimero.png'
 import npc1 from '../assets/sprites/npc1.png';
 import npc2 from '../assets/sprites/npc2.png';
@@ -59,6 +60,11 @@ import not_gate from '../assets/images/not.png';
 import xor_gate from '../assets/images/xor.png';
 import cable_off from '../assets/images/cable_off.png';
 import cable_on from '../assets/images/cable_on.png';
+import cable_left_off from '../assets/images/cable_left_off.png';
+import cable_left_on from '../assets/images/cable_left_on.png';
+import cable_right_off from '../assets/images/cable_right_off.png';
+import cable_right_on from '../assets/images/cable_right_on.png';
+import boton from '../assets/images/boton.png';
 
 import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
 import p1RightMazmorra from '../assets/images/p1derechadungeon.json';
@@ -108,7 +114,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('xor_gate', xor_gate);
     this.load.image('cable_off', cable_off);
     this.load.image('cable_on', cable_on);
-    this.load.image('boton', star);
+    this.load.image('cable_left_off', cable_left_off);
+    this.load.image('cable_left_on', cable_left_on);
+    this.load.image('cable_right_off', cable_right_off);
+    this.load.image('cable_right_on', cable_right_on);
+    this.load.image('boton', boton);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
@@ -152,6 +162,7 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_interior', music_interior);
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
+    this.load.audio('music_ambiente', music_ambiente);
 
     this.load.tilemapTiledJSON('MapaFueraAuxt', MapaFueraAux);
     this.load.tilemapTiledJSON('pasillo', pasillo);

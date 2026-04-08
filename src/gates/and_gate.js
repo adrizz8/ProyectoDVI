@@ -14,6 +14,7 @@ export default class AndGate extends Phaser.GameObjects.Sprite {
         super(scene, x, y, 'and_gate');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
+        this.setDisplaySize(80, 120);
 
         this.inputA = false;
         this.inputB = false;

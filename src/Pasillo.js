@@ -17,8 +17,11 @@ export default class Pasillo extends Phaser.Scene {
 
         // Puntos de entrada al pasillo
         var entradas = new Map();
-        // Entrada desde la cafetería (puerta derecha): aparece en el lado izquierdo del pasillo
+        // Desde la puerta derecha de la cafetería: aparece en el lado izquierdo del pasillo
         entradas.set('desde_cafeteria', { x: 96, y: 300, direccion: 'right' });
+        entradas.set('desde_cafeteria_der', { x: 96, y: 300, direccion: 'right' });
+        // Desde la puerta izquierda de la cafetería: aparece en el lado derecho del pasillo
+        entradas.set('desde_cafeteria_izq', { x: map.widthInPixels - 96, y: 300, direccion: 'left' });
 
         this.physics.world.setBounds(
             0,
@@ -59,11 +62,18 @@ export default class Pasillo extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
-        // Zona de salida: volver a la cafetería (lado izquierdo del pasillo)
-        const salidaCafeteria = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
-        this.physics.world.enable(salidaCafeteria, Phaser.Physics.Arcade.STATIC_BODY);
-        this.physics.add.overlap(this.player, salidaCafeteria, () => {
-            this.scene.start('cafeteria', { entrada: 'puerta_der' });
+        // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
+        const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
+        this.physics.world.enable(salidaCafeteriaDer, Phaser.Physics.Arcade.STATIC_BODY);
+        this.physics.add.overlap(this.player, salidaCafeteriaDer, () => {
+            this.scene.start('cafeteria', { entrada: 'desde_pasillo_der' });
+        });
+
+        // Zona de salida derecha: volver a la cafetería (por la puerta izq de cafetería)
+        const salidaCafeteriaIzq = this.add.zone(map.widthInPixels - 16, map.heightInPixels / 2, 32, map.heightInPixels);
+        this.physics.world.enable(salidaCafeteriaIzq, Phaser.Physics.Arcade.STATIC_BODY);
+        this.physics.add.overlap(this.player, salidaCafeteriaIzq, () => {
+            this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
         });
 
         // Tecla de menú (Espacio)

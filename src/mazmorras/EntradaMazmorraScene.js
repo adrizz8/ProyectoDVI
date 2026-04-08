@@ -13,17 +13,24 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
         // Capas
+        const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
         const suelo = map.createLayer('Suelo', tileset, 0, 0);
         const paredes = map.createLayer('Pared', tileset, 0, 0);
-        const decoracion = map.createLayer('decoracion', tileset, 0, 0);
         const ordenador = map.createLayer('Ordenadorpuerta', tileset, 0, 0);
-        
+        const limites = map.createLayer('limites', tileset, 0, 0);
+        const decoracion = map.createLayer('decoracion', tileset, 0, 0);
+
         // Colisiones
+        colisiones.setCollisionByExclusion([-1]);
+        colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
 
         // Jugador
         this.player = new Player(this, 600, 500);
+        this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
+        this.physics.add.collider(this.player, ordenador);
+        this.physics.add.collider(this.player, limites);
 
         // Cámara
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -37,6 +44,11 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
+        // Música de mazmorra
+        this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
     }
 
     update(t, dt) {

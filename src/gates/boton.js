@@ -20,9 +20,6 @@ export default class Boton extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.collider(this, this.player);
 
         this.output = false; // Estado inicial apagado
-        this.setTint(0x888888); // Gris para apagado
-        this.setDisplaySize(48, 48);
-        this.normalDisplaySize = 48;
     }
 
     /**
@@ -42,9 +39,9 @@ export default class Boton extends Phaser.GameObjects.Sprite {
         this.output = !this.output;
 
         if (this.output) {
-            this.setTint(0x00ff00); // Verde brillante para encendido
-        } else {
             this.setTint(0x888888); // Gris para apagado
+        } else {
+            this.setTint(0xffffff); // Blanco para encendido
         }
     }
 
