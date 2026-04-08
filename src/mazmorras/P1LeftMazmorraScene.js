@@ -79,75 +79,48 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
 
         // 3. Cables (Aquí corregimos los nombres de las propiedades de destino)
         this.cable1 = new Cable(this, 810, 425);
-        this.cable1.setDepth(0);
-        this.cable1.setOrigin(0.5, 0.5);
-        this.cable1.angle = 90;
         this.cable1.setDisplaySize(50, 10);
         this.cable1.connectInput(this.boton1);
         this.cable1.connectOutput(this.not_gate1, 'signalIn'); // CAMBIADO: de 'input' a 'signalIn'
 
         this.cable2 = new Cable(this, 810, 375);
-        this.cable2.setDepth(0);
-        this.cable2.setOrigin(0.5, 0.5);
-        this.cable2.angle = 90;
         this.cable2.setDisplaySize(50, 10);
         this.cable2.connectInput(this.not_gate1);
         this.cable2.connectOutput(this.and_gate1, 'inputA');
 
         this.cable3 = new Cable(this, 870, 400);
-        this.cable3.setDepth(0);
-        this.cable3.setOrigin(0.5, 0.5);
-        this.cable3.angle = 90;
         this.cable3.connectInput(this.boton2);
         this.cable3.connectOutput(this.and_gate1, 'inputB');
 
         this.cable4 = new Cable(this, 930, 400);
-        this.cable4.setDepth(0);
-        this.cable4.setOrigin(0.5, 0.5);
-        this.cable4.angle = 90;
         this.cable4.connectInput(this.boton3);
         this.cable4.connectOutput(this.and_gate2, 'inputA');
 
         this.cable5 = new Cable(this, 990, 400);
-        this.cable5.setDepth(0);
-        this.cable5.setOrigin(0.5, 0.5);
-        this.cable5.angle = 90;
         this.cable5.connectInput(this.boton4);
         this.cable5.connectOutput(this.and_gate2, 'inputB');
 
         this.cable6 = new Cable(this, 840, 250);
-        this.cable6.setDepth(0);
-        this.cable6.setOrigin(0.5, 0.5);
-        this.cable6.angle = 90;
         this.cable6.connectInput(this.and_gate1);
         this.cable6.connectOutput(this.and_gate3, 'inputA');
 
         this.cable_right6 = new Cable(this, 848, 190, 'cable_right_off');
-        this.cable_right6.setDepth(0);
-        this.cable_right6.setOrigin(0.5, 0.5);
         this.cable_right6.angle = 180;
         this.cable_right6.connectInput(this.and_gate1);
 
         this.cable_left6 = new Cable(this, 870, 174, 'cable_right_off');
-        this.cable_left6.setDepth(0);
-        this.cable_left6.setOrigin(0.5, 0.5);
-        this.cable_left6.angle = 90;
+        this.cable_left6.angle = 0;
         this.cable_left6.connectInput(this.and_gate1);
 
         this.cable7 = new Cable(this, 960, 250);
-        this.cable7.setDepth(0);
-        this.cable7.setOrigin(0.5, 0.5);
-        this.cable7.angle = 90;
         this.cable7.connectInput(this.and_gate2);
         this.cable7.connectOutput(this.and_gate3, 'inputB');
 
         this.cable_left7 = new Cable(this, 952, 190, 'cable_right_off');
-        this.cable_left7.setDepth(0);
+        this.cable_left7.angle = 270;
         this.cable_left7.connectInput(this.and_gate2);
 
         this.cable_right7 = new Cable(this, 930, 174, 'cable_right_off');
-        this.cable_right7.setDepth(0);
-        this.cable_right7.setOrigin(0.5, 0.5);
         this.cable_right7.angle = 90;
         this.cable_right7.connectInput(this.and_gate2);
 
@@ -155,14 +128,12 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
 
 
         this.cableSalida_right = new Cable(this, 908, 40, 'cable_right_off');
-        this.cableSalida_right.setDepth(0);
-        this.cableSalida_right.setOrigin(0.5, 0.5);
         this.cableSalida_right.angle = 180;
         this.cableSalida_right.connectInput(this.and_gate3);
 
         this.cableSalida = new Cable(this, 1000, 32);
         this.cableSalida.setDisplaySize(182, 10)
-        this.cableSalida.setDepth(0);
+        this.cableSalida.angle = 0;
         this.cableSalida.connectInput(this.and_gate3);
         this.cableSalida.setCompleted('puzleIzquierdaCompletado');
 
