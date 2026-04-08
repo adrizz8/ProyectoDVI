@@ -3,10 +3,15 @@
     "expandedProjectPaths": [
         "."
     ],
+    "file.lastUsedOpenFilter": "Todos los archivos (*)",
     "fileStates": {
+        "C:/Users/Usuario/OneDrive/Escritorio/ING.INFORMATICA/4.CUARTO/DVI/ProyectoDVI/assets/images/tilesinterior.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
         "cafeteria.tmx": {
             "scale": 0.6476562499999999,
-            "selectedLayer": 6,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 608.3474065138722,
                 "y": 320.3860072376357
@@ -48,11 +53,11 @@
             "scaleInDock": 1
         },
         "pasillo.tmx": {
-            "scale": 0.75,
+            "scale": 0.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 1526.6666666666665,
-                "y": 946
+                "x": 726,
+                "y": 511
             }
         },
         "tilesinterior.tsx": {
@@ -60,6 +65,7 @@
             "scaleInEditor": 1
         }
     },
+    "last.externalTilesetPath": "C:/Users/Usuario/OneDrive/Escritorio/ING.INFORMATICA/4.CUARTO/DVI/ProyectoDVI/assets/images",
     "openFiles": [
         "mapa de prueba.tmx",
         "mapaFuera.tmx",
@@ -67,10 +73,10 @@
     ],
     "project": "pasillo.tiled-project",
     "recentFiles": [
+        "pasillo.tmx",
         "mapa de prueba.tmx",
         "mapaFuera.tmx",
         "cafeteria.tmx",
-        "pasillo.tmx",
         "tilesinterior.tsx"
     ]
 }

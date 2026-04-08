@@ -1,10 +1,14 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
 import trigger from './trigger.js';
+import npc from './personajes/npc.js';
+import DialogueManager from './dialogueManager.js';
+import GameManager from './manager.js';
 
 /**
- * Escena del Pasillo.
+ * Escena del Pasillo (Planta 1).
  * Accesible desde la cafetería por la puerta de la derecha.
+ * Aquí caminan los NPCs del lore de la Planta 1.
  * @extends Phaser.Scene
  */
 export default class Pasillo extends Phaser.Scene {
@@ -62,6 +66,13 @@ export default class Pasillo extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
+        // DialogueManager
+        this.dialogueManager = new DialogueManager(this);
+        this.gm = GameManager.getInstance();
+
+        // --- NPCs del lore de la Planta 1 ---
+        this._spawnNPCsPlanta1();
+
         // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
         const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
         this.physics.world.enable(salidaCafeteriaDer, Phaser.Physics.Arcade.STATIC_BODY);
@@ -81,6 +92,154 @@ export default class Pasillo extends Phaser.Scene {
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
+
+        // Fade in
+        this.cameras.main.fadeIn(400, 0, 0, 0);
+    }
+
+    /**
+     * Spawna los NPCs del pasillo de la Planta 1 con sus diálogos del lore.
+     */
+    _spawnNPCsPlanta1() {
+        // NPC1 - general sobre Lanchares
+        new npc(
+            this, this.player,
+            200, 200,
+            'npc1', 8,
+            'Lanchares era nuestro mejor capitán. Ahora intenta hacernos placajes binarios cada vez que pasamos por su pasillo. ¡Dice que nuestra formación es un error de sintaxis!',
+            null, null,
+            'Estudiante de Rugby'
+        );
+
+        // NPC2 - Cálculo, da Regla de L'Hôpital
+        new npc(
+            this, this.player,
+            400, 150,
+            'npc2', 4,
+            'He intentado calcular el límite de mi paciencia cuando tiende a infinito, pero me sale una indeterminación. Toma esto, lo necesitarás para derivar la atención del enemigo.',
+            () => {
+                if (!this.gm.isDefeated('npc_calculo_dio_item')) {
+                    this.gm.addItem({
+                        id: 'regla_lhopital',
+                        name: "Regla de L'Hôpital",
+                        type: 'consumable',
+                        statusRecovery: true,
+                        description: 'Cuando te aturden y pierdes un turno de ataque, úsala para quitarte el efecto.'
+                    }, 1);
+                    this.gm.markDefeated('npc_calculo_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue("¡Has recibido: Regla de L'Hôpital!", '');
+                    });
+                }
+            },
+            null,
+            'Estudiante de Cálculo'
+        );
+
+        // NPC3 - MDL2, frases sobre lógica
+        new npc(
+            this, this.player,
+            600, 250,
+            'npc3', 0,
+            'P implica Q... pero la IA dice que P es falso. Si la premisa es falsa, ¡todo este pasillo es una mentira lógica! ¡Socorro!',
+            null, null,
+            'Estudiante de MDL2'
+        );
+
+        // NPC4 - FP1, da Compilador Amigable
+        new npc(
+            this, this.player,
+            800, 180,
+            'npc4', 8,
+            '¡Un punto y coma! ¡He perdido toda mi energía mental por un punto y coma! No entres ahí fuera, está lleno de errores de sintaxis salvajes.',
+            () => {
+                if (!this.gm.isDefeated('npc_fp1_dio_item')) {
+                    this.gm.addItem({
+                        id: 'compilador_amigable',
+                        name: 'Compilador Amigable',
+                        type: 'consumable',
+                        recMp: 20,
+                        description: 'Recupera 20 de Energía.'
+                    }, 1);
+                    this.gm.markDefeated('npc_fp1_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¡Has recibido: Compilador Amigable!', '');
+                    });
+                }
+            },
+            null,
+            'Estudiante de FP'
+        );
+
+        // NPC5 - FP2, da Puntero a NULL
+        new npc(
+            this, this.player,
+            500, 350,
+            'npc1', 4,
+            'La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Si no manejas bien la memoria dinámica, te borrarán el perfil.',
+            () => {
+                if (!this.gm.isDefeated('npc_fp2_dio_item')) {
+                    this.gm.addItem({
+                        id: 'puntero_null',
+                        name: 'Puntero a NULL',
+                        type: 'consumable',
+                        disable_enemy: true,
+                        description: 'Arma arrojadiza: desactiva las habilidades del enemigo un turno.'
+                    }, 1);
+                    this.gm.markDefeated('npc_fp2_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¡Has recibido: Puntero a NULL!', '');
+                    });
+                }
+            },
+            null,
+            'Estudiante de FP (2)'
+        );
+
+        // NPC Veterano - aviso sobre Lanchares
+        new npc(
+            this, this.player,
+            300, 400,
+            'npc2', 12,
+            '¿Vais a por el Capitán? Tened cuidado. Lanchares dice que ganar un partido de Rugby contra unos novatos es un resultado trivial. Dice que ni siquiera necesita sudar la camiseta para transformaros en bits de baja prioridad.',
+            null, null,
+            'Veterano'
+        );
+
+        // NPC6 - MDL1, da puzzle y luego Apuntes de lo Trivial
+        // Este NPC tiene un mensaje largo con el puzzle explicado
+        const npc6msg = '¡No lo entiendo! La profesora de Discreta dice que la solución es trivial por inspección visual... ¡Pero cada vez que toco uno, la regla me electrocuta! La regla dice: "Cada pedestal DEBE tener exactamente un vecino encendido". Ni cero, ni dos... ¡UNO! Los pedestales están conectados: A con B y C, B con A y D, C con A y D, D con B y C. ¡PISTA! La solución es encender A y B. ¡Si lo descubres, te daré algo que lo vale!';
+        new npc(
+            this, this.player,
+            700, 400,
+            'npc3', 8,
+            npc6msg,
+            () => {
+                if (!this.gm.isDefeated('npc_mdl1_dio_item')) {
+                    this.gm.addItem({
+                        id: 'apuntes_trivial',
+                        name: 'Apuntes de lo Trivial',
+                        type: 'consumable',
+                        disable_enemy: true,
+                        description: 'El enemigo se queda parado un turno intentando comprender por qué el ataque es "trivial".'
+                    }, 1);
+                    this.gm.markDefeated('npc_mdl1_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¿En serio era solo eso? ¡¿Solo tenía que admitir que soy un fracasado para que la puerta se abriera?! ¡Es tan trivial que me dan ganas de llorar otra vez! Tomad, espero que esto os sirva.', 'Estudiante de MDL', () => {
+                            this.showDialogue('¡Has recibido: Apuntes de lo Trivial!', '');
+                        });
+                    });
+                }
+            },
+            null,
+            'Estudiante de MDL'
+        );
+    }
+
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
+        }
     }
 
     update(t, dt) {

@@ -22,6 +22,8 @@ export default class amigo1 extends NPC {
 
         this.gm= GameManager.getInstance();
 
+        // ¿Ya se unió P1 al grupo?
+        this._unidoAlGrupo = this.gm.ActualPlayers.includes('Jugador2');
 
         // Definición de animaciones direccionales
         const animsConfig = [
@@ -67,8 +69,6 @@ export default class amigo1 extends NPC {
 
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
-     * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
-     * ya son gestionadas por la estrella (no gestionar las colisiones dos veces)
      * @override
      */
     preUpdate(t, dt) {
@@ -81,7 +81,6 @@ export default class amigo1 extends NPC {
         }
 
         let moving = false;
-
 
         // Reproducir la animación correspondiente: walk o idle según la última dirección
         const animState = moving ? 'walk5' : 'idle5';
@@ -98,15 +97,46 @@ export default class amigo1 extends NPC {
     }
 
     interact() {
+        // Mira al jugador
+        this.lastDirection = this.contrario_player();
 
+        if (this._unidoAlGrupo) {
+            // Ya está en el grupo, pero puede hablar
+            this.scene.showDialogue(
+                'Aguanta, novato. Cuando hayamos limpiado el Aula 1, descansamos.',
+                'P1'
+            );
+            return;
+        }
 
-        this.lastDirection=this.contrario_player();
-        
-        this.scene.showDialogue('Hey hola',this.name);
-        this.scene.showDialogue('¡Oye! ¡La facultad se ha vuelto loca',this.player.name);
-
-        this.unirse();
-
+        // --- Diálogo de presentación y reclutamiento de P1 ---
+        this.scene.showDialogue(
+            '¡Oye! ¡La facultad se ha vuelto loca, hay que salir!',
+            this.player.name || 'Tú',
+            () => {
+                this.scene.showDialogue(
+                    'Bah, otro lunes normal. Ese conserje mutante de la puerta es solo un Cortafuegos Físico. Ya intenté salir, pero mi velocidad de bus no da para esquivarlo.',
+                    'P1',
+                    () => {
+                        // Entra Ismael por radio/megáfono
+                        this.scene.showDialogue(
+                            '¡P1! Sigues vivo. Novato, P1 tiene la mochila reforzada con placas base y la paciencia de quien ha repetido Computadores cuatro veces. Él absorberá los golpes.',
+                            'Ismael',
+                            () => {
+                                this.scene.showDialogue(
+                                    'Soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
+                                    'P1',
+                                    () => {
+                                        // Reclutamiento de P1
+                                        this.unirse();
+                                    }
+                                );
+                            }
+                        );
+                    }
+                );
+            }
+        );
     }
 
     contrario_player(){
@@ -119,6 +149,7 @@ export default class amigo1 extends NPC {
     }
 
     unirse(){
+        this._unidoAlGrupo = true;
         this.gm.AddCompañero('Jugador2');
     }
 

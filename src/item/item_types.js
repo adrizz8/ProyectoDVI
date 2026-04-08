@@ -93,5 +93,47 @@ export const ITEM_TYPES = {
         name: 'Monster Dorada',
         type: 'key_item',
         description: 'Un objeto legendario.'
+    },
+    'pincho_tortilla': {
+        id: 'pincho_tortilla',
+        name: 'Pincho de Tortilla',
+        type: 'consumable',
+        heal: 30,
+        description: 'El combustible del héroe. Te lo dio Andrés en tu primer día. Cura 30 HP.'
+    },
+    'llave_planta1': {
+        id: 'llave_planta1',
+        name: 'Llave de la Planta 1',
+        type: 'key',
+        description: 'Permite entrar en las aulas de la Planta 1.'
+    },
+    'regla_lhopital': {
+        id: 'regla_lhopital',
+        name: 'Regla de L\'Hôpital',
+        type: 'consumable',
+        statusRecovery: true,
+        description: 'Cuando te aturdan y pierdes un turno de ataque, úsala para quitarte el efecto.'
+    },
+    'compilador_amigable': {
+        id: 'compilador_amigable',
+        name: 'Compilador Amigable',
+        type: 'consumable',
+        recMp: 20,
+        description: 'Recupera 20 de Energía. Te lo dio el NPC de FP.'
+    },
+    'puntero_null': {
+        id: 'puntero_null',
+        name: 'Puntero a NULL',
+        type: 'consumable',
+        buffDef: 0,
+        disable_enemy: true,
+        description: 'Arma arrojadiza: desactiva las habilidades del enemigo un turno.'
+    },
+    'apuntes_trivial': {
+        id: 'apuntes_trivial',
+        name: 'Apuntes de lo Trivial',
+        type: 'consumable',
+        disable_enemy: true,
+        description: 'El enemigo se queda parado un turno intentando comprender por qué el ataque es trivial.'
     }
 };

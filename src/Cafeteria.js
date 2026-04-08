@@ -9,6 +9,7 @@ import miron from './personajes/miron.js';
 import GameManager from './manager.js';
 import amigo1 from './personajes/amigo1.js';
 import conserje from './personajes/conserje.js'
+
 /**
  * Escena de la Cafetería.
  * @extends Phaser.Scene
@@ -92,27 +93,28 @@ export default class Cafeteria extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
-        if (!this.gm.estadoNivel('cafeteria')) {
+        // Comprobamos si la cafetería ya ha sido completada (boss derrotado)
+        const cafeteriaCompletada = this.gm.estadoNivel('cafeteria');
 
-            this.amigo1 = new amigo1(this, this.player, 1040, 470, '', 0, null, null, null, 'Pepe');
+        if (!cafeteriaCompletada) {
+            // Cafetería en modo CAOS: NPC asustados, conserje boss en puerta
             this.enemies = this.add.group();
-            this.generarnpcs();
-
+            this._generarCafeteriaConCaos();
+        } else {
+            // Cafetería liberada: NPCs normales andando tranquilos (menos, más relajados)
+            this._generarCafeteriaLibeada();
         }
 
         // El mapa es 38x20 tiles de 32px = 1216x640px
-        // Los huecos de la capa colisiones están en los extremos izquierdo y derecho, filas 4-5
-
 
         // Flag global para evitar transiciones duplicadas
         this._transitioning = false;
 
         // Si el jugador spawea ENCIMA de zonaIzq (vuelta desde pasillo),
         // esperar a que salga de la zona antes de activar el trigger.
-        // zonaIzq está en (80,160) tamaño 100x60 → bounds: x[30-130], y[130-190]
         this._zonaIzqMustExit = (data.entrada === 'desde_pasillo_izq');
 
-        if (this.gm.estadoNivel('cafeteria')) {
+        if (cafeteriaCompletada) {
             // puerta_der → pasillo (extremo derecho del mapa, filas 4-5)
             const zonaDer = this.add.zone(1200, 160, 48, 128);
             this.physics.world.enable(zonaDer, Phaser.Physics.Arcade.STATIC_BODY);
@@ -130,21 +132,16 @@ export default class Cafeteria extends Phaser.Scene {
         // puerta_izq → pasillo
         const zonaIzq = this.add.zone(80, 160, 100, 60);
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
-        // Rectángulo verde debug — eliminar cuando funcione
-        this.add.rectangle(80, 160, 100, 60, 0x00ff00, 0.5).setDepth(99);
 
         // puerta exterior con color para que se note que hay una puerta
         this.add.rectangle(895, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
-        // this.add.rectangle(161, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
 
         // Zona de salida baja derecha → volver al exterior (x=896, coincide con trigger en mapaFuera)
         const zonaExitDer = this.add.zone(896, 635, 100, 32);
         this.physics.world.enable(zonaExitDer, Phaser.Physics.Arcade.STATIC_BODY);
 
         // Zona de salida baja izquierda → volver al exterior (x=161, coincide con trigger en mapaFuera)
-        //COMENTADO DE MOMENTO, ENTRAR SOLO POR LA IZQUIERDA PARA PASAR POR LOS NPCS¿?
         const zonaExitIzq = this.add.zone(161, 635, 100, 32);
-        // this.physics.world.enable(zonaExitIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
         this.physics.add.overlap(zonaIzq, this.player, () => {
             // Solo activar si el jugador entró (no si spaweó encima)
@@ -202,6 +199,10 @@ export default class Cafeteria extends Phaser.Scene {
         if (this.amigo1 && this.amigo1.update) {
             this.amigo1.update(t, dt);
         }
+        // NPCs del grupo enemies
+        if (this._wanderingNpcs) {
+            this._wanderingNpcs.forEach(n => { if (n && n.update) n.update(t, dt); });
+        }
 
         // Cuando el jugador sale de zonaIzq (bounds: x[30-130], y[130-190]),
         // se desactiva el flag para que el trigger vuelva a funcionar al re-entrar
@@ -214,45 +215,60 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-    generarnpcs() {
+    /**
+     * Genera el estado de la cafetería en CAOS (antes de derrotar al boss).
+     * NPCs asustados moviéndose, Andrés en la barra, P1 sentado tranquilo.
+     */
+    _generarCafeteriaConCaos() {
 
-
+        // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
         const conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {}, 'No pasaras!!', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
-
+            // Acabamos de derrotar al conserje boss → escena de victoria
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
-            this.showDialogue('No pueder ser', () => {
+
+            this.showDialogue('¡SISTEMA SOBRECARGADO! No puede ser... ¡PROCESO TERMINADO!', 'Conserje', () => {
                 conserj.huir();
-            })
+                // Carlos comenta el logro desde el menú
+                this.time.delayedCall(800, () => {
+                    this.showDialogue(
+                        '¡Habéis desbloqueado el acceso a la Planta 1, pero para poder liberar esta planta completa tendréis que derrotar a Lanchares que ha sellado el aula 1. Para entrar, necesitáis una "Llave Maestra de Hardware" que él mismo ha fragmentado. Y un consejo: con vosotros dos no basta. Buscad a otros alumnos que no hayan sido asimilados por la IA; necesitaréis un equipo completo para el examen final.',
+                        'Carlos', () => {
+                        this.showDialogue(
+                            'Antes del Glitch, Lanchares era una leyenda en la facultad. No solo por sus clases de Computadores, sino por su pasión por el Rugby y sus famosas tertulias con sus "camaradas" en el bar de la esquina. La IA ha retorcido esa mentalidad. Ahora ve la Planta 1 como su propio campo de juego. Se ha blindado con una armadura de placas base y cables de cobre.',
+                            'Ismael', () => {
+                            this.showDialogue(
+                                'Lanchares ha cerrado el tercer tiempo. Se ha encerrado en su aula y dice que solo los que tengan "espíritu de melé" pueden pasar. Si no le derrotáis, la planta seguirá bloqueada por su muro de silicio.',
+                                'Ismael', () => {
+                                this.player.unfreeze();
+                                // Spawnar NPCs normales tras la victoria en esta misma sala
+                                this._generarNPCsPostVictoria();
+                            });
+                        });
+                    });
+                });
+            });
 
             this.gm.markDefeated('npc_loco_caf');
-
             this.gm.markDefeated('npc_miron_caf');
-
         }
 
+        // --- NPCs de fondo asustados (moviéndose nerviosos) ---
         const npcData = [
-            { x: 270, y: 210, texture: 'npc1', frame: 8, message: 'a.', onFinish: null, ItemId: null, name: 'Juan' },
-            { x: 334, y: 210, texture: 'npc2', frame: 4, message: 'b.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 380, y: 340, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 520, y: 590, texture: 'npc1', frame: 4, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 464, y: 590, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 680, y: 470, texture: 'npc2', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 1015, y: 340, texture: 'npc1', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 820, y: 160, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 860, y: 185, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 900, y: 208, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 890, y: 156, texture: 'npc3', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 950, y: 155, texture: 'npc4', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 995, y: 142, texture: 'npc1', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 950, y: 208, texture: 'npc2', frame: 4, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 1070, y: 225, texture: 'npc1', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 1083, y: 285, texture: 'npc2', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 1200, y: 262, texture: 'npc4', frame: 12, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' },
-            { x: 1015, y: 188, texture: 'npc2', frame: 8, message: 'c.', onFinish: null, ItemId: null, name: 'Maria' }
-
+            { x: 270, y: 210, texture: 'npc1', frame: 8, message: '¡Dios mío! ¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
+            { x: 334, y: 210, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos Físico en la puerta!' },
+            { x: 380, y: 340, texture: 'npc3', frame: 8, message: '¡No me carga el repositorio y ahora esto! ¡Un lunes de pesadilla!' },
+            { x: 520, y: 590, texture: 'npc1', frame: 4, message: '¿Qué está pasando? ¡Los profesores han perdido la cabeza!' },
+            { x: 464, y: 590, texture: 'npc4', frame: 8, message: '¡Escóndete! ¡El conserje ataca a cualquiera que intente salir!' },
+            { x: 680, y: 470, texture: 'npc2', frame: 8, message: 'Dicen que es una IA la que controla todo... ¡un virus masivo!' },
+            { x: 820, y: 160, texture: 'npc4', frame: 8, message: '¡No podemos hacer nada! ¡Estamos atrapados!' },
+            { x: 860, y: 185, texture: 'npc3', frame: 8, message: '¡Acabo de entrar y ya quiero irme! ¿Es que no hay forma de salir?' },
+            { x: 900, y: 208, texture: 'npc4', frame: 8, message: '¡El conserje tiene una porra eléctrica! ¡Mantente alejado de la puerta!' },
+            { x: 890, y: 156, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
+            { x: 950, y: 155, texture: 'npc4', frame: 8, message: '¡Me da igual suspender! ¡Quiero salir de aquí!' },
+            { x: 1083, y: 285, texture: 'npc2', frame: 12, message: '¡Los profesores creen que somos bugs! ¡Han perdido la cabeza!' },
         ];
 
         this.npcArray = npcData.map(data =>
@@ -264,14 +280,18 @@ export default class Cafeteria extends Phaser.Scene {
                 data.texture,
                 data.frame,
                 data.message,
-                data.onFinish,
-                data.ItemId,
-                data.name
+                null,
+                null,
+                'Estudiante Asustado'
             )
         );
 
-        // añadir al grupo
+        // NPCs moviéndose de forma errática (simulando pánico)
+        this._wanderingNpcs = this.npcArray;
+
         this.npcArray.forEach(npc => this.enemies.add(npc));
+
+        // --- NPC Loco (cafeteria_loco) --- 
         const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, 'AHHHHHHHH', null, null, 'npc_loco_caf');
 
         if (this.gm.isJustDefeated('npc_loco_caf')) {
@@ -281,7 +301,6 @@ export default class Cafeteria extends Phaser.Scene {
             loco.setDirection(posi.direction);
             loco.freeze();
             this.gm.setJustDefeated('');
-
         } else {
             if (this.gm.isDefeated('npc_loco_caf')) {
                 loco.freeze();
@@ -289,6 +308,8 @@ export default class Cafeteria extends Phaser.Scene {
         }
 
         this.enemies.add(loco);
+
+        // --- NPC Mirón ---
         const per_miron = new miron(this, this.player, 707, 340, null, 0, {}, 'Te pille', null, null, 'npc_miron_caf');
 
         if (this.gm.isJustDefeated('npc_miron_caf')) {
@@ -298,7 +319,6 @@ export default class Cafeteria extends Phaser.Scene {
             per_miron.setDirection(posi.direction);
             per_miron.freeze();
             this.gm.setJustDefeated('');
-
         } else {
             if (this.gm.isDefeated('npc_miron_caf')) {
                 per_miron.freeze();
@@ -306,10 +326,84 @@ export default class Cafeteria extends Phaser.Scene {
         }
         this.enemies.add(per_miron);
 
+        // --- Andrés en la barra (da el Pincho de Tortilla) ---
+        const andres = new npc(
+            this,
+            this.player,
+            310, 120,   // cerca de la barra
+            'npc2',
+            8,
+            'Bienvenido, chaval. Primer día, ¿eh? Toma, un Pincho de Tortilla. En este caos hay que mantener las fuerzas. ¡La grasa es el combustible del héroe!',
+            () => {
+                // Da el pincho de tortilla la primera vez
+                if (!this.gm.isDefeated('andres_dio_pincho')) {
+                    this.gm.addItem({
+                        id: 'pincho_tortilla',
+                        name: 'Pincho de Tortilla',
+                        type: 'consumable',
+                        heal: 30,
+                        description: 'El combustible del héroe. Cura 30 HP.'
+                    }, 1);
+                    this.gm.markDefeated('andres_dio_pincho');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¡Has recibido: Pincho de Tortilla!', '');
+                    });
+                }
+            },
+            null,
+            'Andrés (Barra)'
+        );
 
-
+        // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
+        // P1 es amigo1 pero con los diálogos del lore del GDD
+        this.amigo1 = new amigo1(this, this.player, 1040, 470, '', 0, null, null, null, 'P1');
     }
 
+    /**
+     * Genera NPCs normales en la cafetería después de derrotar al boss (post-victoria inmediata).
+     */
+    _generarNPCsPostVictoria() {
+        const postBossNpcs = [
+            { x: 400, y: 300, texture: 'npc1', frame: 0, message: '¡Por fin! ¡El conserje ha caído! ¡Somos libres!' },
+            { x: 600, y: 400, texture: 'npc3', frame: 0, message: '¡No me lo puedo creer! ¡Habéis tumbado al guarda!' },
+            { x: 800, y: 250, texture: 'npc2', frame: 4, message: '¿Podemos salir? ¿Es seguro por fin?' },
+        ];
+
+        postBossNpcs.forEach(data => {
+            new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante');
+        });
+    }
+
+    /**
+     * Genera el estado de la cafetería LIBERADA (boss ya derrotado antes).
+     * Menos NPCs, andando normalmente, más tranquilos.
+     */
+    _generarCafeteriaLibeada() {
+        const npcPostData = [
+            { x: 350, y: 250, texture: 'npc1', frame: 0, message: 'Lanchares controla el piso de arriba. No subas solo.' },
+            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Tiene mucha chulería para ser un profe loco.' },
+            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada!' },
+            { x: 900, y: 400, texture: 'npc3', frame: 0, message: '¿Seguís sin saber qué es la IA exactamente? Carlos y los profes de DVI dicen que es un correctora masiva que se volvió loca.' },
+            { x: 450, y: 500, texture: 'npc1', frame: 8, message: 'Si vais a subir al piso de arriba, reunid un equipo. Lanchares no es como el conserje.' },
+        ];
+
+        this._wanderingNpcs = npcPostData.map(data =>
+            new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante')
+        );
+
+        // Andrés en la barra, más tranquilo
+        const andres = new npc(
+            this,
+            this.player,
+            310, 120,
+            'npc2',
+            8,
+            'Menos mal que habéis limpiado la planta baja. Otra de tortilla para celebrarlo.',
+            null,
+            null,
+            'Andrés (Barra)'
+        );
+    }
 
     showDialogue(message, nombre = '', onFinish = null) {
         if (this.dialogueManager) {
