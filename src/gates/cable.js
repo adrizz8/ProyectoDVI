@@ -4,6 +4,12 @@ import EventManager from '../eventManager.js';
 export default class Cable extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, image = 'cable_off') {
         super(scene, x, y, image);
+
+        // Configuración por defecto solicitada
+        this.setOrigin(0.5, 0.5);
+        this.setDepth(0);
+        this.angle = 90;
+
         if (image === 'cable_left_off') {
             this.setDisplaySize(26, 26);
             this.left = true;
