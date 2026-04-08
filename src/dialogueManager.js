@@ -75,8 +75,8 @@ export default class DialogueManager {
 
         // Evento para avanzar diálogo
         this.scene.input.keyboard.on('keydown', (event) => {
-            // Solo procesamos si el cuadro está visible y no está en medio de una animación de cierre
-            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8) return;
+            // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
+            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
 
             this.next_text();
 

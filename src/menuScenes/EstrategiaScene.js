@@ -15,32 +15,25 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     create() {
+        this.scene.bringToTop('EstrategiaScene');
         const gm = GameManager.getInstance();
 
         // Asegurar que no hay panel abierto al inicializar
         this.closePanel();
         this.panelActivo = null;
 
-        // Fondo con UI de estrategia
-        this.add.image(608, 320, 'estrategiaUI').setDisplaySize(1216, 640);
+        // Seleccionar fondo según el número de jugadores reales
+        const numPlayers = Math.min(4, Math.max(1, gm.ActualPlayers.length));
+        const bgKey = `estrategiaUI${numPlayers}`;
+        this.add.image(608, 320, bgKey).setDisplaySize(1216, 640);
 
-        // Orden específica de los 4 jugadores (1 TL, 2 BL, 3 TR, 4 BR)
-        const playerOrder = ['Jugador1', 'Jugador3', 'Jugador2', 'Jugador4'];
-        const startX = 150;
-        const startY = 100;
-        const espacioX = 560;
-        const espacioY = 340;
-
-        playerOrder.forEach((nombrePers, index) => {
+        // Iterar solo sobre los jugadores que tenemos realmente
+        gm.ActualPlayers.forEach((nombrePers) => {
             const stats = gm.playerStats[nombrePers];
             if (!stats) return;
 
-            const fila = Math.floor(index / 2);
-            const columna = index % 2;
-            const x = startX + columna * espacioX;
-            const y = startY + fila * espacioY;
-
-            this.crearCardPersonaje(x, y, nombrePers, stats);
+            // Las coordenadas ya están definidas por el nombre del jugador en crearCardPersonaje
+            this.crearCardPersonaje(0, 0, nombrePers, stats);
         });
 
         // Instrucciones
@@ -64,12 +57,19 @@ export default class EstrategiaScene extends Phaser.Scene {
         this.scene.bringToTop('MenuPrincipal');
     }
 
-    crearCardPersonaje(x, y, nombre, stats) {
-        // Se asume que el fondo ya está dibujado en estrategiaUI.
-        // No se dibuja fondo opaco para el personaje.
+    crearCardPersonaje(xIgnored, yIgnored, nombre, stats) {
+        // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
+
+        const coordenadasNombres = {
+            Jugador1: { x: 170, y: 112 },
+            Jugador3: { x: 720, y: 112 },
+            Jugador2: { x: 170, y: 442 },
+            Jugador4: { x: 720, y: 442 }
+        };
+        const posNombre = coordenadasNombres[nombre] || { x: 170, y: 112 };
 
         const labelText = `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
-        this.add.text(x + 20, y + 12, labelText, {
+        this.add.text(posNombre.x, posNombre.y, labelText, {
             fontSize: '16px',
             fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
@@ -206,8 +206,8 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         };
 
         const defaultBotones = {
-            habilidades: { x: x + 16, y: y + 205 },
-            equipamiento: { x: x + 16, y: y + 225 }
+            habilidades: { x: 100, y: 205 },
+            equipamiento: { x: 100, y: 225 }
         };
 
         const gm = GameManager.getInstance();

@@ -38,8 +38,8 @@ class MenuPrincipal extends Phaser.Scene {
         const botones = [
             { x: 800, y: 275, scene: 'EstrategiaScene', text: 'Estrategia' },
             { x: 800, y: 345, scene: 'MochilaScene', text: 'Mochila' },
-            { x: 800, y: 515, scene: null, text: 'Salir' },
-            { x: 800, y: 425, scene: 'OpcionesScene', text: 'Opciones' },
+            //  { x: 800, y: 515, scene: null, text: 'Salir' },
+            //{ x: 800, y: 425, scene: 'OpcionesScene', text: 'Opciones' },
         ];
 
         botones.forEach(({ x, y, scene, text }) => {

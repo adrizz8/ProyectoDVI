@@ -29,7 +29,10 @@ import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
 
-import estrategiaUI from '../assets/images/estrategiaui4.png'
+import estrategiaUI1 from '../assets/images/estrategiaui1.png'
+import estrategiaUI2 from '../assets/images/estrategiaui2.png'
+import estrategiaUI3 from '../assets/images/estrategiaui3.png'
+import estrategiaUI4 from '../assets/images/estrategiaui4.png'
 import menuPrincipal from '../assets/images/menuprincipal.png'
 
 import formulario from '../assets/images/formulario.png'
@@ -149,7 +152,10 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player4_battle', player4_battle);
 
     this.load.image('menuPrincipal', menuPrincipal);
-    this.load.image('estrategiaUI', estrategiaUI);
+    this.load.image('estrategiaUI1', estrategiaUI1);
+    this.load.image('estrategiaUI2', estrategiaUI2);
+    this.load.image('estrategiaUI3', estrategiaUI3);
+    this.load.image('estrategiaUI4', estrategiaUI4);
 
     this.load.audio('arrancar', arrancar);
     this.load.audio('parar', parar);
