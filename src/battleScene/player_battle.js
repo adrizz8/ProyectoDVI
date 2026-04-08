@@ -90,8 +90,8 @@ export default class PlayerBattle {
      * @returns {{ damage: number, actionName: string }}
      */
     attack() {
-        const potencia = 10;
-        const isCrit = Math.random() < (this.luck / 50);
+        const potencia = 30;
+        const isCrit = Math.random() < (this.luck / 100);
 
         // (Ataque * Potencia)
         const rawDamage = Math.floor(this.damage * potencia);
@@ -111,7 +111,7 @@ export default class PlayerBattle {
      */
     guard() {
         this._guardActive = true;
-        const mpGain = 10;
+        const mpGain = 20;
         this.mp = Math.min(this.maxMp, this.mp + mpGain);
         return { actionName: 'Guardia', mpGained: mpGain };
     }
@@ -147,7 +147,7 @@ export default class PlayerBattle {
         const currentDefense = Math.max(1, this.defense); // Prevent division by zero
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        const damageAfterDefense = Math.max(1, Math.floor(rawDamage / currentDefense));
+        const damageAfterDefense = Math.max(1, Math.floor(rawDamage * 0.6 / currentDefense));
 
         let damageTaken = guarded ? Math.floor(damageAfterDefense / 2) : damageAfterDefense;
         damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado

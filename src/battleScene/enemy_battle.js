@@ -79,32 +79,16 @@ export default class EnemyBattle {
     }
 
     /**
-     * @returns {{ type: 'attack'|'special'|'skip', damage?: number, actionName: string }}
+     * @returns {{ type: 'attack'|'skill'|'guard', damage?: number, actionName: string, skillName?: string, isCrit?: boolean }}
      */
     chooseAction() {
-        if (this.habilidades.length > 0) {
-            const randomIdx = Math.floor(Math.random() * this.habilidades.length);
-            const randomSkillName = this.habilidades[randomIdx];
-            const skill = HABILITIES[randomSkillName];
-
-            if (skill) {
-                if (this.mp < skill.cost) {
-                    if (Math.random() < 0.75) {
-                        return { type: 'guard', actionName: 'Guardia' };
-                    }
-                } else {
-                    if (Math.random() < 0.70) {
-                        return { type: 'skill', skillName: randomSkillName, actionName: skill.name };
-                    }
-                }
-            }
-        }
-
+        // 1. Filtrar habilidades que realmente puede usar (tiene MP)
         const usableSkills = this.habilidades.filter(name => {
             const skill = HABILITIES[name];
             return skill && this.mp >= skill.cost;
         });
 
+        // 2. Probabilidad de usar habilidad (60%)
         if (usableSkills.length > 0 && Math.random() < 0.60) {
             const skillName = usableSkills[Math.floor(Math.random() * usableSkills.length)];
             const skill = HABILITIES[skillName];
@@ -115,8 +99,14 @@ export default class EnemyBattle {
             };
         }
 
-        const potencia = 10;
-        const isCrit = Math.random() < (this.luck / 50);
+        // 3. Si no usa habilidad y tiene poco MP, probabilidad de Guardia (40%)
+        if (this.mp < 15 && Math.random() < 0.40) {
+            return { type: 'guard', actionName: 'Guardia' };
+        }
+
+        // 4. Por defecto: Ataque Básico (Calculando daño y crítico aquí)
+        const potencia = 30;
+        const isCrit = Math.random() < (this.luck / 100);
         const rawDamage = Math.floor(this.damage * potencia);
         const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
 
@@ -155,8 +145,8 @@ export default class EnemyBattle {
         const guarded = this._guardActive;
         const currentDefense = Math.max(1, this.defense);
 
-        // Nueva Fórmula: Resultado = (Ataque * Potencia) / Defensa
-        let damageTaken = Math.floor(damage / currentDefense);
+        // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
+        let damageTaken = Math.floor(damage * 0.6 / currentDefense);
         damageTaken = Math.max(1, damageTaken);
 
         // La guardia reduce el daño a la mitad
