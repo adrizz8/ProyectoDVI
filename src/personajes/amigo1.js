@@ -15,15 +15,19 @@ export default class amigo1 extends NPC {
         this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
 
-        this.body.setSize(this.width, this.height);
-
-        // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
-        this.body.setOffset(this.width * 0.25, this.height * 0.7);
+        // Ajustar la caja de colisión para que sea solo en los pies y no se atasque
+        this.body.setSize(20, 16);
+        this.body.setOffset(6, 32);
 
         this.gm = GameManager.getInstance();
 
         // ¿Ya se unió P1 al grupo?
         this._unidoAlGrupo = this.gm.ActualPlayers.includes('Jugador2');
+
+        if (this._unidoAlGrupo && this.body) {
+            this.body.moves = true;
+            this.body.setImmovable(false);
+        }
 
         // Definición de animaciones direccionales
         const animsConfig = [
@@ -80,26 +84,24 @@ export default class amigo1 extends NPC {
         }
 
         if (this._unidoAlGrupo) {
-            // Desactivar el colisionador con el jugador para que no le estorbe
-            if (this.collider && this.collider.active) {
-                this.collider.active = false;
+            // Eliminar definitivamente el colisionador con el jugador para evitar bloqueos
+            if (this.collider) {
+                this.scene.physics.world.removeCollider(this.collider);
+                this.collider = null;
             }
 
             const dist = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
-            const stopDist = 60;
-            const followDist = 80;
+            const stopDist = 50;
+            const followDist = 70;
 
             if (dist > followDist) {
-                // Moverse hacia el jugador
                 const angle = Phaser.Math.Angle.Between(this.x, this.y, this.player.x, this.player.y);
-                const speed = 150;
+                const speed = 180;
                 this.body.setVelocityX(Math.cos(angle) * speed);
                 this.body.setVelocityY(Math.sin(angle) * speed);
 
-                // Actualizar dirección para animación
                 const deg = Phaser.Math.RadToDeg(angle);
                 const absDeg = Math.abs(deg);
-
                 if (absDeg < 45) this.lastDirection = 'right';
                 else if (absDeg > 135) this.lastDirection = 'left';
                 else if (deg > 0) this.lastDirection = 'down';
@@ -107,7 +109,6 @@ export default class amigo1 extends NPC {
 
                 this.play(`walk5-${this.lastDirection}`, true);
             } else {
-                // Parar cerca del jugador
                 this.body.setVelocity(0, 0);
                 this.play(`idle5-${this.lastDirection}`, true);
             }
@@ -177,6 +178,12 @@ export default class amigo1 extends NPC {
     unirse() {
         this._unidoAlGrupo = true;
         this.gm.AddCompañero('Jugador2');
+        
+        // Habilitar movimiento físico para que pueda seguir al jugador
+        if (this.body) {
+            this.body.moves = true;
+            this.body.setImmovable(false);
+        }
     }
 
 }  

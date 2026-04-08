@@ -272,7 +272,7 @@ export default class Cafeteria extends Phaser.Scene {
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
 
-            this.showDialogue('¡SISTEMA SOBRECARGADO! No puede ser... ¡PROCESO TERMINADO!', 'Conserje', () => {
+            this.showDialogue('¡No me toquéis más las narices ni imprimáis tonterías con las impresoras del labroatorio!', 'Conserje', () => {
                 this.conserj.huir();
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
