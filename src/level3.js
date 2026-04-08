@@ -5,6 +5,9 @@ import GameManager from './manager.js';
 import Parada from './Parada.js'
 import Bus from './bus.js'
 import trigger from './trigger.js'
+import npc from './personajes/npc.js';
+import NPC_en_camino from './personajes/NPC_en_camino.js';
+
 
 /**
  * Nivel 3: Escena de exploración con el mapa de tiles (mapa interior/camino).
@@ -48,16 +51,16 @@ export default class Level3 extends Phaser.Scene {
 
         this.dialogM = new DialogueManager(this);
 
-        if(!gm.estadoNivel('level3')){
-            
+        if (!gm.estadoNivel('level3')) {
+
             this.player.setVisible(false);
-            this.bus= new Bus(this,1800, 560,'bus');
+            this.bus = new Bus(this, 1800, 560, 'bus');
 
             const parada = map.createFromObjects('triggers', {
-                gid: 558,    // ← ID del tile en el tileset
-                classType: Parada,             
-                key: 'tileset',        // ← key de la imagen cargada en Phaser
-                frame: 557              // ← frame dentro del tileset (gid - firstgid)
+                gid: 558,
+                classType: Parada,
+                key: 'tileset',
+                frame: 557
             });
 
             this.bus.config(parada[0]);
@@ -65,25 +68,26 @@ export default class Level3 extends Phaser.Scene {
             this.carretera.play();
 
             gm.CompleteNivel('level3');
-            
-        }else{
-            this.player.setPosition(map.widthInPixels/2-10,30);
-           
+
+        } else {
+            this.player.setPosition(map.widthInPixels / 2 - 10, 30);
         }
+
+        new NPC_en_camino(this, this.player, 600, 50, 'npc1', 380, "Otra vez que pierdo el U, este bus pasa cuando le sale de los cojones");
 
         const trigger_pantalla = map.createFromObjects('triggers', {
             name: 'pantalla_nueva',
             classType: trigger
         });
-        
-        this.physics.add.overlap(trigger_pantalla,this.player,() => {
-            this.scene.start('outdoorMap',{entrada:'salida_autobus'});
+
+        this.physics.add.overlap(trigger_pantalla, this.player, () => {
+            this.scene.start('outdoorMap', { entrada: 'salida_autobus' });
         });
 
         // Colisión del jugador con las capas del mapa
         this.physics.add.collider(this.player, groundLayer);
         this.physics.add.collider(this.player, objectsLayer);
-       
+
 
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
@@ -91,7 +95,7 @@ export default class Level3 extends Phaser.Scene {
             this.scene.pause();
         });
 
-       
+
     }
 
     parar_soni() {
@@ -110,11 +114,11 @@ export default class Level3 extends Phaser.Scene {
     drop_player() {
         this.time.addEvent({
             delay: 400, // ms
-            callback:() => {
-                    var posi=this.bus.getCenter();
-                    this.player.setPosition(posi.x,posi.y-45);
-                    this.player.setVisible(true);
-                    this.player.freeze();
+            callback: () => {
+                var posi = this.bus.getCenter();
+                this.player.setPosition(posi.x, posi.y - 45);
+                this.player.setVisible(true);
+                this.player.freeze();
             }
         });
         this.time.addEvent({

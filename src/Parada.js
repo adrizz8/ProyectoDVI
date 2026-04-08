@@ -1,6 +1,7 @@
 import Phaser, { Physics } from 'phaser';
+import npc from './personajes/npc.js';
 
-export default class bus extends Phaser.GameObjects.Sprite{
+export default class bus extends Phaser.GameObjects.Sprite {
 
     /**
      * Constructor del jugador
