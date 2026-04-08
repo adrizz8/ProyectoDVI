@@ -315,22 +315,15 @@ export default class BattleManager {
             const result = currentEnemy.useSkill(action.skillName, isSelf ? currentEnemy : target);
 
             if (!result.success) {
-                // Habilidad fallida (sin MP): 70% guardia, 30% ataque básico
-                if (Math.random() < 0.70) {
-                    this._runEnemyGuard(currentEnemyData, currentEnemy);
-                    return;
-                } else {
-                    this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
-                }
+                // Fallback de seguridad (aunque chooseAction ya valida MP)
+                this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
             } else {
-                // Aplicar daño si lo hay
                 let damageTaken = 0;
                 if (result.damage) {
                     const dmgResult = (isSelf ? currentEnemy : target).receiveDamage(result.damage);
                     damageTaken = dmgResult.damageTaken;
                 }
 
-                // Aplicar curación si la hubiera
                 if (result.heal) {
                     const healTarget = isSelf ? currentEnemy : target;
                     healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + result.heal);
@@ -350,26 +343,39 @@ export default class BattleManager {
                     buff: result.buff || null,
                     message: result.message
                 });
+
+                this._scene.time.delayedCall(2200, () => this._checkPostTurn());
             }
         } else if (action.type === 'guard') {
             this._runEnemyGuard(currentEnemyData, currentEnemy);
-            return;
         } else {
-            this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
-        }
+            // Ataque básico (action.type === 'attack')
+            // El daño ya viene calculado desde EnemyBattle.chooseAction()
+            const result = target.receiveDamage(action.damage);
 
-        this._scene.time.delayedCall(2200, () => {
-            if (this._isPlayer1Dead()) {
-                this._endBattle('enemy');
-            } else {
-                this.nextTurn();
-            }
-        });
+            this._callbacks.onEnemyActionResult?.({
+                actionName: action.actionName,
+                damage: result.damageTaken,
+                targetName: target.name,
+                targetIndex: targetIdx,
+                targetHP: target.hp,
+                targetDead: result.isDead,
+                guarded: result.guarded,
+                attackerIndex: currentEnemyData.index,
+                isCrit: action.isCrit,
+                nerf: null,
+                buff: null
+            });
+
+            this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+        }
     }
 
     _runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx) {
-        const isCrit = Math.random() < (currentEnemy.luck / 50);
-        const finalDamage = isCrit ? Math.floor(currentEnemy.damage * 1.5) : currentEnemy.damage;
+        // Método de fallback si falla una habilidad por MP inesperadamente
+        const isCrit = Math.random() < (currentEnemy.luck / 100);
+        const rawDamage = Math.floor(currentEnemy.damage * 30);
+        const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
         const result = target.receiveDamage(finalDamage);
 
         this._callbacks.onEnemyActionResult?.({
@@ -385,6 +391,16 @@ export default class BattleManager {
             nerf: null,
             buff: null
         });
+
+        this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+    }
+
+    _checkPostTurn() {
+        if (this._isPlayer1Dead()) {
+            this._endBattle('enemy');
+        } else {
+            this.nextTurn();
+        }
     }
 
     _runEnemyGuard(currentEnemyData, currentEnemy) {

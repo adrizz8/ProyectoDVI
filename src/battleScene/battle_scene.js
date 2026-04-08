@@ -22,8 +22,8 @@ export default class BattleScene extends Phaser.Scene {
         const gm = GameManager.getInstance();
         const allNames = Object.keys(gm.playerStats);
         this._playerStats = gm.getPlayersForBattle(gm.ActualPlayers);
-        this.npcid=data.npcid;
-        this.nivel=data.nivel;
+        this.npcid = data.npcid;
+        this.nivel = data.nivel;
 
         // Si es un encuentro aleatorio (no vienen enemigos predefinidos)
         if (!data || !data.enemies) {
@@ -62,7 +62,7 @@ export default class BattleScene extends Phaser.Scene {
         const nombreAzar = nombresEquipo[Math.floor(Math.random() * nombresEquipo.length)];
         const ref = gm.playerStats[nombreAzar];
 
-        const variacion = () => (Math.random() * (1.2 - 0.8) + 0.8);
+        const variacion = () => (Math.random() * (1.1 - 0.9) + 0.9);
 
         // Calculamos los valores base primero para poder usarlos en las propiedades
         const calculadoMaxHp = Math.floor(ref.maxHp * variacion());
@@ -131,7 +131,7 @@ export default class BattleScene extends Phaser.Scene {
         this._currentSkill = null;
         this._currentItem = null;
 
-        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this, this.npcid,this.nivel);
+        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this, this.npcid, this.nivel);
         this.battle_manager.setCallbacks({
             onPlayerTurnStarted: (idx) => this._onPlayerTurnStarted(idx),
             onPlayerActionResult: (r) => this._onPlayerActionResult(r),

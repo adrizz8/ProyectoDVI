@@ -33,14 +33,14 @@ export default class GameManager {
         // Al entrar en combate se copian a PlayerBattle.
         this.playerStats = {
             'Jugador1': {
-                hp: 100,
-                maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 15,
-                defense: 10,
-                luck: 25,
+                hp: 120,
+                maxHp: 120,
+                mp: 60,
+                maxMp: 60,
+                damage: 22,
+                speed: 16,
+                defense: 18,
+                luck: 5,
                 level: 1,
                 exp: 0,
                 expNext: 100,
@@ -48,48 +48,48 @@ export default class GameManager {
                 objeto: 'espada_basica'
             },
             'Jugador2': {
-                hp: 100,
-                maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 12,
-                defense: 10,
-                luck: 1,
+                hp: 160,
+                maxHp: 160,
+                mp: 40,
+                maxMp: 40,
+                damage: 38,
+                speed: 6,
+                defense: 14,
+                luck: 2,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Defensa UP', 'Cura'],
+                habilidades: ['Ataque Potente', 'Defensa UP'],
                 objeto: ''
             },
             'Jugador3': {
-                hp: 100,
-                maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 10,
-                defense: 10,
-                luck: 1,
+                hp: 130,
+                maxHp: 130,
+                mp: 100,
+                maxMp: 100,
+                damage: 15,
+                speed: 12,
+                defense: 30,
+                luck: 4,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Velocidad UP', 'Ataque Potente'],
+                habilidades: ['Cura', 'Ataque NERF', 'Defensa UP'],
                 objeto: ''
             },
             'Jugador4': {
                 hp: 100,
                 maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 6,
+                mp: 70,
+                maxMp: 70,
+                damage: 30,
+                speed: 26,
                 defense: 10,
-                luck: 1,
+                luck: 8,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Fuego'],
+                habilidades: ['Golpe Triple', 'Velocidad UP', 'Fuego'],
                 objeto: ''
             },
         };
@@ -123,7 +123,7 @@ export default class GameManager {
 
         this.defeatedNPCs = new Set();
 
-        this.justdefeated=null;
+        this.justdefeated = null;
 
     }
 
@@ -243,7 +243,7 @@ export default class GameManager {
         p.exp -= p.expNext;
         p.expNext = Math.floor(p.expNext * 1.5);
 
-        // Mejora de stats (ejemplo simple)
+        // Mejora de stats (ejemplo)
         p.maxHp += 20;
         p.hp = p.maxHp;
         p.maxMp += 10;
@@ -287,17 +287,17 @@ export default class GameManager {
     }
 
     setJustDefeated(npcId) {
-        this.justdefeated=npcId;
+        this.justdefeated = npcId;
     }
 
     isJustDefeated(npcId) {
-        return this.justdefeated==npcId;
+        return this.justdefeated == npcId;
     }
-    AddCompañero(name){
+    AddCompañero(name) {
 
         if (!this.ActualPlayers.includes(name)) {
             this.ActualPlayers.push(name);
         }
-       
+
     }
 }
