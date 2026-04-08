@@ -10,8 +10,8 @@ import NPCBattle from './npc_battle';
 
 export default class cafeteria_loco extends NPCBattle {
 
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null) {
-        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId);
+    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,NpcId) {
+        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,NpcId);
 
         this.lastDirection='';
         
@@ -21,7 +21,7 @@ export default class cafeteria_loco extends NPCBattle {
         this.body.setSize(this.width, this.height);
         
         this.body.moves = true;
-        this.speed = 225;
+        this.speed = 200;
 
         
         // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
@@ -70,7 +70,6 @@ export default class cafeteria_loco extends NPCBattle {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
         
-
         if (this.frozen) {
             this.body.setVelocity(0, 0);
             this.anims.stop();
@@ -78,44 +77,75 @@ export default class cafeteria_loco extends NPCBattle {
         }
         let moving = false;
         if (this.lastDirection=='up') {
-            this.body.setVelocityY(-this.speed);
-            this.body.setVelocityX(0);
-            moving = true;
 
-            
-            this.move_y-=1;
-            if(this.move_y<=0){
-                this.lastDirection='left';
+            if(Math.abs(this.player.x-this.x)<25&&this.y-this.player.y>=30&&this.y-this.player.y<=60){
+                this.freeze();
+                this.player.freeze();
+                this.interact();
+            }else{
+                this.body.setVelocityY(-this.speed);
+                this.body.setVelocityX(0);
+                moving = true;
+
+                this.move_y-=1;
+                if(this.move_y<=0){
+                    this.lastDirection='left';
+                }
             }
         }
         else if (this.lastDirection=='left') {
-            this.body.setVelocityX(-this.speed);
-            this.body.setVelocityY(0);
-            moving = true;
-            
-            this.move_x-=1;
-            if(this.move_x<=0){
-                this.lastDirection='down';
+
+            if(Math.abs(this.player.y-this.y)<25&&this.x-this.player.x>=30&&this.x-this.player.x<=60){
+                this.freeze();
+                this.player.freeze();
+                this.interact();
+            }
+            else{
+                this.body.setVelocityX(-this.speed);
+                this.body.setVelocityY(0);
+                moving = true;
+                
+                this.move_x-=1;
+                if(this.move_x<=0){
+                    this.lastDirection='down';
+                }
             }
         }
         else if (this.lastDirection=='right') {
+
+            if(Math.abs(this.player.y-this.y)<25&&this.x-this.player.x<=-30&&this.x-this.player.x>=-60){
+                this.freeze();
+                this.player.freeze();
+                this.interact();
+            }
+            else{
+
             this.body.setVelocityX(this.speed);
             this.body.setVelocityY(0);
             moving = true;
             
-            this.move_x+=1;
-            if(this.move_x>=15){
-                this.lastDirection='up';
+                this.move_x+=1;
+                if(this.move_x>=15){
+                    this.lastDirection='up';
+                }
             }
         }
         else if (this.lastDirection=='down') {
-            this.body.setVelocityY(this.speed);
-            this.body.setVelocityX(0);
-            moving = true;
 
-            this.move_y+=1;
-            if(this.move_y>=35){
-                this.lastDirection='right';
+            if(Math.abs(this.player.x-this.x)<25&&this.y-this.player.y<=-30&&this.y-this.player.y>=-60){
+                this.freeze();
+                this.player.freeze();
+                this.interact();
+            }
+            else{
+                this.body.setVelocityY(this.speed);
+                this.body.setVelocityX(0);
+                moving = true;
+
+                this.move_y+=1;
+                if(this.move_y>=28){
+                    this.lastDirection='right';
+                }
             }
 
         } else {

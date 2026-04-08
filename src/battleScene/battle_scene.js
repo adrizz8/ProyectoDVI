@@ -21,7 +21,9 @@ export default class BattleScene extends Phaser.Scene {
     init(data) {
         const gm = GameManager.getInstance();
         const allNames = Object.keys(gm.playerStats);
-        this._playerStats = gm.getPlayersForBattle(allNames);
+        this._playerStats = gm.getPlayersForBattle(gm.ActualPlayers);
+        this.npcid=data.npcid;
+        this.nivel=data.nivel;
 
         // Si es un encuentro aleatorio (no vienen enemigos predefinidos)
         if (!data || !data.enemies) {
@@ -50,9 +52,9 @@ export default class BattleScene extends Phaser.Scene {
         const n = Math.random();
 
         if (n < 0.40) return 1;
-        if (n < 0.70) return 2;
-        if (n < 0.90) return 3;
-        return 4;
+        if (n < 0.70) return 1;
+        if (n < 0.90) return 1;
+        return 1;
     }
 
     generarEnemigoAleatorio(gm, cantidad) {
@@ -129,7 +131,7 @@ export default class BattleScene extends Phaser.Scene {
         this._currentSkill = null;
         this._currentItem = null;
 
-        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this);
+        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this, this.npcid,this.nivel);
         this.battle_manager.setCallbacks({
             onPlayerTurnStarted: (idx) => this._onPlayerTurnStarted(idx),
             onPlayerActionResult: (r) => this._onPlayerActionResult(r),

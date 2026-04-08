@@ -94,6 +94,9 @@ export default class GameManager {
             },
         };
 
+        this.ActualPlayers = [];
+        this.ActualPlayers.push('Jugador1');
+
         // ── Mochila / Inventario ──────────────────────────────────────────────
         // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
         this.backpack = [
@@ -117,6 +120,10 @@ export default class GameManager {
 
 
         this.niveles = new Map();
+
+        this.defeatedNPCs = new Set();
+
+        this.justdefeated=null;
 
     }
 
@@ -269,5 +276,28 @@ export default class GameManager {
 
     estadoNivel(nombre) {
         return this.niveles.get(nombre);
+    }
+
+    markDefeated(npcId) {
+        this.defeatedNPCs.add(npcId);
+    }
+
+    isDefeated(npcId) {
+        return this.defeatedNPCs.has(npcId);
+    }
+
+    setJustDefeated(npcId) {
+        this.justdefeated=npcId;
+    }
+
+    isJustDefeated(npcId) {
+        return this.justdefeated==npcId;
+    }
+    AddCompañero(name){
+
+        if (!this.ActualPlayers.includes(name)) {
+            this.ActualPlayers.push(name);
+        }
+       
     }
 }

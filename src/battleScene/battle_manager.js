@@ -18,7 +18,7 @@ export default class BattleManager {
      * @param {Object[]} enemiesStatsArr Lista de stats de los enemigos
      * @param {Phaser.Scene} scene       Referencia a la escena
      */
-    constructor(playerStatsArr, enemiesStatsArr, scene) {
+    constructor(playerStatsArr, enemiesStatsArr, scene, npcid,nivel) {
         this._scene = scene;
 
         // Inicializar jugadores y enemigos
@@ -41,6 +41,9 @@ export default class BattleManager {
             onMessage: null,
             onTurnChanged: null // (participant)
         };
+
+        this.npcid=npcid;
+        this.nivel=nivel;
     }
 
     setCallbacks(callbacks) {
@@ -434,11 +437,12 @@ export default class BattleManager {
     }
 
     _endBattle(winner) {
-        this.syncToManager();
+
+        this.syncToManager(winner);
         this._callbacks.onBattleEnd?.({ winner });
     }
 
-    syncToManager() {
+    syncToManager(winner) {
         const gm = GameManager.getInstance();
         this.players.forEach(p => {
             if (gm.playerStats[p.name]) {
@@ -446,6 +450,14 @@ export default class BattleManager {
                 gm.playerStats[p.name].mp = p.mp;
             }
         });
+
+        if(winner=='player'){
+            gm.markDefeated(this.npcid);
+            gm.setJustDefeated(this.npcid);
+            if(this.nivel!=null){
+                gm.CompleteNivel(this.nivel);
+            }
+        }
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────

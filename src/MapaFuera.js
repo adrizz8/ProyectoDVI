@@ -68,7 +68,7 @@ export default class MapaFuera extends Phaser.Scene {
         
 
         gm.addNivel('outdoorMap');
-        gm.CompleteNivel('outdoorMap');
+        //gm.CompleteNivel('outdoorMap');
         
         this.salida_bus= map.createFromObjects('triggers',{
             name:'salida_autobus',

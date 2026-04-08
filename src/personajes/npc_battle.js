@@ -14,9 +14,12 @@ export default class NPCBattle extends NPC {
      * @param {string} texture Clave de la textura (podría ser 'toy' o el que asignes)
      * @param {object} stats Estadísticas del enemigo para el combate
      */
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null) {
+    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null, NpcId='', Nivel=null) {
         const name = stats.name ?? 'Enemigo';
         super(scene, player, x, y, texture,frame, message, onFinish, itemId, name);
+
+        this.id=NpcId;
+        this.nivel=Nivel;
 
         this.stats = {
             name: name,
@@ -30,10 +33,18 @@ export default class NPCBattle extends NPC {
      * Reacción al interactuar: muestra diálogo si existe y luego inicia combate
      */
     interact() {
-        if (this.message) {
-            this.say(this.message, () => this.startBattle());
-        } else {
-            this.startBattle();
+        const gm = GameManager.getInstance();
+
+        if(this.id==''||!gm.isDefeated(this.id)){
+            if (this.message) {
+                this.say(this.message, () => this.startBattle());
+            } else {
+                this.startBattle();
+            }
+        }else{
+            if (this.message) {
+                this.say(this.message);
+            }
         }
     }
 
@@ -52,7 +63,9 @@ export default class NPCBattle extends NPC {
             enemyMaxHp: this.stats.maxHp,
             enemyDamage: this.stats.damage,
             enemySpriteKey: this.stats.spriteKey,
-            originScene: this.scene.scene.key // Para saber a dónde volver tras el combate
+            originScene: this.scene.scene.key, // Para saber a dónde volver tras el combate
+            npcid: this.id,
+            nivel:this.nivel
         });
     }
 }

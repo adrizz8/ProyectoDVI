@@ -10,8 +10,8 @@ import NPCBattle from './npc_battle';
 
 export default class miron extends NPCBattle {
 
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null) {
-        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId);
+    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,NpcId) {
+        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,NpcId);
     
         this.lastDirection='';
         
@@ -82,11 +82,12 @@ export default class miron extends NPCBattle {
         let moving = false;
 
         if(!this.luchar){
-       
+            
             if (this.lastDirection=='right') {
 
-                if(10<this.player.x-this.x&&Math.abs(this.y-this.player.y)<=10){
+                if(10<this.player.x-this.x&&this.player.x-this.x<155&&Math.abs(this.y-this.player.y)<=25){
                     console.log('derecha');
+                    this.pillado();
                 }
 
                 this.move_x-=1;
@@ -97,8 +98,9 @@ export default class miron extends NPCBattle {
             }
             else if (this.lastDirection=='left') {
 
-                if(this.player.x-this.x<-10&&Math.abs(this.y-this.player.y)<=10){
+                if(this.player.x-this.x<-10&&-155<this.player.x-this.x &&Math.abs(this.y-this.player.y)<=25){
                     console.log('izquierda');
+                    this.pillado();
                 }
 
                 this.move_x+=1;
@@ -114,10 +116,23 @@ export default class miron extends NPCBattle {
 
         }else{
             if(this.lastDirection=='right'){
-
+                moving=true;
+                this.body.setVelocityX(this.speed);
+                if(Math.abs(this.player.x-this.x)<60){
+                    this.freeze();
+                    this.interact();
+                    this.player.setDirection('left');
+                }
             }
             else{
+                moving=true;
+                this.body.setVelocityX(-this.speed);
 
+                if(Math.abs(this.player.x-this.x)<60){
+                    this.freeze();
+                    this.interact();
+                    this.player.setDirection('right');
+                }
             }
             
         }
@@ -135,4 +150,9 @@ export default class miron extends NPCBattle {
         this.frozen = false;
     }
 
+    pillado(){
+        this.player.freeze();
+
+        this.luchar=true;
+    }
 }
