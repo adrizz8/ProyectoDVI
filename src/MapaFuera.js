@@ -4,6 +4,7 @@ import trigger from './trigger.js';
 import primerencuentro from './personajes/primerencuentro.js';
 import DialogueManager from './dialogueManager.js';
 import GameManager from './manager.js';
+import npc from './personajes/npc.js';
 
 /**
  * Escena del mapa exterior.
@@ -138,6 +139,7 @@ export default class MapaFuera extends Phaser.Scene {
                 this.time.addEvent({
                     delay: 300, // ms
                     callback: () => {
+                        // Diálogo del enemigo derrotado
                         this.dialogueManager.showDialogue("Comoo!!!! PASO DE TI", 'Enemigo', () => {
                             if (this.player2.x > 810) {
                                 ir2.destroy();
@@ -147,6 +149,11 @@ export default class MapaFuera extends Phaser.Scene {
                                 this.player2.setDirection('right');
                             }
                             this.player2.unfreeze();
+
+                            // --- Aparecen Carlos e Ismael, los profesores de DVI ---
+                            this.time.delayedCall(800, () => {
+                                this._mostrarDialogosProfs();
+                            });
                         })
                     }
                 });
@@ -213,6 +220,11 @@ export default class MapaFuera extends Phaser.Scene {
         */// Fade-in al entrar al mapa exterior
         this.cameras.main.fadeIn(400, 0, 0, 0);
 
+        // NPCs si el boss de cafeteria ya ha sido derrotado
+        if (gm.estadoNivel('cafeteria')) {
+            this._spawnNPCsPostBoss();
+        }
+
         // Música ambiente
         this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
         this.music.play();
@@ -233,12 +245,90 @@ export default class MapaFuera extends Phaser.Scene {
         if (this.player2 && this.player2.update) {
             this.player2.update(t, dt);
         }
+        // Actualizar NPCs exteriores post-boss
+        if (this._outdoorNpcs) {
+            this._outdoorNpcs.forEach(n => { if (n && n.update) n.update(t, dt); });
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
         if (this.dialogueManager) {
             this.dialogueManager.showDialogue(message, nombre, onFinish);
         }
+    }
+
+    /**
+     * Muestra los diálogos de los profesores Carlos e Ismael
+     * tras el primer combate del repositorio.
+     */
+    _mostrarDialogosProfs() {
+        this.player.freeze();
+
+        // Placeholder visual: dos rectángulos con nombre encima
+        // Carlos - rectángulo azul oscuro
+        const carlosRect = this.add.rectangle(this.player.x - 120, this.player.y - 60, 48, 64, 0x2244aa)
+            .setStrokeStyle(2, 0xffffff).setDepth(50);
+        const carlosLabel = this.add.text(this.player.x - 120, this.player.y - 100, 'Carlos', {
+            fontSize: '12px', fill: '#ffffff', backgroundColor: '#2244aa', padding: { x: 4, y: 2 }
+        }).setOrigin(0.5).setDepth(51);
+
+        // Ismael - rectángulo verde oscuro
+        const ismaelRect = this.add.rectangle(this.player.x + 120, this.player.y - 60, 48, 64, 0x224422)
+            .setStrokeStyle(2, 0xffffff).setDepth(50);
+        const ismaelLabel = this.add.text(this.player.x + 120, this.player.y - 100, 'Ismael', {
+            fontSize: '12px', fill: '#ffffff', backgroundColor: '#224422', padding: { x: 4, y: 2 }
+        }).setOrigin(0.5).setDepth(51);
+
+        const limpiarProfs = () => {
+            carlosRect.destroy(); carlosLabel.destroy();
+            ismaelRect.destroy(); ismaelLabel.destroy();
+            this.player.unfreeze();
+        };
+
+        // Encolamos TODOS los diálogos de golpe.
+        // El DialogueManager los irá mostrando uno a uno al pulsar cualquier tecla.
+        // El onFinish solo se asigna al último mensaje de la cadena.
+        this.dialogueManager.showDialogue(
+            '¡Eh, tú! ¡El novato de la mochila! Menos mal, un humano que todavía no tiene el cerebro en la nube.',
+            'Carlos'
+        );
+        this.dialogueManager.showDialogue(
+            'Escucha bien. La facultad ha sido infectada por una IA de corrección masiva. Los demás profes se han vuelto locos; creen que sois bugs que hay que borrar.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            'Hemos hackeado el sistema de la planta para crear una instancia segura desde DVI. Es un refugio, pero el servidor central sigue infectado por la IA.',
+            'Carlos'
+        );
+        this.dialogueManager.showDialogue(
+            'Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando, vuestro HUD y vuestra voz en el pinganillo... pero la implementación final os toca a vosotros.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            'Te hemos instalado un módulo de combate en tu mochila. No es un bug, es una feature. Úsalo contra los conserjes que bloquean la salida.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            '¡Y no te olvides de recoger ese Pincho de Tortilla! En este motor de juego, la grasa es el combustible del héroe. ¡Suerte, Beta Tester!',
+            'Carlos',
+            limpiarProfs
+        );
+    }
+
+    /**
+     * Spawnea NPCs en el mapa exterior cuando la cafetería ya ha sido completada.
+     */
+    _spawnNPCsPostBoss() {
+        const npcData = [
+            { x: 300, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!' },
+            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Dicen que un novato tumbó al guarda de la cafetería. ¡Eso es tener nivel!' },
+            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a tomar el aire.' },
+            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas de arriba. Alguien tiene que pararla...' },
+        ];
+
+        this._outdoorNpcs = npcData.map(data =>
+            new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante')
+        );
     }
 
     getPosiPostComb(savedPos, paso = 60) {

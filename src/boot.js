@@ -188,7 +188,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+    this.scene.start('level3');
 
   }
 }
