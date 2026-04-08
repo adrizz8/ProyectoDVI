@@ -6,7 +6,6 @@ import Boton from '../gates/boton.js';
 import Cable from '../gates/cable.js';
 import AndGate from '../gates/and_gate.js';
 import NotGate from '../gates/not_gate.js';
-import Bombilla from '../bombilla.js';
 
 export default class P1LeftMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -22,7 +21,6 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         const suelo = map.createLayer('Suelo', tileset, 0, 0);
         const paredes = map.createLayer('Paredes', tileset, 0, 0);
         const decoracionypuerta = map.createLayer('Decoracionypuerta', tileset, 0, 0);
-        const puertasLogicas = map.createLayer('PuertasLogicas', tileset, 0, 0);
 
         // Colisiones
         colisiones.setCollisionByExclusion([-1]);
@@ -52,15 +50,6 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.dialogueManager = new DialogueManager(this);
-
-        // Menu con espacio
-        this.input.keyboard.on('keydown-SPACE', () => {
-            if (this.dialogueManager && this.dialogueManager.dialogBox.visible) return;
-            this.scene.launch('MenuPrincipal', { from: this.scene.key });
-            this.scene.pause();
-        });
-
-
 
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
@@ -139,7 +128,7 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.cable_right6.angle = 180;
         this.cable_right6.connectInput(this.and_gate1);
 
-        this.cable_left6 = new Cable(this, 870, 174, 'cable_left_off');
+        this.cable_left6 = new Cable(this, 870, 174, 'cable_right_off');
         this.cable_left6.setDepth(0);
         this.cable_left6.setOrigin(0.5, 0.5);
         this.cable_left6.angle = 90;
@@ -152,7 +141,7 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.cable7.connectInput(this.and_gate2);
         this.cable7.connectOutput(this.and_gate3, 'inputB');
 
-        this.cable_left7 = new Cable(this, 952, 190, 'cable_left_off');
+        this.cable_left7 = new Cable(this, 952, 190, 'cable_right_off');
         this.cable_left7.setDepth(0);
         this.cable_left7.connectInput(this.and_gate2);
 
@@ -164,23 +153,25 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
 
 
 
-        // 4. Salida (Bombilla)
-        this.bombilla = new Bombilla(this, this.player, 800, 300, "¡Prepárate para luchar!");
-        this.bombilla.setDepth(1);
 
-        this.cableSalida = new Cable(this, 725, 300);
+        this.cableSalida_right = new Cable(this, 908, 40, 'cable_right_off');
+        this.cableSalida_right.setDepth(0);
+        this.cableSalida_right.setOrigin(0.5, 0.5);
+        this.cableSalida_right.angle = 180;
+        this.cableSalida_right.connectInput(this.and_gate3);
+
+        this.cableSalida = new Cable(this, 1000, 32);
+        this.cableSalida.setDisplaySize(182, 10)
         this.cableSalida.setDepth(0);
-        this.cableSalida.setOrigin(0.5, 0.5);
-        this.cableSalida.angle = 90;
         this.cableSalida.connectInput(this.and_gate3);
-        this.cableSalida.connectOutput(this.bombilla, 'signalIn'); // CAMBIADO: de 'input' a 'signalIn'
+        this.cableSalida.setCompleted('puzleIzquierdaCompletado');
 
         this.circuitComponents = [
             this.cable1, this.cable2, this.cable3, this.cable4, this.cable5,
             this.cable6, this.cable7, this.cable_left6, this.cable_right6,
             this.cable_left7, this.cable_right7, this.and_gate1, this.and_gate2,
             this.and_gate3, this.not_gate1, this.boton1, this.boton2,
-            this.boton3, this.boton4, this.cableSalida, this.bombilla
+            this.boton3, this.boton4, this.cableSalida_right, this.cableSalida
         ];
 
         // Ajustes de profundidad y tamaño masivos (opcional, simplificado)

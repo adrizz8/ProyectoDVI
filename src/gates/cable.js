@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import EventManager from '../eventManager.js';
 
 export default class Cable extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, image = 'cable_off') {
@@ -23,6 +24,7 @@ export default class Cable extends Phaser.GameObjects.Sprite {
         this.signal = false;
         this.inputSource = null;
         this.outputTarget = null;
+        this.eventManager = EventManager.getInstance();
     }
 
     connectInput(source) {
@@ -34,6 +36,12 @@ export default class Cable extends Phaser.GameObjects.Sprite {
      */
     connectOutput(target, inputName = 'signalIn') { // CAMBIADO: Valor por defecto seguro
         this.outputTarget = { target, inputName };
+    }
+
+    setCompleted(eventName) {
+        if (eventName) {
+            this.eventManager[eventName] = this.signal;
+        }
     }
 
     updateLogic() {
