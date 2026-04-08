@@ -66,6 +66,7 @@ import p1LeftMazmorra from '../assets/images/p1izquierdadungeon.json';
 import entradaMazmorra from '../assets/images/entradadungeon.json';
 import salaLanchares from '../assets/images/salalanchares.json';
 import salaMiniBoss from '../assets/images/salaminiboss.json';
+import amigo1 from '../assets/images/amigo1dvi.png'
 
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
@@ -97,6 +98,7 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 })
+    this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 })
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
@@ -175,7 +177,7 @@ export default class Boot extends Phaser.Scene {
     }
 
 
-    this.scene.start('p1LeftMazmorra');
+    this.scene.start('prematricula');
 
   }
 }
