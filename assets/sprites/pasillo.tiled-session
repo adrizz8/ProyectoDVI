@@ -1,12 +1,12 @@
 {
-    "activeFile": "pasillo.tmx",
+    "activeFile": "cafeteria.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "cafeteria.tmx": {
             "scale": 0.6476562499999999,
-            "selectedLayer": 0,
+            "selectedLayer": 6,
             "viewCenter": {
                 "x": 608.3474065138722,
                 "y": 320.3860072376357
@@ -25,13 +25,14 @@
             "scaleInDock": 1
         },
         "general.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1
         },
         "mapa de prueba.tmx": {
             "scale": 0.8203645833333333,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 479.66478318836903,
+                "x": 479.0552980763126,
                 "y": 134.6962097644594
             }
         },
@@ -50,8 +51,8 @@
             "scale": 0.75,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 360,
-                "y": 147.33333333333337
+                "x": 1526.6666666666665,
+                "y": 946
             }
         },
         "tilesinterior.tsx": {
@@ -60,18 +61,16 @@
         }
     },
     "openFiles": [
-        "pasillo.tmx",
         "mapa de prueba.tmx",
         "mapaFuera.tmx",
-        "tilesinterior.tsx",
         "cafeteria.tmx"
     ],
     "project": "pasillo.tiled-project",
     "recentFiles": [
-        "cafeteria.tmx",
-        "tilesinterior.tsx",
-        "mapaFuera.tmx",
         "mapa de prueba.tmx",
-        "pasillo.tmx"
+        "mapaFuera.tmx",
+        "cafeteria.tmx",
+        "pasillo.tmx",
+        "tilesinterior.tsx"
     ]
 }

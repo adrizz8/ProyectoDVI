@@ -28,8 +28,8 @@ export default class Cafeteria extends Phaser.Scene {
         entradas.set('puerta_izq', { x: 161, y: 580, direccion: 'up' });
         entradas.set('puerta_der', { x: 896, y: 580, direccion: 'up' });
         // Vuelta desde el pasillo
-        entradas.set('desde_pasillo_izq', { x: 85, y: 160, direccion: 'down' });
-        entradas.set('desde_pasillo_der', { x: 1145, y: 160, direccion: 'down' });
+        entradas.set('desde_pasillo_izq', { x: 80, y: 160, direccion: 'down' });
+        entradas.set('desde_pasillo_der', { x: 1145, y: 20, direccion: 'down' });
 
         this.physics.world.setBounds(
             0,
@@ -39,7 +39,7 @@ export default class Cafeteria extends Phaser.Scene {
         );
 
 
-        // Tilesets (basados en cafeteria.json)
+        // Tilesets 
         const tilesInterior2 = map.addTilesetImage('tilesInterior2', 'tilesInterior2');
         const tilesInterior = map.addTilesetImage('tilesinterior', 'tilesinterior');
         const tilesCafeteria = map.addTilesetImage('tilesCafeteria', 'tilesCafeteria');
@@ -47,7 +47,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         const allTilesets = [tilesInterior2, tilesInterior, tilesCafeteria, tilesExterior];
 
-        // Capas del mapa (orden de abajo a arriba, igual que en Tiled)
+        // Capas del mapa
         const fondo = map.createLayer('fondo', allTilesets, 0, 0);
         const pared = map.createLayer('pared', allTilesets, 0, 0);
         const puerta = map.createLayer('puerta', allTilesets, 0, 0);
@@ -80,11 +80,11 @@ export default class Cafeteria extends Phaser.Scene {
         this.gm = GameManager.getInstance();
         this.savedPos = this.gm.getPlayerPosition();
 
-        this.dialogueManager= new DialogueManager(this);
+        this.dialogueManager = new DialogueManager(this);
 
-         if(this.savedPos){
-            this.player.x=this.savedPos.x;
-            this.player.y=this.savedPos.y;
+        if (this.savedPos) {
+            this.player.x = this.savedPos.x;
+            this.player.y = this.savedPos.y;
             this.player.setDirection(this.savedPos.direction);
             this.gm.clearPlayerPosition();
         }
@@ -92,56 +92,80 @@ export default class Cafeteria extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.physics.add.collider(this.player, colisiones);
 
-        if(!this.gm.estadoNivel('cafeteria')){
+        if (!this.gm.estadoNivel('cafeteria')) {
 
-            this.amigo1= new amigo1(this,this.player,1040,470,'',0,null,null,null,'Pepe');
+            this.amigo1 = new amigo1(this, this.player, 1040, 470, '', 0, null, null, null, 'Pepe');
             this.enemies = this.add.group();
             this.generarnpcs();
 
         }
 
-        // Zonas de salida con rectángulos verdes visibles para debug de posición
         // El mapa es 38x20 tiles de 32px = 1216x640px
-        // Los huecos de la capa colisiones están en los extremos izquierdo y derecho, filas 4-5 (y=128-192)
+        // Los huecos de la capa colisiones están en los extremos izquierdo y derecho, filas 4-5
 
-        if(this.gm.estadoNivel('cafeteria')){
+
+        // Flag global para evitar transiciones duplicadas
+        this._transitioning = false;
+
+        // Si el jugador spawea ENCIMA de zonaIzq (vuelta desde pasillo),
+        // esperar a que salga de la zona antes de activar el trigger.
+        // zonaIzq está en (80,160) tamaño 100x60 → bounds: x[30-130], y[130-190]
+        this._zonaIzqMustExit = (data.entrada === 'desde_pasillo_izq');
+
+        if (this.gm.estadoNivel('cafeteria')) {
             // puerta_der → pasillo (extremo derecho del mapa, filas 4-5)
             const zonaDer = this.add.zone(1200, 160, 48, 128);
             this.physics.world.enable(zonaDer, Phaser.Physics.Arcade.STATIC_BODY);
-            // Rectángulo verde debug — eliminar cuando funcione
-            this.add.rectangle(1200, 160, 48, 128, 0x00ff00, 0.5).setDepth(99);
 
             this.physics.add.overlap(zonaDer, this.player, () => {
-                this.scene.start('pasillo', { entrada: 'desde_cafeteria' });
+                if (this._transitioning) return;
+                this._transitioning = true;
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.once('camerafadeoutcomplete', () => {
+                    this.scene.start('pasillo', { entrada: 'desde_cafeteria' });
+                });
             });
         }
 
         // puerta_izq → pasillo
-        const zonaIzq = this.add.zone(16, 160, 60, 128);
+        const zonaIzq = this.add.zone(80, 160, 100, 60);
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
+        // Rectángulo verde debug — eliminar cuando funcione
+        this.add.rectangle(80, 160, 100, 60, 0x00ff00, 0.5).setDepth(99);
+
+        // puerta exterior con color para que se note que hay una puerta
+        this.add.rectangle(895, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
+        // this.add.rectangle(161, 635, 100, 32, 0xffd966, 0.35).setDepth(99);
 
         // Zona de salida baja derecha → volver al exterior (x=896, coincide con trigger en mapaFuera)
         const zonaExitDer = this.add.zone(896, 635, 100, 32);
         this.physics.world.enable(zonaExitDer, Phaser.Physics.Arcade.STATIC_BODY);
 
         // Zona de salida baja izquierda → volver al exterior (x=161, coincide con trigger en mapaFuera)
+        //COMENTADO DE MOMENTO, ENTRAR SOLO POR LA IZQUIERDA PARA PASAR POR LOS NPCS¿?
         const zonaExitIzq = this.add.zone(161, 635, 100, 32);
-        this.physics.world.enable(zonaExitIzq, Phaser.Physics.Arcade.STATIC_BODY);
+        // this.physics.world.enable(zonaExitIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
- 
         this.physics.add.overlap(zonaIzq, this.player, () => {
+            // Solo activar si el jugador entró (no si spaweó encima)
+            if (this._transitioning || this._zonaIzqMustExit) return;
+            this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('pasillo', { entrada: 'desde_cafeteria_izq' });
             });
         });
         this.physics.add.overlap(zonaExitDer, this.player, () => {
+            if (this._transitioning) return;
+            this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('outdoorMap', { entrada: 'entrada_der' });
             });
         });
         this.physics.add.overlap(zonaExitIzq, this.player, () => {
+            if (this._transitioning) return;
+            this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
@@ -178,27 +202,37 @@ export default class Cafeteria extends Phaser.Scene {
         if (this.amigo1 && this.amigo1.update) {
             this.amigo1.update(t, dt);
         }
+
+        // Cuando el jugador sale de zonaIzq (bounds: x[30-130], y[130-190]),
+        // se desactiva el flag para que el trigger vuelva a funcionar al re-entrar
+        if (this._zonaIzqMustExit && this.player) {
+            const px = this.player.x;
+            const py = this.player.y;
+            if (px < 30 || px > 130 || py < 130 || py > 190) {
+                this._zonaIzqMustExit = false;
+            }
+        }
     }
 
-    generarnpcs(){
+    generarnpcs() {
 
 
-        const conserj= new conserje(this,this.player,1150,155,'toy',null,{},'No pasaras!!',null,null,'conserje_caf');
+        const conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {}, 'No pasaras!!', null, null, 'conserje_caf');
 
-        if(this.gm.isJustDefeated('conserje_caf')){
+        if (this.gm.isJustDefeated('conserje_caf')) {
 
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
-            this.showDialogue('No pueder ser',()=>{
+            this.showDialogue('No pueder ser', () => {
                 conserj.huir();
             })
 
             this.gm.markDefeated('npc_loco_caf');
-            
+
             this.gm.markDefeated('npc_miron_caf');
 
         }
-        
+
         const npcData = [
             { x: 270, y: 210, texture: 'npc1', frame: 8, message: 'a.', onFinish: null, ItemId: null, name: 'Juan' },
             { x: 334, y: 210, texture: 'npc2', frame: 4, message: 'b.', onFinish: null, ItemId: null, name: 'Maria' },
@@ -238,42 +272,42 @@ export default class Cafeteria extends Phaser.Scene {
 
         // añadir al grupo
         this.npcArray.forEach(npc => this.enemies.add(npc));
-        const loco= new cafeteria_loco(this,this.player,450,320,null,null,{name:'Marcos'},'AHHHHHHHH',null,null,'npc_loco_caf');
+        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, 'AHHHHHHHH', null, null, 'npc_loco_caf');
 
-        if(this.gm.isJustDefeated('npc_loco_caf')){
-            const posi= this.getPosiPostComb(this.savedPos);
-            loco.x=posi.x;
-            loco.y=posi.y;
+        if (this.gm.isJustDefeated('npc_loco_caf')) {
+            const posi = this.getPosiPostComb(this.savedPos);
+            loco.x = posi.x;
+            loco.y = posi.y;
             loco.setDirection(posi.direction);
             loco.freeze();
             this.gm.setJustDefeated('');
 
-        }else{
-            if(this.gm.isDefeated('npc_loco_caf')){
+        } else {
+            if (this.gm.isDefeated('npc_loco_caf')) {
                 loco.freeze();
             }
         }
-        
-        this.enemies.add(loco);
-        const per_miron = new miron(this,this.player,707,340,null,0,{},'Te pille',null,null,'npc_miron_caf');
 
-         if(this.gm.isJustDefeated('npc_miron_caf')){
-            const posi= this.getPosiPostComb(this.savedPos);
-            per_miron.x=posi.x;
-            per_miron.y=posi.y;
+        this.enemies.add(loco);
+        const per_miron = new miron(this, this.player, 707, 340, null, 0, {}, 'Te pille', null, null, 'npc_miron_caf');
+
+        if (this.gm.isJustDefeated('npc_miron_caf')) {
+            const posi = this.getPosiPostComb(this.savedPos);
+            per_miron.x = posi.x;
+            per_miron.y = posi.y;
             per_miron.setDirection(posi.direction);
             per_miron.freeze();
             this.gm.setJustDefeated('');
 
-        }else{
-            if(this.gm.isDefeated('npc_miron_caf')){
+        } else {
+            if (this.gm.isDefeated('npc_miron_caf')) {
                 per_miron.freeze();
             }
         }
         this.enemies.add(per_miron);
 
-        
-        
+
+
     }
 
 
@@ -320,7 +354,7 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-     unfreeze(){
+    unfreeze() {
         this.player.unfreeze();
     }
 
