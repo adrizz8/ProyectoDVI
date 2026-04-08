@@ -320,10 +320,12 @@ export default class MapaFuera extends Phaser.Scene {
      */
     _spawnNPCsPostBoss() {
         const npcData = [
-            { x: 300, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!' },
-            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Dicen que un novato tumbó al guarda de la cafetería. ¡Eso es tener nivel!' },
-            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a tomar el aire.' },
-            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas de arriba. Alguien tiene que pararla...' },
+            { x: 250, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo! Pero sigo esperando que mi código compile... lleva 3 días en "Pending".' },
+            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Dicen que un novato tumbó al guarda de la cafetería. Yo intenté tirarle un Exception, pero me devolvió un "Access Denied" en la cara.' },
+            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar. ¿Fumar? No, es que mi sistema de refrigeración está fallando.' },
+            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas de arriba. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
+            { x: 200, y: 600, texture: 'npc2', frame: 12, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en las puertas de salida.' },
+            { x: 600, y: 650, texture: 'npc3', frame: 4, message: '¿Ves ese árbol? Pues tiene mejores gráficos que mi último proyecto de Gráficos por Computador.' },
         ];
 
         this._outdoorNpcs = npcData.map(data =>

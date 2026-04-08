@@ -10,14 +10,15 @@
             "scaleInDock": 1
         },
         "cafeteria.tmx": {
-            "scale": 0.6476562499999999,
-            "selectedLayer": 0,
+            "scale": 1,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 608.3474065138722,
-                "y": 320.3860072376357
+                "x": 575,
+                "y": 490.5
             }
         },
         "cafeteria.tmx#tilesCafeteria": {
+            "dynamicWrapping": false,
             "scaleInDock": 1
         },
         "cafeteria.tmx#tilesInterior2": {
@@ -42,14 +43,15 @@
             }
         },
         "mapaFuera.tmx": {
-            "scale": 0.51767578125,
-            "selectedLayer": 0,
+            "scale": 0.25,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 608.4889643463498,
-                "y": 806.4893416336541
+                "x": 592,
+                "y": 354
             }
         },
         "mapaFuera.tmx#tilesetexterior": {
+            "dynamicWrapping": false,
             "scaleInDock": 1
         },
         "pasillo.tmx": {
@@ -73,9 +75,9 @@
     ],
     "project": "pasillo.tiled-project",
     "recentFiles": [
+        "mapaFuera.tmx",
         "pasillo.tmx",
         "mapa de prueba.tmx",
-        "mapaFuera.tmx",
         "cafeteria.tmx",
         "tilesinterior.tsx"
     ]

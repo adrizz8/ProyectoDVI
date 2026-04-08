@@ -235,19 +235,20 @@ export default class Cafeteria extends Phaser.Scene {
                 this.time.delayedCall(800, () => {
                     this.showDialogue(
                         '¡Habéis desbloqueado el acceso a la Planta 1, pero para poder liberar esta planta completa tendréis que derrotar a Lanchares que ha sellado el aula 1. Para entrar, necesitáis una "Llave Maestra de Hardware" que él mismo ha fragmentado. Y un consejo: con vosotros dos no basta. Buscad a otros alumnos que no hayan sido asimilados por la IA; necesitaréis un equipo completo para el examen final.',
-                        'Carlos', () => {
-                        this.showDialogue(
-                            'Antes del Glitch, Lanchares era una leyenda en la facultad. No solo por sus clases de Computadores, sino por su pasión por el Rugby y sus famosas tertulias con sus "camaradas" en el bar de la esquina. La IA ha retorcido esa mentalidad. Ahora ve la Planta 1 como su propio campo de juego. Se ha blindado con una armadura de placas base y cables de cobre.',
-                            'Ismael', () => {
-                            this.showDialogue(
-                                'Lanchares ha cerrado el tercer tiempo. Se ha encerrado en su aula y dice que solo los que tengan "espíritu de melé" pueden pasar. Si no le derrotáis, la planta seguirá bloqueada por su muro de silicio.',
-                                'Ismael', () => {
-                                this.player.unfreeze();
-                                // Spawnar NPCs normales tras la victoria en esta misma sala
-                                this._generarNPCsPostVictoria();
-                            });
-                        });
-                    });
+                        'Carlos'
+                    );
+                    this.showDialogue(
+                        'Antes del Glitch, Lanchares era una leyenda en la facultad. No solo por sus clases de Computadores, sino por su pasión por el Rugby y sus famosas tertulias con sus "camaradas" en el bar de la esquina. La IA ha retorcido esa mentalidad. Ahora ve la Planta 1 como su propio campo de juego. Se ha blindado con una armadura de placas base y cables de cobre.',
+                        'Ismael'
+                    );
+                    this.showDialogue(
+                        'Lanchares ha cerrado el tercer tiempo. Se ha encerrado en su aula y dice que solo los que tengan "espíritu de melé" pueden pasar. Si no le derrotáis, la planta seguirá bloqueada por su muro de silicio.',
+                        'Ismael', () => {
+                            this.player.unfreeze();
+                            // Spawnar NPCs normales tras la victoria en esta misma sala
+                            this._generarNPCsPostVictoria();
+                        }
+                    );
                 });
             });
 
@@ -257,18 +258,18 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- NPCs de fondo asustados (moviéndose nerviosos) ---
         const npcData = [
-            { x: 270, y: 210, texture: 'npc1', frame: 8, message: '¡Dios mío! ¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
-            { x: 334, y: 210, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos Físico en la puerta!' },
-            { x: 380, y: 340, texture: 'npc3', frame: 8, message: '¡No me carga el repositorio y ahora esto! ¡Un lunes de pesadilla!' },
-            { x: 520, y: 590, texture: 'npc1', frame: 4, message: '¿Qué está pasando? ¡Los profesores han perdido la cabeza!' },
-            { x: 464, y: 590, texture: 'npc4', frame: 8, message: '¡Escóndete! ¡El conserje ataca a cualquiera que intente salir!' },
-            { x: 680, y: 470, texture: 'npc2', frame: 8, message: 'Dicen que es una IA la que controla todo... ¡un virus masivo!' },
-            { x: 820, y: 160, texture: 'npc4', frame: 8, message: '¡No podemos hacer nada! ¡Estamos atrapados!' },
-            { x: 860, y: 185, texture: 'npc3', frame: 8, message: '¡Acabo de entrar y ya quiero irme! ¿Es que no hay forma de salir?' },
-            { x: 900, y: 208, texture: 'npc4', frame: 8, message: '¡El conserje tiene una porra eléctrica! ¡Mantente alejado de la puerta!' },
-            { x: 890, y: 156, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
-            { x: 950, y: 155, texture: 'npc4', frame: 8, message: '¡Me da igual suspender! ¡Quiero salir de aquí!' },
-            { x: 1083, y: 285, texture: 'npc2', frame: 12, message: '¡Los profesores creen que somos bugs! ¡Han perdido la cabeza!' },
+            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡Dios mío! ¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
+            { x: 200, y: 320, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos Físico en la puerta!' },
+            { x: 450, y: 320, texture: 'npc3', frame: 8, message: '¡He bebido tanto que ahora veo los punteros en 3D... y no son a NULL precisamente!' },
+            { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'He intentado salir a fumar, pero el humo se ha quedado en un búfer circular y no sale del edificio.' },
+            { x: 150, y: 580, texture: 'npc4', frame: 8, message: 'Llevo 48 horas seguidas con la práctica de DVI. Mis ojos están en 8 bits ahora mismo.' },
+            { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige la indentación.' },
+            { x: 800, y: 200, texture: 'npc4', frame: 8, message: '¿Alguien tiene un cargador de tipo C? Me he quedado sin batería social.' },
+            { x: 840, y: 220, texture: 'npc3', frame: 8, message: '¡Mi código no funciona y no sé por qué! ¡Mi código funciona Y NO SÉ POR QUÉ! ¡Necesito un cubata!' },
+            { x: 920, y: 200, texture: 'npc4', frame: 8, message: '¿Seguro que no es un sueño? He visto a un puntero perdiendo su referencia y ha sido traumático.' },
+            { x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo. ¡Eran de los de primero, ni siquiera habían compilado nada todavía!' },
+            { x: 970, y: 280, texture: 'npc4', frame: 8, message: '¡Me da igual suspender! ¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Estadística!' },
+            { x: 1050, y: 320, texture: 'npc2', frame: 12, message: '¿Y los profesores? ¡Han perdido la cabeza! ¡Creen que somos bugs que hay que debugear con fuego!' },
         ];
 
         this.npcArray = npcData.map(data =>
@@ -330,7 +331,7 @@ export default class Cafeteria extends Phaser.Scene {
         const andres = new npc(
             this,
             this.player,
-            310, 120,   // cerca de la barra
+            310, 140,   // cerca de la barra, fuera de la colisión de la fila 3
             'npc2',
             8,
             'Bienvenido, chaval. Primer día, ¿eh? Toma, un Pincho de Tortilla. En este caos hay que mantener las fuerzas. ¡La grasa es el combustible del héroe!',
@@ -380,11 +381,13 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarCafeteriaLibeada() {
         const npcPostData = [
-            { x: 350, y: 250, texture: 'npc1', frame: 0, message: 'Lanchares controla el piso de arriba. No subas solo.' },
-            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Tiene mucha chulería para ser un profe loco.' },
-            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada!' },
-            { x: 900, y: 400, texture: 'npc3', frame: 0, message: '¿Seguís sin saber qué es la IA exactamente? Carlos y los profes de DVI dicen que es un correctora masiva que se volvió loca.' },
-            { x: 450, y: 500, texture: 'npc1', frame: 8, message: 'Si vais a subir al piso de arriba, reunid un equipo. Lanchares no es como el conserje.' },
+            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Lanchares controla el piso de arriba. No subas solo. Dicen que si te pilla, te hace un backup del cerebro sin comprimir y te estalla la cabeza.' },
+            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues mi última nota en su examen fue un error de segmentación.' },
+            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada! Mi café sabe a Java... y no del bueno.' },
+            { x: 900, y: 450, texture: 'npc3', frame: 0, message: 'He intentado compilar mi cena pero me ha dado 404: Filete Not Found.' },
+            { x: 500, y: 580, texture: 'npc1', frame: 8, message: 'Si vais a subir al piso de arriba, reunid un equipo. Yo me quedo aquí, mi procesador social está al 100% de uso.' },
+            { x: 1000, y: 200, texture: 'npc2', frame: 0, message: '¿Borracho? No, no... es que mi sistema de equilibrio está en modo de compatibilidad con Windows 95.' },
+            { x: 200, y: 400, texture: 'npc4', frame: 4, message: 'Llevo tanto tiempo aquí que mi piel ha empezado a renderizarse en baja resolución.' },
         ];
 
         this._wanderingNpcs = npcPostData.map(data =>

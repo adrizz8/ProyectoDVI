@@ -234,6 +234,37 @@ export default class Pasillo extends Phaser.Scene {
             null,
             'Estudiante de MDL'
         );
+
+        // --- Nuevos NPCs graciosos ---
+        // Estudiante borracho
+        new npc(
+            this, this.player,
+            150, 450,
+            'npc4', 4,
+            'Hip... colega... ¿tienes un... un "garbage collector"? Es que creo que mi memoria... hip... se está desbordando por el pasillo.',
+            null, null,
+            'Estudiante de Fiesta'
+        );
+
+        // Estudiante cansado/bucle
+        new npc(
+            this, this.player,
+            900, 500,
+            'npc2', 8,
+            'for(let i=0; i<ganas_de_vivir; i++) { beber_cafe(); }. El problema es que ganas_de_vivir es una constante igual a cero.',
+            null, null,
+            'Estudiante en Bucle'
+        );
+
+        // Estudiante de salir a fumar
+        new npc(
+            this, this.player,
+            1100, 300,
+            'npc1', 0,
+            'Salgo un segundo a por aire... o a por nicotina... lo que compile antes. La IA no me deja pasar de la puerta, dice que mi aliento es un riesgo de seguridad.',
+            null, null,
+            'Estudiante Estresado'
+        );
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
