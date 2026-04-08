@@ -10,11 +10,15 @@ export default class AndGate extends Phaser.GameObjects.Sprite {
      * @param {number} x Coordenada x
      * @param {number} y Coordenada y
      */
-    constructor(scene, x, y) {
+    constructor(scene, x, y, player) {
         super(scene, x, y, 'and_gate');
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this, true);
         this.setDisplaySize(80, 120);
+
+        if (player) {
+            this.scene.physics.add.collider(this, player);
+        }
 
         this.inputA = false;
         this.inputB = false;

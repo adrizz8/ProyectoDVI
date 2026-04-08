@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import EventManager from './eventManager.js';
 
 
 import platform from '../assets/sprites/platform.png'
@@ -187,8 +188,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-
-    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+    this.scene.start('p1RightMazmorra');
 
   }
 }
