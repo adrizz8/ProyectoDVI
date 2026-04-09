@@ -104,7 +104,7 @@ export default class miron extends NPCBattle {
                 }
 
                 this.move_x += 1;
-                if (this.move_x > 150) {
+                if (this.move_x > 50) {
                     this.lastDirection = 'right';
                 }
 

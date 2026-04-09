@@ -2,6 +2,7 @@ import Player from '../personajes/player.js';
 import DialogueManager from '../dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from '../manager.js';
+import trigger from '../trigger.js';
 
 export default class SalaLancharesScene extends Phaser.Scene {
     constructor() {
@@ -25,7 +26,8 @@ export default class SalaLancharesScene extends Phaser.Scene {
         paredes.setCollisionByProperty({ collides: true });
 
         // Jugador
-        this.player = new Player(this, 100, 100);
+        this.player = new Player(this, 660, 515);
+        this.player.setDirection('up');
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
         this.physics.add.collider(this.player, decoracion);
@@ -35,6 +37,17 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.dialogueManager = new DialogueManager(this);
+
+        
+        this.lobby = map.createFromObjects('triggers', {
+            name: 'lobby',
+            classType: trigger
+        });
+
+        this.physics.add.overlap(this.player,this.lobby,()=>{
+            this.scene.start('entradaMazmorra',{entrada:'jefe'});
+        });
+        
 
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {

@@ -2,6 +2,7 @@ import Player from '../personajes/player.js';
 import DialogueManager from '../dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from '../manager.js';
+import trigger from '../trigger.js';
 
 export default class SalaMiniBossScene extends Phaser.Scene {
     constructor() {
@@ -24,7 +25,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         pared.setCollisionByProperty({ collides: true });
 
         // Jugador
-        this.player = new Player(this, 100, 100); 
+        this.player = new Player(this, 617, 440); 
+        this.player.setDirection('up');
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, pared);
         this.physics.add.collider(this.player, maquinas);
@@ -34,6 +36,14 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.dialogueManager = new DialogueManager(this);
+
+        this.salida = map.createFromObjects('triggers', {
+            name: 'salida',
+            classType: trigger
+        });
+        this.physics.add.overlap(this.player,this.salida,()=>{
+            this.scene.start('p1LeftMazmorra',{entrada:'salida_miniboss'});
+        });
 
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {

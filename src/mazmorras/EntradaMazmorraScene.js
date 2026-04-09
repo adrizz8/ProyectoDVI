@@ -2,13 +2,22 @@ import Player from '../personajes/player.js';
 import DialogueManager from '../dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from '../manager.js';
+import trigger from '../trigger.js';
 
 export default class EntradaMazmorraScene extends Phaser.Scene {
     constructor() {
         super({ key: 'entradaMazmorra' });
     }
 
-    create() {
+    create(data) {
+
+        var entradas = new Map();
+        entradas.set('pasillo', { x: 595, y: 580, direccion: 'up' });
+        entradas.set('izq', { x: 180, y: 300, direccion: 'right' });
+        entradas.set('der', { x: 1020, y: 300, direccion: 'left' });
+        entradas.set('jefe', { x: 595, y: 325, direccion: 'down' });
+
+
         const map = this.make.tilemap({ key: 'entradaMazmorra' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
@@ -25,8 +34,15 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
 
-        // Jugador
-        this.player = new Player(this, 600, 500);
+        // Spawn del jugador
+        const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
+        const spawnX = posi.x;
+        const spawnY = posi.y;
+        const direccion = posi.direccion;
+
+        this.player = new Player(this, spawnX, spawnY);
+        this.player.setDirection(direccion);
+
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
         this.physics.add.collider(this.player, ordenador);
@@ -38,6 +54,36 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
 
         this.dialogueManager = new DialogueManager(this);
 
+        this.salida_pasillo = map.createFromObjects('triggers', {
+            name: 'salida_pasillo',
+            classType: trigger
+        });
+        this.entrada_der = map.createFromObjects('triggers', {
+            name: 'entrada_der',
+            classType: trigger
+        });
+        this.entrada_izq = map.createFromObjects('triggers', {
+            name: 'entrada_izq',
+            classType: trigger
+        });
+        this.entrada_jefe = map.createFromObjects('triggers', {
+            name: 'entrada_jefe',
+            classType: trigger
+        });
+
+        this.physics.add.overlap(this.player,this.salida_pasillo,()=>{
+            this.scene.start('pasillo',{entrada:'salida_mazmorra'});
+        });
+        this.physics.add.overlap(this.player,this.entrada_der,()=>{
+            this.scene.start('p1RightMazmorra');
+        });     
+        this.physics.add.overlap(this.player,this.entrada_izq,()=>{
+            this.scene.start('p1LeftMazmorra',{entrada:'lobby'});
+        });
+        this.physics.add.overlap(this.player,this.entrada_jefe,()=>{
+            this.scene.start('salaLanchares');
+        }); 
+        
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.dialogueManager && this.dialogueManager.dialogBox.visible) return;

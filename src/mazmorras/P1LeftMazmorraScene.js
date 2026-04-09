@@ -6,13 +6,19 @@ import Boton from '../gates/boton.js';
 import Cable from '../gates/cable.js';
 import AndGate from '../gates/and_gate.js';
 import NotGate from '../gates/not_gate.js';
+import trigger from '../trigger.js';
 
 export default class P1LeftMazmorraScene extends Phaser.Scene {
     constructor() {
         super({ key: 'p1LeftMazmorra' });
     }
 
-    create() {
+    create(data) {
+
+        var entradas = new Map();
+        entradas.set('lobby', { x: 290, y: 560, direccion: 'left' });
+        entradas.set('salida_miniboss', { x: 375, y: 255, direccion: 'down' });
+
         const map = this.make.tilemap({ key: 'p1LeftMazmorra' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
@@ -38,8 +44,15 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         if (savedPos && savedPos.direction) {
             this.player.setDirection(savedPos.direction);
         }
+        
+        // Spawn del jugador
+        const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
+        const spawnX = posi.x;
+        const spawnY = posi.y;
+        const direccion = posi.direccion;
 
-        this.player = new Player(this, startX, startY);
+        this.player = new Player(this, spawnX, spawnY);
+        this.player.setDirection(direccion);
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
@@ -50,6 +63,21 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.dialogueManager = new DialogueManager(this);
+
+        this.lobby = map.createFromObjects('triggers', {
+            name: 'lobby',
+            classType: trigger
+        });
+        this.miniboss = map.createFromObjects('triggers', {
+            name: 'miniboss',
+            classType: trigger
+        });
+        this.physics.add.overlap(this.player,this.lobby,()=>{
+            this.scene.start('entradaMazmorra',{entrada:'izq'});
+        });
+        this.physics.add.overlap(this.player,this.miniboss,()=>{
+            this.scene.start('salaMiniBoss');
+        });
 
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después

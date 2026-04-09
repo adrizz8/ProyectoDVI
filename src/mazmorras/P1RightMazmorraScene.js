@@ -7,6 +7,7 @@ import AndGate from '../gates/and_gate.js';
 import NotGate from '../gates/not_gate.js';
 import OrGate from '../gates/or_gate.js';
 import GameManager from '../manager.js';
+import trigger from '../trigger.js';
 
 export default class P1RightMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -39,8 +40,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         // Recuperar posición guardada o usar la de defecto
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
-        const startX = savedPos ? savedPos.x : 100;
-        const startY = savedPos ? savedPos.y : 100;
+        const startX = savedPos ? savedPos.x : 970;
+        const startY = savedPos ? savedPos.y : 810;
 
         // Restaurar dirección si existía
         if (savedPos && savedPos.direction) {
@@ -48,6 +49,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         }
 
         this.player = new Player(this, startX, startY);
+        this.player.setDirection('right');
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
@@ -59,6 +61,14 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
 
         this.dialogueManager = new DialogueManager(this);
 
+        this.lobby = map.createFromObjects('triggers', {
+            name: 'lobby',
+            classType: trigger
+        });
+
+        this.physics.add.overlap(this.player,this.lobby,()=>{
+            this.scene.start('entradaMazmorra',{entrada:'der'});
+        });
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
         if (savedPos) gm.clearPlayerPosition();

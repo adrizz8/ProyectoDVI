@@ -27,6 +27,7 @@ export default class Pasillo extends Phaser.Scene {
         entradas.set('desde_cafeteria_der', { x: 96, y: 300, direccion: 'right' });
         // Desde la puerta izquierda de la cafetería: aparece en el lado derecho del pasillo
         entradas.set('desde_cafeteria_izq', { x: map.widthInPixels - 96, y: 300, direccion: 'left' });
+        entradas.set('salida_mazmorra', { x: 610, y: 140, direccion: 'down' });
 
         this.physics.world.setBounds(
             0,
@@ -71,6 +72,16 @@ export default class Pasillo extends Phaser.Scene {
         // DialogueManager
         this.dialogueManager = new DialogueManager(this);
         this.gm = GameManager.getInstance();
+
+        this.entrada_mazmorra = map.createFromObjects('triggers', {
+            name: 'entrada_mazmorra',
+            classType: trigger
+        });
+
+        this.physics.add.overlap(this.player,this.entrada_mazmorra,()=>{
+
+            this.scene.start('entradaMazmorra',{entrada:'pasillo'});
+        });
 
         // --- NPCs del lore de la Planta 1 ---
         this._spawnNPCsPlanta1();
