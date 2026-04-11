@@ -78,6 +78,9 @@ import entradaMazmorra from '../assets/images/entradadungeon.json';
 import salaLanchares from '../assets/images/salalanchares.json';
 import salaMiniBoss from '../assets/images/salaminiboss.json';
 import amigo1 from '../assets/images/amigo1dvi.png'
+import finalFaculty from '../assets/images/FINAL FACULTY.png'
+import botonPrincipio from '../assets/images/boton principio.png'
+
 
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
@@ -183,6 +186,10 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON('p1LeftMazmorra', p1LeftMazmorra);
     this.load.tilemapTiledJSON('salaLanchares', salaLanchares);
     this.load.tilemapTiledJSON('salaMiniBoss', salaMiniBoss);
+
+    this.load.image('finalFaculty', finalFaculty);
+    this.load.image('botonPrincipio', botonPrincipio);
+
 
   }
 

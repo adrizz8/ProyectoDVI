@@ -12,16 +12,60 @@ export default class TitleScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.image(400, 300, 'fondo');
-        this.add.image(450, 250, 'logo');
-        const playButton = this.add.text(400, 400, 'NUEVA PARTIDA', { fontSize: '32px', fill: '#ffffff', fontWeight: 'bold', stroke: '#000000', strokeThickness: 5, fontFamily: 'Distant Galaxy' }).setOrigin(0.5);
-        playButton.setInteractive();
-        const configuracion = this.add.text(400, 450, 'CONFIGURACIÓN', { fontSize: '32px', fill: '#ffffff', fontWeight: 'bold', stroke: '#000000', strokeThickness: 5, fontFamily: 'Distant Galaxy' }).setOrigin(0.5);
-        configuracion.setInteractive();
+        // Fondo ajustado a la pantalla (1216x640)
+        const background = this.add.image(608, 320, 'finalFaculty').setOrigin(0.5);
+        background.setDisplaySize(1216, 640);
 
-        playButton.on('pointerdown', () => {
+        // Configuración de los botones (más pequeños)
+        const buttonWidth = 450;
+        const buttonHeight = 70;
+        const gap = 20; // Espacio entre botones
+
+
+        // El segundo botón estará en 320 + (240/2) - (buttonHeight/2) = 320 + 120 - 55 = 385
+        const firstButtonY = 260;
+        const secondButtonY = firstButtonY + buttonHeight + gap;
+
+        // Botón Nueva Partida
+        const playButtonImage = this.add.image(608, firstButtonY, 'botonPrincipio').setInteractive();
+        playButtonImage.setDisplaySize(buttonWidth, buttonHeight);
+
+        const playButtonText = this.add.text(608, firstButtonY, 'Nueva Partida', {
+            fontSize: '32px',
+            fill: '#ffffff',
+            fontWeight: 'bold',
+            stroke: '#000000',
+            strokeThickness: 5,
+            fontFamily: '"Pixelify Sans"'
+        }).setOrigin(0.5);
+
+        // Botón Configuración
+        const configButtonImage = this.add.image(608, secondButtonY, 'botonPrincipio').setInteractive();
+        configButtonImage.setDisplaySize(buttonWidth, buttonHeight);
+
+        const configButtonText = this.add.text(608, secondButtonY, 'Configuración', {
+            fontSize: '32px',
+            fill: '#ffffff',
+            fontWeight: 'bold',
+            stroke: '#000000',
+            strokeThickness: 5,
+            fontFamily: '"Pixelify Sans"'
+        }).setOrigin(0.5);
+
+        // Eventos de los botones
+        playButtonImage.on('pointerdown', () => {
             this.scene.start('prematricula');
         });
 
+        configButtonImage.on('pointerdown', () => {
+            console.log('Configuración pulsada');
+            // Aquí se podría abrir una escena de opciones si existiera
+        });
+
+        // Feedback visual al pasar el ratón (opcional pero recomendado)
+        playButtonImage.on('pointerover', () => playButtonImage.setTint(0xcccccc));
+        playButtonImage.on('pointerout', () => playButtonImage.clearTint());
+        configButtonImage.on('pointerover', () => configButtonImage.setTint(0xcccccc));
+        configButtonImage.on('pointerout', () => configButtonImage.clearTint());
     }
 }

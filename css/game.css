@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
 h1 {
   text-align: center;
 }
 
 
-.html, body {
+.html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
