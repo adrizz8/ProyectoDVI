@@ -40,7 +40,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
-        this.player = new Player(this, spawnX, spawnY);
+        this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
 
         this.physics.add.collider(this.player, colisiones);
@@ -71,19 +71,19 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
             classType: trigger
         });
 
-        this.physics.add.overlap(this.player,this.salida_pasillo,()=>{
-            this.scene.start('pasillo',{entrada:'salida_mazmorra'});
+        this.physics.add.overlap(this.player, this.salida_pasillo, () => {
+            this.scene.start('pasillo', { entrada: 'salida_mazmorra' });
         });
-        this.physics.add.overlap(this.player,this.entrada_der,()=>{
+        this.physics.add.overlap(this.player, this.entrada_der, () => {
             this.scene.start('p1RightMazmorra');
-        });     
-        this.physics.add.overlap(this.player,this.entrada_izq,()=>{
-            this.scene.start('p1LeftMazmorra',{entrada:'lobby'});
         });
-        this.physics.add.overlap(this.player,this.entrada_jefe,()=>{
+        this.physics.add.overlap(this.player, this.entrada_izq, () => {
+            this.scene.start('p1LeftMazmorra', { entrada: 'lobby' });
+        });
+        this.physics.add.overlap(this.player, this.entrada_jefe, () => {
             this.scene.start('salaLanchares');
-        }); 
-        
+        });
+
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.dialogueManager && this.dialogueManager.dialogBox.visible) return;

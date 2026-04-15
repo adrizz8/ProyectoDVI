@@ -271,7 +271,18 @@ export default class Cafeteria extends Phaser.Scene {
     _generarCafeteriaConCaos() {
 
         // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
-        this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {}, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
+        this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {
+            name: 'Conserje',
+            hp: 350,
+            maxHp: 350,
+            damage: 25,
+            speed: 4,
+            defense: 15,
+            mp: 60,
+            maxMp: 60,
+            habilidades: ['Ataque Potente', 'Defensa UP', 'Fuego'],
+            spriteKey: 'toy'
+        }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
             // Acabamos de derrotar al conserje boss → escena de victoria
@@ -342,7 +353,18 @@ export default class Cafeteria extends Phaser.Scene {
         this.npcArray.forEach(npc => this.enemies.add(npc));
 
         // --- NPC Loco (cafeteria_loco) --- 
-        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, { name: 'Marcos' }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
+        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, {
+            name: 'Marcos',
+            hp: 150,
+            maxHp: 150,
+            damage: 18,
+            speed: 10,
+            defense: 8,
+            mp: 30,
+            maxMp: 30,
+            habilidades: ['Golpe Triple', 'Velocidad UP'],
+            spriteKey: 'npc1'
+        }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 
         if (this.gm.isJustDefeated('npc_loco_caf')) {
             const posi = this.getPosiPostComb(this.savedPos);
@@ -360,7 +382,18 @@ export default class Cafeteria extends Phaser.Scene {
         this.enemies.add(loco);
 
         // --- NPC Mirón ---
-        const per_miron = new miron(this, this.player, 707, 340, null, 0, {}, 'Te pille', null, null, 'npc_miron_caf');
+        const per_miron = new miron(this, this.player, 707, 340, null, 0, {
+            name: 'Mirón',
+            hp: 100,
+            maxHp: 100,
+            damage: 12,
+            speed: 6,
+            defense: 10,
+            mp: 20,
+            maxMp: 20,
+            habilidades: ['Ataque NERF'],
+            spriteKey: 'npc3'
+        }, 'Te pille', null, null, 'npc_miron_caf');
 
         if (this.gm.isJustDefeated('npc_miron_caf')) {
             const posi = this.getPosiPostComb(this.savedPos);

@@ -48,8 +48,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
             this.player.setDirection(savedPos.direction);
         }
 
-        this.player = new Player(this, startX, startY);
-        this.player.setDirection('right');
+        this.player = new Player(this, startX, startY, direccion, true);
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
@@ -66,8 +65,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
             classType: trigger
         });
 
-        this.physics.add.overlap(this.player,this.lobby,()=>{
-            this.scene.start('entradaMazmorra',{entrada:'der'});
+        this.physics.add.overlap(this.player, this.lobby, () => {
+            this.scene.start('entradaMazmorra', { entrada: 'der' });
         });
 
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después

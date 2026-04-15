@@ -236,7 +236,7 @@ export const HABILITIES = {
             return {
                 damage,
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su ataque sube ${buffAmount} puntos!`
+                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su propio ataque sube ${buffAmount} puntos!`
             };
         }
     }),

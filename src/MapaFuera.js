@@ -187,8 +187,18 @@ export default class MapaFuera extends Phaser.Scene {
                 const spawnY2 = posi2.y;
                 //const direccion2=posi2.direccion;
 
-                this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {spriteKey: 'estudiantebattle',
-    name: 'Estudiante con prisa' }, " ¿Quien eres tu?, te vas a enterar.", null, null);
+                this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {
+                    spriteKey: 'estudiantebattle',
+                    name: 'Estudiante con prisa',
+                    hp: 120,
+                    maxHp: 120,
+                    damage: 15,
+                    speed: 8,
+                    defense: 5,
+                    mp: 40,
+                    maxMp: 40,
+                    habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante']
+                }, " ¿Quien eres tu?, te vas a enterar.", null, null);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug, this.player, () => {

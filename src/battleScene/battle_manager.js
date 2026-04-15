@@ -307,12 +307,35 @@ export default class BattleManager {
 
         if (action.type === 'skill') {
             const skill = HABILITIES[action.skillName];
-            const isSelf = skill && skill.targetType === 'self';
-            const finalTargetIndex = isSelf ? currentEnemyData.index : targetIdx;
-            const finalTargetType = isSelf ? 'enemy' : 'player';
+            let finalTargetIndex = targetIdx;
+            let finalTargetType = 'player';
+            let finalTarget = target;
+
+            // Lógica especial de selección de objetivo para habilidades de curación
+            if (skill && skill.type === 'heal') {
+                const enemies = this.getEnemies();
+                const needsHeal = enemies.filter(e => !e.isDead && e.hp < e.maxHp * 0.8);
+                
+                if (needsHeal.length > 0) {
+                    // Seleccionar al aliado con menor HP porcentual
+                    const worstAlley = needsHeal.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
+                    finalTarget = worstAlley;
+                    finalTargetIndex = enemies.indexOf(worstAlley);
+                    finalTargetType = 'enemy';
+                } else {
+                    // Si nadie necesita curación pero se eligió cura, fallback a ataque básico
+                    this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
+                    return;
+                }
+            } else {
+                const isSelf = skill && skill.targetType === 'self';
+                finalTargetIndex = isSelf ? currentEnemyData.index : targetIdx;
+                finalTargetType = isSelf ? 'enemy' : 'player';
+                finalTarget = isSelf ? currentEnemy : target;
+            }
 
             // Ejecutar habilidad del enemigo
-            const result = currentEnemy.useSkill(action.skillName, isSelf ? currentEnemy : target);
+            const result = currentEnemy.useSkill(action.skillName, finalTarget);
 
             if (!result.success) {
                 // Fallback de seguridad (aunque chooseAction ya valida MP)
@@ -320,27 +343,27 @@ export default class BattleManager {
             } else {
                 let damageTaken = 0;
                 if (result.damage) {
-                    const dmgResult = (isSelf ? currentEnemy : target).receiveDamage(result.damage);
+                    const dmgResult = finalTarget.receiveDamage(result.damage);
                     damageTaken = dmgResult.damageTaken;
                 }
 
                 if (result.heal) {
-                    const healTarget = isSelf ? currentEnemy : target;
-                    healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + result.heal);
+                    finalTarget.hp = Math.min(finalTarget.maxHp, finalTarget.hp + result.heal);
                 }
 
                 this._callbacks.onEnemyActionResult?.({
                     actionName: result.actionName,
                     damage: damageTaken,
-                    targetName: (isSelf ? currentEnemy : target).name,
+                    targetName: finalTarget.name,
                     targetIndex: finalTargetIndex,
                     targetType: finalTargetType,
-                    targetHP: (isSelf ? currentEnemy : target).hp,
-                    targetDead: (isSelf ? currentEnemy : target).isDead,
+                    targetHP: finalTarget.hp,
+                    targetDead: finalTarget.isDead,
                     attackerIndex: currentEnemyData.index,
                     isCrit: result.isCrit || false,
                     nerf: result.nerf || null,
                     buff: result.buff || null,
+                    heal: result.heal || 0,
                     message: result.message
                 });
 

@@ -44,14 +44,14 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         if (savedPos && savedPos.direction) {
             this.player.setDirection(savedPos.direction);
         }
-        
+
         // Spawn del jugador
         const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
         const spawnX = posi.x;
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
-        this.player = new Player(this, spawnX, spawnY);
+        this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
 
         this.physics.add.collider(this.player, colisiones);
@@ -72,10 +72,10 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
             name: 'miniboss',
             classType: trigger
         });
-        this.physics.add.overlap(this.player,this.lobby,()=>{
-            this.scene.start('entradaMazmorra',{entrada:'izq'});
+        this.physics.add.overlap(this.player, this.lobby, () => {
+            this.scene.start('entradaMazmorra', { entrada: 'izq' });
         });
-        this.physics.add.overlap(this.player,this.miniboss,()=>{
+        this.physics.add.overlap(this.player, this.miniboss, () => {
             this.scene.start('salaMiniBoss');
         });
 

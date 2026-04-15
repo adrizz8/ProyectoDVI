@@ -23,10 +23,16 @@ export default class NPCBattle extends NPC {
 
         this.stats = {
             name: name,
-            hp: stats.hp ?? 100,
-            maxHp: stats.maxHp ?? 100,
-            damage: stats.damage ?? 10,
-            spriteKey: stats.spriteKey ?? texture
+            hp: stats.hp,
+            maxHp: stats.maxHp,
+            damage: stats.damage,
+            spriteKey: stats.spriteKey ?? texture,
+            speed: stats.speed,
+            defense: stats.defense,
+            mp: stats.mp,
+            maxMp: stats.maxMp,
+            habilidades: stats.habilidades,
+            objeto: stats.objeto
         };
     }
     /**
@@ -63,6 +69,12 @@ export default class NPCBattle extends NPC {
             enemyMaxHp: this.stats.maxHp,
             enemyDamage: this.stats.damage,
             enemySpriteKey: this.stats.spriteKey,
+            enemySpeed: this.stats.speed,
+            enemyDefense: this.stats.defense,
+            enemyMp: this.stats.mp,
+            enemyMaxMp: this.stats.maxMp,
+            enemyHabilidades: this.stats.habilidades,
+            enemyObjeto: this.stats.objeto,
             originScene: this.scene.scene.key, // Para saber a dónde volver tras el combate
             npcid: this.id,
             nivel:this.nivel

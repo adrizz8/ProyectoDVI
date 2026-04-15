@@ -100,7 +100,10 @@ export default class EnemyBattle {
         }
 
         // 3. Si no usa habilidad y tiene poco MP, probabilidad de Guardia (40%)
-        if (this.mp < 15 && Math.random() < 0.40) {
+        if (this.mp < 15 && Math.random() < 0.70) {
+            return { type: 'guard', actionName: 'Guardia' };
+        }
+        if (this.mp < this.maxMp * 0.8 && Math.random() < 0.20) {
             return { type: 'guard', actionName: 'Guardia' };
         }
 

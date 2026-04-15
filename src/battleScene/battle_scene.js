@@ -34,12 +34,12 @@ export default class BattleScene extends Phaser.Scene {
                 maxHp: data.enemyMaxHp,
                 damage: data.enemyDamage,
                 spriteKey: data.enemySpriteKey ?? 'toybatalla',
-                speed: data.enemySpeed ?? 5,
-                defense: data.enemyDefense ?? 10,
-                mp: data.enemyMp ?? 30,
-                maxMp: data.enemyMaxMp ?? data.enemyMP ?? 30,
-                habilidades: data.enemyHabilidades ?? [],
-                objeto: data.enemyObjeto ?? ''
+                speed: data.enemySpeed,
+                defense: data.enemyDefense,
+                mp: data.enemyMp,
+                maxMp: data.enemyMaxMp,
+                habilidades: data.enemyHabilidades,
+                objeto: data.enemyObjeto
             }];
         } else if (data && data.enemies) {
             this._enemiesStats = data.enemies;
@@ -77,14 +77,14 @@ export default class BattleScene extends Phaser.Scene {
         const nombreAzar = nombresEquipo[Math.floor(Math.random() * nombresEquipo.length)];
         const ref = gm.playerStats[nombreAzar];
 
-        const variacion = () => (Math.random() * (1.1 - 0.9) + 0.9);
+        const variacion = () => Math.floor(Math.random() * 9) - 4;
 
-        // Calculamos los valores base primero para poder usarlos en las propiedades
-        const calculadoMaxHp = Math.floor(ref.maxHp * variacion());
-        const calculadoMaxMp = Math.floor(ref.maxMp * variacion());
-        const calculadoBaseDamage = Math.floor(ref.damage * variacion());
-        const calculadoBaseSpeed = Math.floor(ref.speed * variacion());
-        const calculadoBaseDefense = Math.floor(ref.defense * variacion());
+        // Calculamos los valores base primero sumando una variación de -4 a +4
+        const calculadoMaxHp = Math.max(1, ref.maxHp + variacion());
+        const calculadoMaxMp = Math.max(1, ref.maxMp + variacion());
+        const calculadoBaseDamage = Math.max(1, ref.damage + variacion());
+        const calculadoBaseSpeed = Math.max(1, ref.speed + variacion());
+        const calculadoBaseDefense = Math.max(1, ref.defense + variacion());
 
         return {
             name: `Toy Salvaje`,
@@ -636,13 +636,29 @@ export default class BattleScene extends Phaser.Scene {
 
             // Animación de buff
             if (result.buff) {
-                const stat = this._getStatName(result.buff.stat);
-                this._powerUpSprite(targetSpr, 0xffcc00);
-                this._showFloatingText(targetSpr, `${stat} +${result.buff.amount}`, '#ffcc00');
+                // Si es una habilidad que debilita al rival pero potencia al atacante (ej: Golpe Vigorizante)
+                // la animación del buff debe ir al enemigo, no al jugador.
+                const isAttackerBuff = result.damage > 0; // En este sistema, si hay daño y buff, el buff es para el atacante
+                const buffStat = this._getStatName(result.buff.stat);
+
+                if (isAttackerBuff && result.attackerIndex !== undefined && this._enemySprites[result.attackerIndex]) {
+                    const attackerSpr = this._enemySprites[result.attackerIndex];
+                    this._powerUpSprite(attackerSpr, 0xffcc00);
+                    this._showFloatingText(attackerSpr, `${buffStat} +${result.buff.amount}`, '#ffcc00');
+                } else {
+                    this._powerUpSprite(targetSpr, 0xffcc00);
+                    this._showFloatingText(targetSpr, `${buffStat} +${result.buff.amount}`, '#ffcc00');
+                }
+            }
+            // Animación de curación
+            if (result.heal) {
+                this._powerUpSprite(targetSpr, 0x22dd22);
+                this._showFloatingText(targetSpr, `+${result.heal} HP`, '#22dd22');
             }
         }
 
         this._updatePlayerHUDs();
+        this._updateEnemiesHP();
 
         // Usar el mensaje de la habilidad si existe, o construir uno genérico
         let msg = result.message
