@@ -15,28 +15,25 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     create() {
+        this.scene.bringToTop('EstrategiaScene');
         const gm = GameManager.getInstance();
 
-        // Fondo con UI de estrategia
-        this.add.image(608, 320, 'estrategiaUI').setDisplaySize(1216, 640);
+        // Asegurar que no hay panel abierto al inicializar
+        this.closePanel();
+        this.panelActivo = null;
 
-        // Orden específica de los 4 jugadores (1 TL, 2 BL, 3 TR, 4 BR)
-        const playerOrder = ['Jugador1', 'Jugador3', 'Jugador2', 'Jugador4'];
-        const startX = 150;
-        const startY = 100;
-        const espacioX = 560;
-        const espacioY = 340;
+        // Seleccionar fondo según el número de jugadores reales
+        const numPlayers = Math.min(4, Math.max(1, gm.ActualPlayers.length));
+        const bgKey = `estrategiaUI${numPlayers}`;
+        this.add.image(608, 320, bgKey).setDisplaySize(1216, 640);
 
-        playerOrder.forEach((nombrePers, index) => {
+        // Iterar solo sobre los jugadores que tenemos realmente
+        gm.ActualPlayers.forEach((nombrePers) => {
             const stats = gm.playerStats[nombrePers];
             if (!stats) return;
 
-            const fila = Math.floor(index / 2);
-            const columna = index % 2;
-            const x = startX + columna * espacioX;
-            const y = startY + fila * espacioY;
-
-            this.crearCardPersonaje(x, y, nombrePers, stats);
+            // Las coordenadas ya están definidas por el nombre del jugador en crearCardPersonaje
+            this.crearCardPersonaje(0, 0, nombrePers, stats);
         });
 
         // Instrucciones
@@ -54,17 +51,26 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     closeScene() {
+        this.closePanel();
         this.scene.stop();
         this.scene.start('MenuPrincipal');
+        this.scene.bringToTop('MenuPrincipal');
     }
 
-    crearCardPersonaje(x, y, nombre, stats) {
-        // Se asume que el fondo ya está dibujado en estrategiaUI.
-        // No se dibuja fondo opaco para el personaje.
+    crearCardPersonaje(xIgnored, yIgnored, nombre, stats) {
+        // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
 
-        const labelText = `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
-        this.add.text(x + 20, y + 12, labelText, {
-            fontSize: '16px',
+        const coordenadasNombres = {
+            Jugador1: { x: 211, y: 15 },
+            Jugador3: { x: 720, y: 112 },
+            Jugador2: { x: 211, y: 250 },
+            Jugador4: { x: 720, y: 442 }
+        };
+        const posNombre = coordenadasNombres[nombre] || { x: 170, y: 112 };
+
+        const displayName = stats.displayName || `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
+        this.add.text(posNombre.x, posNombre.y, displayName, {
+            fontSize: '25px',
             fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
             fontStyle: 'bold',
@@ -189,17 +195,31 @@ this.add.text(pos.speed.x, pos.speed.y, `${stats.speed}`, estiloStats);
 this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
         // Botones interactivos en la UI
-        const btnStyle = { fontSize: '12px', fill: '#00ffea', fontFamily: 'Distant Galaxy', fontStyle: 'bold' };
+        const btnStyle = { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5 };
 
-        // Ajustamos ubicación de botones dentro del cuadro visual (sobre imagen)
-        const botonesY = y + 205;
-        const verHab = this.add.text(x + 16, botonesY, 'VER HABILIDADES', btnStyle).setInteractive({ useHandCursor: true });
-        const verEq = this.add.text(x + 16, botonesY + 20, 'VER EQUIPAMIENTO', Object.assign({}, btnStyle, { fill: '#5aa6ff' })).setInteractive({ useHandCursor: true });
+        // Posiciones predefinidas por personaje (similar al estilo de coordenadasNivel)
+        const coordenadasBotones = {
+            Jugador1: { habilidades: { x: 373, y: 226 }, equipamiento: { x: 373, y: 270 } },
+            Jugador2: { habilidades: { x: 373, y: 550 }, equipamiento: { x: 373, y: 594 } },
+            Jugador3: { habilidades: { x: 920, y: 226 }, equipamiento: { x: 920, y: 270 } },
+            Jugador4: { habilidades: { x: 920, y: 550 }, equipamiento: { x: 920, y: 594 } }
+        };
+
+        const defaultBotones = {
+            habilidades: { x: 100, y: 205 },
+            equipamiento: { x: 100, y: 225 }
+        };
+
+        const gm = GameManager.getInstance();
+        const configBotones = coordenadasBotones[nombre] || defaultBotones;
+        const posHabilidades = configBotones.habilidades || defaultBotones.habilidades;
+        const posEquipamiento = configBotones.equipamiento || defaultBotones.equipamiento;
+
+        const verHab = this.add.text(posHabilidades.x, posHabilidades.y, 'VER HABILIDADES', btnStyle).setInteractive({ useHandCursor: true });
+        const verEq = this.add.text(posEquipamiento.x, posEquipamiento.y, 'VER EQUIPAMIENTO', Object.assign({}, btnStyle, { fill: '#5aa6ff' })).setInteractive({ useHandCursor: true });
 
         verHab.on('pointerdown', () => this.showHabilidadesPanel(nombre, stats));
         verEq.on('pointerdown', () => this.showEquipamientoPanel(nombre, stats));
-
-      
     }
 
     showHabilidadesPanel(nombre, stats) {
@@ -216,7 +236,8 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         fondo.setStrokeStyle(2, 0x87ceeb);
         group.add(fondo);
 
-        const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${nombre}`, {
+        const displayName = stats.displayName || nombre;
+        const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${displayName}`, {
             fontSize: '20px',
             fill: '#f5d442',
             fontFamily: 'Distant Galaxy',
@@ -292,11 +313,14 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         fondo.setStrokeStyle(2, 0x5aa6ff);
         group.add(fondo);
 
-        const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${nombre}`, {
+        const displayName = stats.displayName || nombre;
+        const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${displayName}`, {
             fontSize: '20px',
-            fill: '#f5d442',
+            fill: '#ffffff',
             fontFamily: 'Distant Galaxy',
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 5
         }).setOrigin(0.5, 0);
         group.add(titulo);
 

@@ -1,0 +1,84 @@
+{
+    "activeFile": "cafeteria.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Todos los archivos (*)",
+    "fileStates": {
+        "C:/Users/Usuario/OneDrive/Escritorio/ING.INFORMATICA/4.CUARTO/DVI/ProyectoDVI/assets/images/tilesinterior.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "cafeteria.tmx": {
+            "scale": 1,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 575,
+                "y": 490.5
+            }
+        },
+        "cafeteria.tmx#tilesCafeteria": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "cafeteria.tmx#tilesInterior2": {
+            "scaleInDock": 1
+        },
+        "cafeteria.tmx#tilesetexterior": {
+            "scaleInDock": 1
+        },
+        "cafeteria.tmx#tilesinterior": {
+            "scaleInDock": 1
+        },
+        "general.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "mapa de prueba.tmx": {
+            "scale": 0.8203645833333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 479.0552980763126,
+                "y": 134.6962097644594
+            }
+        },
+        "mapaFuera.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 592,
+                "y": 354
+            }
+        },
+        "mapaFuera.tmx#tilesetexterior": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "pasillo.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 726,
+                "y": 511
+            }
+        },
+        "tilesinterior.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        }
+    },
+    "last.externalTilesetPath": "C:/Users/Usuario/OneDrive/Escritorio/ING.INFORMATICA/4.CUARTO/DVI/ProyectoDVI/assets/images",
+    "openFiles": [
+        "mapa de prueba.tmx",
+        "mapaFuera.tmx",
+        "cafeteria.tmx"
+    ],
+    "project": "pasillo.tiled-project",
+    "recentFiles": [
+        "mapaFuera.tmx",
+        "pasillo.tmx",
+        "mapa de prueba.tmx",
+        "cafeteria.tmx",
+        "tilesinterior.tsx"
+    ]
+}

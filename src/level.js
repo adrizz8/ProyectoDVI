@@ -33,7 +33,7 @@ export default class Level extends Phaser.Scene {
         const startX = savedPos ? savedPos.x : 200;
         const startY = savedPos ? savedPos.y : 450;
 
-        this.player = new Player(this, startX, startY);
+        this.player = new Player(this, startX, startY, 'down', true);
 
         // Restaurar dirección si existía
         if (savedPos && savedPos.direction) {
@@ -51,14 +51,40 @@ export default class Level extends Phaser.Scene {
         // Añadimos varios enemigos con los que interactuar para batallar
         this.enemies = this.add.group();
 
-        const enemy1 = new NPCBattle(this, this.player, 300, 450, 'toy', {
-            name: 'Soldado de Juguete', hp: 50, maxHp: 50, damage: 8
+        const enemy1 = new NPCBattle(this, this.player, 300, 450, 'toy', null, {
+            name: 'Soldado de Juguete',
+            hp: 50,
+            maxHp: 50,
+            damage: 8,
+            speed: 5,
+            defense: 5,
+            mp: 20,
+            maxMp: 20,
+            habilidades: ['Ataque Potente']
         }, "¡No pasarás! ¡Prepárate para luchar!");
-        const enemy2 = new NPCBattle(this, this.player, 700, 450, 'toy', {
-            name: 'General de Madera', hp: 120, maxHp: 120, damage: 15
+
+        const enemy2 = new NPCBattle(this, this.player, 700, 450, 'toy', null, {
+            name: 'General de Madera',
+            hp: 120,
+            maxHp: 120,
+            damage: 15,
+            speed: 3,
+            defense: 12,
+            mp: 40,
+            maxMp: 40,
+            habilidades: ['Ataque Potente', 'Defensa UP']
         });
-        const enemy3 = new NPCBattle(this, this.player, 500, 100, 'toy', {
-            name: 'Espía Silencioso', hp: 70, maxHp: 70, damage: 12
+
+        const enemy3 = new NPCBattle(this, this.player, 500, 100, 'toy', null, {
+            name: 'Espía Silencioso',
+            hp: 70,
+            maxHp: 70,
+            damage: 12,
+            speed: 10,
+            defense: 4,
+            mp: 30,
+            maxMp: 30,
+            habilidades: ['Golpe Triple']
         });
 
         // NPC que da un objeto al hablar

@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import EventManager from './eventManager.js';
 
 
 import platform from '../assets/sprites/platform.png'
@@ -13,8 +14,10 @@ import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
 import mainscene from '../assets/images/mapa1.json'
 import outdoorMap from '../assets/images/mapaFuera.json'
+import cafeteria from '../assets/images/cafeteria.json'
 import tileset from '../assets/images/tilesetexterior.png'
 import tilesInterior from "../assets/images/tilesinterior.png"
+import tilesInterior2 from "../assets/images/tilesInterior2.png"
 import tilesCafeteria from "../assets/images/tilesCafeteria.png"
 import boton_luchar from '../assets/images/boton_luchar.png'
 import boton_habilidades from '../assets/images/boton_habilidades.png'
@@ -25,8 +28,12 @@ import prota_battle from '../assets/sprites/prota_battle.png'
 import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
+import toybatalla from '../assets/sprites/toybatalla.png'
 
-import estrategiaUI from '../assets/images/estrategiaui.png'
+import estrategiaUI1 from '../assets/images/estrategiaui1.png'
+import estrategiaUI2 from '../assets/images/estrategiaui2.png'
+import estrategiaUI3 from '../assets/images/estrategiaui3.png'
+import estrategiaUI4 from '../assets/images/estrategiaui4.png'
 import menuPrincipal from '../assets/images/menuprincipal.png'
 
 import formulario from '../assets/images/formulario.png'
@@ -35,14 +42,44 @@ import arrancar from '../assets/music/arrancar.wav'
 import parar from '../assets/music/parar.wav'
 import carretera from '../assets/music/carretera.wav'
 import carre_join from '../assets/music/carre_join.wav'
+import pasillo from '../assets/images/pasillo.json'
 
-import music_battle from '../assets/music/batalla_normal_music.mp3'
+import music_battle from '../assets/music/vespidaze-upbeat-rpg-battle-460971.mp3'
 import music_boss from '../assets/music/batalla_boss_music.mp3'
 import music_exterior from '../assets/music/exterior_music.mp3'
 import music_interior from '../assets/music/interior_music_acreditar.mp3'
 //Puse 2 porque no me decidía
-import music_mazmorra from '../assets/music/mazmorra_music_1.mp3'
+import music_mazmorra from '../assets/music/interior_music_acreditar.mp3'
 import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
+import music_ambiente from '../assets/music/musicaambiente.mp3'
+import estudianteprimero from '../assets/sprites/estudianteprimero.png'
+import npc1 from '../assets/sprites/npc1.png';
+import npc2 from '../assets/sprites/npc2.png';
+import npc3 from '../assets/sprites/npc3.png';
+import npc4 from '../assets/sprites/npc4.png';
+import estudiantebattle from '../assets/sprites/estudianteconprisa.png';
+
+import or_gate from '../assets/images/or.png';
+import and_gate from '../assets/images/and.png';
+import not_gate from '../assets/images/not.png';
+import xor_gate from '../assets/images/xor.png';
+import cable_off from '../assets/images/cable_off.png';
+import cable_on from '../assets/images/cable_on.png';
+import cable_left_off from '../assets/images/cable_left_off.png';
+import cable_left_on from '../assets/images/cable_left_on.png';
+import cable_right_off from '../assets/images/cable_right_off.png';
+import cable_right_on from '../assets/images/cable_right_on.png';
+import boton from '../assets/images/boton.png';
+
+import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
+import p1RightMazmorra from '../assets/images/p1derechadungeon.json';
+import p1LeftMazmorra from '../assets/images/p1izquierdadungeon.json';
+import entradaMazmorra from '../assets/images/entradadungeon.json';
+import salaLanchares from '../assets/images/salalanchares.json';
+import salaMiniBoss from '../assets/images/salaminiboss.json';
+import amigo1 from '../assets/images/amigo1dvi.png'
+import finalFaculty from '../assets/images/FINAL FACULTY.png'
+import botonPrincipio from '../assets/images/boton principio.png'
 
 
 /**
@@ -70,15 +107,26 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', base);
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('estudianteprimero', estudianteprimero, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc1', npc1, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 })
+    this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 })
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
-    this.load.image('or_gate', fondo);
-    this.load.image('and_gate', fondo);
-    this.load.image('not_gate', fondo);
-    this.load.image('xor_gate', fondo);
-    this.load.image('cable', base);
-    this.load.image('boton', star);
+    this.load.image('or_gate', or_gate);
+    this.load.image('and_gate', and_gate);
+    this.load.image('not_gate', not_gate);
+    this.load.image('xor_gate', xor_gate);
+    this.load.image('cable_off', cable_off);
+    this.load.image('cable_on', cable_on);
+    this.load.image('cable_left_off', cable_left_off);
+    this.load.image('cable_left_on', cable_left_on);
+    this.load.image('cable_right_off', cable_right_off);
+    this.load.image('cable_right_on', cable_right_on);
+    this.load.image('boton', boton);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
@@ -86,14 +134,17 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('bus', bus, { frameWidth: 384, frameHeight: 384 });
     this.load.tilemapTiledJSON('mainscene', mainscene);
     this.load.tilemapTiledJSON('outdoorMap', outdoorMap);
+    this.load.tilemapTiledJSON('cafeteria', cafeteria);
     this.load.image('tilesinterior', tilesInterior);
+    this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
+    this.load.image('toybatalla', toybatalla);
 
     this.load.spritesheet('tileset', tileset, {
       frameWidth: 32,
       frameHeight: 32
     });
-    // this.load.image('tileset', tileset);
+    this.load.image('tilesetexterior', tileset);
     this.load.image('formulario', formulario);
 
     this.load.image('boton_luchar', boton_luchar);
@@ -105,9 +156,14 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player2_battle', player2_battle);
     this.load.image('player3_battle', player3_battle);
     this.load.image('player4_battle', player4_battle);
+    this.load.image('estudiantebattle', estudiantebattle);
 
     this.load.image('menuPrincipal', menuPrincipal);
-    this.load.image('estrategiaUI', estrategiaUI);
+    this.load.image('estrategiaUI1', estrategiaUI1);
+    this.load.image('estrategiaUI2', estrategiaUI2);
+    this.load.image('estrategiaUI3', estrategiaUI3);
+    this.load.image('estrategiaUI4', estrategiaUI4);
+
     this.load.audio('arrancar', arrancar);
     this.load.audio('parar', parar);
     this.load.audio('carretera', carretera);
@@ -119,6 +175,22 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_interior', music_interior);
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
+    this.load.audio('music_ambiente', music_ambiente);
+
+    this.load.tilemapTiledJSON('pasillo', pasillo);
+
+    // Dungeon Assets
+    this.load.image('tilesMazmorra', tilesMazmorra);
+    this.load.tilemapTiledJSON('entradaMazmorra', entradaMazmorra);
+    this.load.tilemapTiledJSON('p1RightMazmorra', p1RightMazmorra);
+    this.load.tilemapTiledJSON('p1LeftMazmorra', p1LeftMazmorra);
+    this.load.tilemapTiledJSON('salaLanchares', salaLanchares);
+    this.load.tilemapTiledJSON('salaMiniBoss', salaMiniBoss);
+
+    this.load.image('finalFaculty', finalFaculty);
+    this.load.image('botonPrincipio', botonPrincipio);
+
+
   }
 
   /**

@@ -33,62 +33,74 @@ export default class GameManager {
         // Al entrar en combate se copian a PlayerBattle.
         this.playerStats = {
             'Jugador1': {
-                hp: 100,
-                maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 15,     // para decidir quién ataca primero
-                defense: 10,
-                luck: 25,
+                displayName: 'J1',
+                hp: 160,
+                maxHp: 160,
+                mp: 60,
+                maxMp: 60,
+                damage: 28,
+                speed: 16,
+                defense: 35,
+                luck: 10,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego', 'Ataque NERF', 'Golpe Debilitador', 'Golpe Vigorizante']
+                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego', 'Ataque NERF', 'Golpe Debilitador', 'Golpe Vigorizante'],
+                objeto: 'espada_basica'
             },
             'Jugador2': {
-                hp: 100,
-                maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 12,     // para decidir quién ataca primero
-                defense: 10,
-                luck: 1,
+
+                displayName: 'Fernando',
+                hp: 160,
+                maxHp: 160,
+                mp: 40,
+                maxMp: 40,
+                damage: 38,
+                speed: 6,
+                defense: 14,
+                luck: 2,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Defensa UP', 'Cura']
+                habilidades: ['Ataque Potente', 'Defensa UP'],
+                objeto: ''
             },
             'Jugador3': {
+                displayName: 'Angela',
                 hp: 100,
                 maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 10,     // para decidir quién ataca primero
-                defense: 10,
-                luck: 1,
+                mp: 30,
+                maxMp: 30,
+                damage: 15,
+                speed: 12,
+                defense: 25,
+                luck: 4,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Velocidad UP', 'Ataque Potente']
+                habilidades: ['Cura', 'Ataque NERF', 'Defensa UP'],
+                objeto: ''
             },
             'Jugador4': {
+                displayName: 'Victor',
                 hp: 100,
                 maxHp: 100,
-                mp: 50,
-                maxMp: 50,
-                damage: 25,
-                speed: 6,     // para decidir quién ataca primero
+                mp: 70,
+                maxMp: 70,
+                damage: 30,
+                speed: 26,
                 defense: 10,
-                luck: 1,
+                luck: 8,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Fuego']
+                habilidades: ['Golpe Triple', 'Velocidad UP', 'Fuego'],
+                objeto: ''
             },
         };
+
+        this.ActualPlayers = [];
+        this.ActualPlayers.push('Jugador1');
 
         // ── Mochila / Inventario ──────────────────────────────────────────────
         // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
@@ -110,6 +122,13 @@ export default class GameManager {
         // ── Posición del jugador ──────────────────────────────────────────────
         // Se guarda al salir de una escena o entrar en combate para recuperarla al volver.
         this.playerPosition = null;
+
+
+        this.niveles = new Map();
+
+        this.defeatedNPCs = new Set();
+
+        this.justdefeated = null;
 
     }
 
@@ -229,7 +248,7 @@ export default class GameManager {
         p.exp -= p.expNext;
         p.expNext = Math.floor(p.expNext * 1.5);
 
-        // Mejora de stats (ejemplo simple)
+        // Mejora de stats (ejemplo)
         p.maxHp += 20;
         p.hp = p.maxHp;
         p.maxMp += 10;
@@ -248,5 +267,42 @@ export default class GameManager {
                 ...this.playerStats[name]
             };
         });
+    }
+
+
+    addNivel(nombre) {
+        if (!this.niveles.has(nombre)) {
+            this.niveles.set(nombre, false);
+        }
+    }
+    CompleteNivel(nombre) {
+        this.niveles.set(nombre, true);
+    }
+
+    estadoNivel(nombre) {
+        return this.niveles.get(nombre);
+    }
+
+    markDefeated(npcId) {
+        this.defeatedNPCs.add(npcId);
+    }
+
+    isDefeated(npcId) {
+        return this.defeatedNPCs.has(npcId);
+    }
+
+    setJustDefeated(npcId) {
+        this.justdefeated = npcId;
+    }
+
+    isJustDefeated(npcId) {
+        return this.justdefeated == npcId;
+    }
+    AddCompañero(name) {
+
+        if (!this.ActualPlayers.includes(name)) {
+            this.ActualPlayers.push(name);
+        }
+
     }
 }

@@ -1,72 +1,282 @@
 import Player from './personajes/player.js';
 import Phaser from 'phaser';
+import trigger from './trigger.js';
+import primerencuentro from './personajes/primerencuentro.js';
+import DialogueManager from './dialogueManager.js';
 import GameManager from './manager.js';
+import npc from './personajes/npc.js';
+import amigo1 from './personajes/amigo1.js';
 
 /**
- * Escena del mapa exterior (mapaFuera).
- * El jugador llega aquí al salir del camino en el mapaDePrueba.
+ * Escena del mapa exterior.
  * @extends Phaser.Scene
  */
 export default class MapaFuera extends Phaser.Scene {
     constructor() {
-        super({ key: 'MapaFuera' });
+        super({ key: 'outdoorMap' });
     }
 
-    preload() {
-        // Los assets ya se han cargado en Boot
-    }
-
-    /**
-     * @param {{ spawnX?: number, spawnY?: number }} data  Datos opcionales de spawn
-     */
     create(data) {
-        const map = this.make.tilemap({ key: 'outdoorMap', tileWidth: 32, tileHeight: 32 });
-        const tileset = map.addTilesetImage('tilesetexterior', 'tileset');
 
-        const fondoLayer = map.createLayer('fondo', tileset, 0, 0);
-        const facultadLayer = map.createLayer('facultad', tileset, 0, 0);
-        const decoracionLayer = map.createLayer('decoracion', tileset, 0, 0);
-        // 'bebidas' omitida: contiene GIDs de tilesets externos no cargados en el proyecto
+        var entradas = new Map();
+        entradas.set('salida_autobus', { x: 820, y: 980, direccion: 'up' });
+        entradas.set('entrada_izq', { x: 160, y: 260, direccion: 'down' });
+        entradas.set('entrada_der', { x: 895, y: 260, direccion: 'down' });
 
-        facultadLayer.setCollisionByProperty({ collides: true });
-        decoracionLayer.setCollisionByProperty({ collides: true });
+        // Carga del mapa y tilesets
+        const map = this.make.tilemap({ key: 'outdoorMap' });
+        const tileset1 = map.addTilesetImage('tilesetexterior', 'tileset');
+        // El JSON de mapaFuera tiene dos entradas para el mismo tileset con diferentes GIDs
+        const tilesets = [tileset1];
 
-        // --- Jugador ---
-        const savedPos = GameManager.getInstance().getPlayerPosition();
-        
-        let spawnX, spawnY;
-        if (savedPos) {
-            spawnX = savedPos.x;
-            spawnY = savedPos.y;
-        } else {
-            // Si venimos de la transición (level3) se usa data.spawnX/Y
-            spawnX = (data && data.spawnX !== undefined) ? data.spawnX : map.widthInPixels / 2;
-            spawnY = (data && data.spawnY !== undefined) ? data.spawnY : 80;
-        }
+        this.physics.world.setBounds(
+            0,
+            0,
+            map.widthInPixels,
+            map.heightInPixels
+        );
+
+        // Capas del mapa
+        const fondo = map.createLayer('fondo', tilesets, 0, 0);
+        const facultad = map.createLayer('facultad', tilesets, 0, 0);
+        const Cornisas = map.createLayer('Cornisas', tilesets, 0, 0);
+        const decoracion = map.createLayer('decoracion', tilesets, 0, 0);
+        const bebidas = map.createLayer('bebidas', tilesets, 0, 0);
+        const bebidas2 = map.createLayer('bebidas2', tilesets, 0, 0);
+        const colisiones = map.createLayer('colisiones', tilesets, 0, 0);
+
+        // Colisiones
+        colisiones.setCollisionByProperty({ collides: true });
+        colisiones.setVisible(false);
+
+        // Posición de spawn (por defecto abajo a la derecha si no viene en data)
+
+        const posi = entradas.get(data.entrada);
+        const spawnX = posi.x;
+        const spawnY = posi.y;
+        const direccion = posi.direccion;
 
         this.player = new Player(this, spawnX, spawnY);
+        this.player.setDirection(direccion);
 
-        // Restaurar dirección si existía
-        if (savedPos && savedPos.direction) {
-            this.player.setDirection(savedPos.direction);
-        }
-
-        // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
-        if (savedPos) GameManager.getInstance().clearPlayerPosition();
-
-        this.physics.add.collider(this.player, facultadLayer);
-        this.physics.add.collider(this.player, decoracionLayer);
-
-        this.dialogueManager = new DialogueManager(this);
-
+        // Cámara
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
+        this.dialogueManager = new DialogueManager(this);
+
+        const gm = GameManager.getInstance();
+        const savedPos = gm.getPlayerPosition();
+
+
+        gm.addNivel('outdoorMap');
+        //gm.CompleteNivel('outdoorMap');
+
+        this.salida_bus = map.createFromObjects('triggers', {
+            name: 'salida_autobus',
+            classType: trigger
+        });
+        this.entrada_der = map.createFromObjects('triggers', {
+            name: 'entrada_der',
+            classType: trigger
+        });
+
+        // COMENTADO: entrada izquierda desactivada de momento, solo entrar por la derecha
+        // this.entrada_izq = map.createFromObjects('triggers', {
+        //     name: 'entrada_izq',
+        //     classType: trigger
+        // });
+
+        this.physics.add.overlap(this.salida_bus, this.player, () => {
+            this.scene.start('level3');
+        });
+        this.physics.add.overlap(this.entrada_der, this.player, () => {
+            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+        });
+        // COMENTADO: overlap izquierda desactivado de momento
+        // this.physics.add.overlap(this.entrada_izq, this.player, () => {
+        //     this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+        // });
+
+
+        // Colisiones del jugador con la capa dedicada
+        this.colisiones = colisiones;
+        this.physics.add.collider(this.player, this.colisiones);
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
+        }
+
+
+        //entra en if si nivel no ha sido completado
+        if (!gm.estadoNivel('outdoorMap')) {
+
+            // Si hay posición guardada, es que venimos de la batalla
+            if (savedPos) {
+
+                gm.CompleteNivel('outdoorMap');
+                gm.clearPlayerPosition();
+                this.player.setDirection(savedPos.direction);
+                this.player.setPosition(savedPos.x, savedPos.y);
+                this.player.freeze();
+
+                const posi = this.getPosiPostComb(savedPos);
+
+                this.player2 = new primerencuentro(this, null, posi.x, posi.y, 'estudianteprimero', 0, {}, null, null, null);
+                this.player2.setVisible(true);
+                this.player2.setDirection(posi.direction);
+
+
+                this.irse1 = map.createFromObjects('triggers', {
+                    name: 'irse1',
+                    classType: trigger
+                });
+                this.irse2 = map.createFromObjects('triggers', {
+                    name: 'irse2',
+                    classType: trigger
+                });
+                const ir1 = this.physics.add.overlap(this.irse1, this.player2, () => {
+                    this.player2.setDirection('down');
+                });
+                const ir2 = this.physics.add.overlap(this.irse2, this.player2, () => {
+                    this.player2.setDirection('down');
+                });
+
+                this.time.addEvent({
+                    delay: 300, // ms
+                    callback: () => {
+                        // Diálogo del enemigo derrotado
+                        this.dialogueManager.showDialogue("Comoo!!!! PASO DE TI", 'Enemigo', () => {
+                            if (this.player2.x > 810) {
+                                ir2.destroy();
+                                this.player2.setDirection('left');
+                            } else {
+                                ir2.destroy();
+                                this.player2.setDirection('right');
+                            }
+                            this.player2.unfreeze();
+
+                            // --- Aparecen Carlos e Ismael, los profesores de DVI ---
+                            this.time.delayedCall(800, () => {
+                                this._mostrarDialogosProfs();
+                            });
+                        })
+                    }
+                });
+
+            }
+            else {
+
+                this.parar_jug = map.createFromObjects('triggers', {
+                    name: 'parar_jug',
+                    classType: trigger
+                });
+                this.mov_abajo = map.createFromObjects('triggers', {
+                    name: 'mov_abajo',
+                    classType: trigger
+                });
+                this.recolocar = map.createFromObjects('triggers', {
+                    name: 'recolocar',
+                    classType: trigger
+                });
+
+                const posi2 = entradas.get('entrada_izq');
+                const spawnX2 = posi2.x;
+                const spawnY2 = posi2.y;
+                //const direccion2=posi2.direccion;
+
+                this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {
+                    spriteKey: 'estudiantebattle',
+                    name: 'Estudiante con prisa',
+                    hp: 120,
+                    maxHp: 120,
+                    damage: 15,
+                    speed: 8,
+                    defense: 5,
+                    mp: 40,
+                    maxMp: 40,
+                    habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante']
+                }, " ¿Quien eres tu?, te vas a enterar.", null, null);
+                this.player2.setVisible(false);
+
+                this.physics.add.overlap(this.parar_jug, this.player, () => {
+                    this.parar_jug[0].destroy();
+
+                    this.player.freeze();
+                    this.player2.setVisible(true);
+                    this.player2.unfreeze();
+                    this.player2.setDirection('right');
+                    this.dialogueManager.showDialogue("¡No me carga el repositorio, no me cargaaaa!", 'Estudiante con prisa');
+
+                });
+                this.physics.add.overlap(this.mov_abajo, this.player2, () => {
+                    this.player2.setDirection('down');
+                });
+                this.physics.add.overlap(this.recolocar, this.player2, () => {
+                    this.player2.recolocar();
+                });
+
+                this.player2.collider.destroy();
+                this.physics.add.collider(this.player, this.player2, () => {
+                    this.player2.freeze();
+                    this.player2.interact();
+                });
+            }
+        }
+
+        /*
+        // Zonas de transición a Cafetería
+        // La facultad está en la parte superior. Puerta aproximada en X=350, Y=220
+        const doorZone = this.add.zone(350, 220, 100, 60);
+
+        this.physics.world.enable(doorZone, Phaser.Physics.Arcade.STATIC_BODY);
+        this.physics.add.overlap(this.player, doorZone, () => {
+            // Spawn en la cafetería (cerca de la puerta)
+            this.scene.start('cafeteria', { spawnX: 300, spawnY: 200 });
+        });
+        */// Fade-in al entrar al mapa exterior
+        this.cameras.main.fadeIn(400, 0, 0, 0);
+
+        // NPCs si el boss de cafeteria ya ha sido derrotado
+        if (gm.estadoNivel('cafeteria')) {
+            this._spawnNPCsPostBoss();
+        }
+
+        // Música ambiente
+        this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
+        this.music.play();
+        this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
+
+        // Tecla de menú (Espacio)
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
+            this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
         });
+    }
+
+    update(t, dt) {
+        // Actualizar el contador global de tiempo
+        const sec = this.registry.get('horasJuego') || 0;
+        this.registry.set('horasJuego', sec + dt / 1000);
+
+        if (this.player && this.player.update) {
+            this.player.update(t, dt);
+        }
+        if (this.amigo1 && this.amigo1.update) {
+            this.amigo1.update(t, dt);
+        }
+        if (this.player2 && this.player2.update) {
+            this.player2.update(t, dt);
+        }
+        // Actualizar NPCs exteriores post-boss
+        if (this._outdoorNpcs) {
+            this._outdoorNpcs.forEach(n => { if (n && n.update) n.update(t, dt); });
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
@@ -75,12 +285,120 @@ export default class MapaFuera extends Phaser.Scene {
         }
     }
 
-    update(t, dt) {
-        const sec = this.registry.get('horasJuego') || 0;
-        this.registry.set('horasJuego', sec + dt / 1000);
+    /**
+     * Muestra los diálogos de los profesores Carlos e Ismael
+     * tras el primer combate del repositorio.
+     */
+    _mostrarDialogosProfs() {
+        this.player.freeze();
 
-        if (this.player && this.player.update) {
-            this.player.update(t, dt);
+        // Placeholder visual: dos rectángulos con nombre encima
+        // Carlos - rectángulo azul oscuro
+        const carlosRect = this.add.rectangle(this.player.x - 120, this.player.y - 60, 48, 64, 0x2244aa)
+            .setStrokeStyle(2, 0xffffff).setDepth(50);
+        const carlosLabel = this.add.text(this.player.x - 120, this.player.y - 100, 'Carlos', {
+            fontSize: '12px', fill: '#ffffff', backgroundColor: '#2244aa', padding: { x: 4, y: 2 }
+        }).setOrigin(0.5).setDepth(51);
+
+        // Ismael - rectángulo verde oscuro
+        const ismaelRect = this.add.rectangle(this.player.x + 120, this.player.y - 60, 48, 64, 0x224422)
+            .setStrokeStyle(2, 0xffffff).setDepth(50);
+        const ismaelLabel = this.add.text(this.player.x + 120, this.player.y - 100, 'Ismael', {
+            fontSize: '12px', fill: '#ffffff', backgroundColor: '#224422', padding: { x: 4, y: 2 }
+        }).setOrigin(0.5).setDepth(51);
+
+        const limpiarProfs = () => {
+            carlosRect.destroy(); carlosLabel.destroy();
+            ismaelRect.destroy(); ismaelLabel.destroy();
+            this.player.unfreeze();
+        };
+
+        // Encolamos TODOS los diálogos de golpe.
+        // El DialogueManager los irá mostrando uno a uno al pulsar cualquier tecla.
+        // El onFinish solo se asigna al último mensaje de la cadena.
+        this.dialogueManager.showDialogue(
+            '¡Eh, tú! ¡El novato de la mochila! Menos mal, un humano que todavía no tiene el cerebro en la nube.',
+            'Carlos'
+        );
+        this.dialogueManager.showDialogue(
+            'Escucha bien. La facultad ha sido infectada por una IA de corrección masiva. Los demás profes se han vuelto locos; creen que sois bugs que hay que borrar.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            'Hemos hackeado el sistema de la planta para crear una instancia segura desde DVI. Es un refugio, pero el servidor central sigue infectado por la IA.',
+            'Carlos'
+        );
+        this.dialogueManager.showDialogue(
+            'Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando, vuestra voz en el pinganillo... pero la implementación final os toca a vosotros.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            'Te hemos instalado un módulo de combate en tu mochila. No es un bug, es una feature. Úsalo contra los conserjes que bloquean la salida.',
+            'Ismael'
+        );
+        this.dialogueManager.showDialogue(
+            '¡Y no te olvides de recoger ese Pincho de Tortilla! En este motor de juego, la grasa es el combustible del héroe. ¡Suerte, Beta Tester!',
+            'Carlos',
+            limpiarProfs
+        );
+    }
+
+    /**
+     * Spawnea NPCs en el mapa exterior cuando la cafetería ya ha sido completada.
+     */
+    _spawnNPCsPostBoss() {
+        const npcData = [
+            { x: 250, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!.' },
+            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Si vas para dentro, pídeme otro cubo de tercios.' },
+            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar.' },
+            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
+            { x: 200, y: 600, texture: 'npc2', frame: 12, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en seguir pidiendo botellines.' },
+            { x: 600, y: 650, texture: 'npc3', frame: 4, message: 'Esta tarde, sangriada.' },
+        ];
+
+        this._outdoorNpcs = npcData.map(data =>
+            new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante')
+        );
+    }
+
+    getPosiPostComb(savedPos, paso = 60) {
+        const { x, y, direction } = savedPos;
+
+        switch (direction) {
+            case "up":
+                return {
+                    x: x,
+                    y: y - paso,
+                    direction: "down"
+                };
+
+            case "down":
+                return {
+                    x: x,
+                    y: y + paso,
+                    direction: "up"
+                };
+
+            case "left":
+                return {
+                    x: x - paso,
+                    y: y,
+                    direction: "right"
+                };
+
+            case "right":
+                return {
+                    x: x + paso,
+                    y: y,
+                    direction: "left"
+                };
+
+            default:
+                throw new Error(`Dirección no válida: ${direction}`);
         }
+    }
+
+    unfreeze() {
+        this.player.unfreeze();
     }
 }

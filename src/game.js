@@ -11,7 +11,14 @@ import EstrategiaScene from './menuScenes/EstrategiaScene.js';
 import MochilaScene from './menuScenes/mochilaScene.js';
 import BattleScene from './battleScene/battle_scene.js';
 import MapaFuera from './MapaFuera.js'
+import Cafeteria from './Cafeteria.js'
 import Prematricula from './prematricula_scene.js'
+import Pasillo from './Pasillo.js';
+import EntradaMazmorra from './mazmorras/EntradaMazmorraScene.js';
+import P1RightMazmorra from './mazmorras/P1RightMazmorraScene.js';
+import P1LeftMazmorra from './mazmorras/P1LeftMazmorraScene.js';
+import SalaLanchares from './mazmorras/SalaLancharesScene.js';
+import SalaMiniBoss from './mazmorras/SalaMiniBossScene.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -33,13 +40,13 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    
-    scene: [Boot, TitleScene, Prematricula,IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera],
+
+    scene: [Boot, TitleScene, Prematricula, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
 
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false
+            debug: true
         }
 
     }

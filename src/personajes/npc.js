@@ -17,18 +17,21 @@ export default class NPC extends Phaser.GameObjects.Sprite {
      * @param {string} itemId ID del ítem que da el NPC (opcional)
      * @param {string} name Nombre del NPC (opcional)
      */
-    constructor(scene, player, x, y, texture, message = null, onFinish = null, itemId = null, name = '') {
+    constructor(scene, player, x, y, texture,frame=0, message = null, onFinish = null, itemId = null, name = '') {
         super(scene, x, y, texture);
 
+        this.setFrame(frame); 
         this.player = player;
         this.message = message;
         this.onFinish = onFinish;
         this.itemId = itemId;
         this.name = name; // Guardamos el nombre
         this.scene.add.existing(this);
-        this.scene.physics.add.existing(this, true); // Estático por defecto
+        this.scene.physics.add.existing(this); // Estático por defecto
+        this.body.setImmovable(true);
+        this.body.moves = false;
         if (this.player) {
-            this.scene.physics.add.collider(this, this.player);
+            this.collider=this.scene.physics.add.collider(this, this.player);
         }
     }
 

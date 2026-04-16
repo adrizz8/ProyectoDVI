@@ -35,42 +35,60 @@ export default class EnemyBattle {
         this.luck = stats.luck ?? 1;
         this.baseSpeed = stats.speed ?? 5;
         this.speed = stats.speed ?? 5;
-        this.spriteKey = stats.spriteKey ?? 'toy';
+        this.spriteKey = stats.spriteKey ?? 'toybatalla';
         this.expReward = stats.expReward ?? 50;
         this.mp = stats.mp ?? 30;
         this.maxMp = stats.maxMp ?? 30;
         this.habilidades = stats.habilidades || [];
+        this.objeto = stats.objeto || '';
+
+        this._load_equipment();
 
         this._guardActive = false;
     }
 
-    /**
-     * @returns {{ type: 'attack'|'special'|'skip', damage?: number, actionName: string }}
-     */
-    chooseAction() {
-        if (this.habilidades.length > 0) {
-            const randomIdx = Math.floor(Math.random() * this.habilidades.length);
-            const randomSkillName = this.habilidades[randomIdx];
-            const skill = HABILITIES[randomSkillName];
 
-            if (skill) {
-                if (this.mp < skill.cost) {
-                    if (Math.random() < 0.75) {
-                        return { type: 'guard', actionName: 'Guardia' };
-                    }
-                } else {
-                    if (Math.random() < 0.70) {
-                        return { type: 'skill', skillName: randomSkillName, actionName: skill.name };
-                    }
-                }
+
+    _load_equipment() {
+        if (this.objeto != '' && this.objeto.type === 'equipment' && this.objeto.bonusStats) {
+            if (this.objeto.bonusStats.damage) {
+                this.baseDamage += this.objeto.bonusStats.damage;
+                this.damage += this.objeto.bonusStats.damage;
+            }
+            if (this.objeto.bonusStats.defense) {
+                this.baseDefense += this.objeto.bonusStats.defense;
+                this.defense += this.objeto.bonusStats.defense;
+            }
+            if (this.objeto.bonusStats.speed) {
+                this.baseSpeed += this.objeto.bonusStats.speed;
+                this.speed += this.objeto.bonusStats.speed;
+            }
+            if (this.objeto.bonusStats.luck) {
+                this.luck += this.objeto.bonusStats.luck;
+            }
+            if (this.objeto.bonusStats.maxHp) {
+                this.maxHp += this.objeto.bonusStats.maxHp;
+                this.hp = Math.min(this.hp + this.objeto.bonusStats.maxHp, this.maxHp);
+            }
+            if (this.objeto.bonusStats.maxMp) {
+                this.maxMp += this.objeto.bonusStats.maxMp;
+                this.mp = Math.min(this.mp + this.objeto.bonusStats.maxMp, this.maxMp);
             }
         }
 
+    }
+
+    /**
+     * @returns {{ type: 'attack'|'skill'|'guard', damage?: number, actionName: string, skillName?: string, isCrit?: boolean }}
+     */
+    chooseAction() {
+        // 1. Filtrar habilidades que realmente puede usar (tiene MP)
         const usableSkills = this.habilidades.filter(name => {
             const skill = HABILITIES[name];
             return skill && this.mp >= skill.cost;
         });
 
+        // 2. Probabilidad de usar habilidad (60%)
         if (usableSkills.length > 0 && Math.random() < 0.60) {
             const skillName = usableSkills[Math.floor(Math.random() * usableSkills.length)];
             const skill = HABILITIES[skillName];
@@ -81,8 +99,17 @@ export default class EnemyBattle {
             };
         }
 
-        const potencia = 10;
-        const isCrit = Math.random() < (this.luck / 50);
+        // 3. Si no usa habilidad y tiene poco MP, probabilidad de Guardia (40%)
+        if (this.mp < 15 && Math.random() < 0.70) {
+            return { type: 'guard', actionName: 'Guardia' };
+        }
+        if (this.mp < this.maxMp * 0.8 && Math.random() < 0.20) {
+            return { type: 'guard', actionName: 'Guardia' };
+        }
+
+        // 4. Por defecto: Ataque Básico (Calculando daño y crítico aquí)
+        const potencia = 30;
+        const isCrit = Math.random() < (this.luck / 100);
         const rawDamage = Math.floor(this.damage * potencia);
         const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
 
@@ -121,7 +148,7 @@ export default class EnemyBattle {
         const guarded = this._guardActive;
         const currentDefense = Math.max(1, this.defense);
 
-        // Nueva Fórmula: Resultado = (Ataque * Potencia) / Defensa
+        // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
         let damageTaken = Math.floor(damage / currentDefense);
         damageTaken = Math.max(1, damageTaken);
 

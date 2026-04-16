@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 
 class Datos {
-    constructor(nombre, texto) {
+    constructor(nombre, texto, onFinish) {
         this.contador = 0;
         this.nombre = nombre;
         this.textoSplit = texto;
+        this.onFinish = onFinish;
     }
 
     incrementar() {
@@ -32,10 +33,11 @@ export default class DialogueManager {
         this.ini = 0;
         this.fin = 0;
         this.current_message = '';
-        this.onFinish = null;
+
+
 
         // Posicionamos en el centro horizontal (1216 / 2 = 608) y cerca de la parte inferior (640 - 90 = 550)
-        this.dialogueBox = this.scene.add.container(608, 550).setDepth(2000).setVisible(false);
+        this.dialogueBox = this.scene.add.container(0, 0).setDepth(2000).setVisible(false);
 
         // Fondo del diálogo
         const bg = this.scene.add.graphics();
@@ -73,38 +75,53 @@ export default class DialogueManager {
 
         // Evento para avanzar diálogo
         this.scene.input.keyboard.on('keydown', (event) => {
-            // Solo procesamos si el cuadro está visible y no está en medio de una animación de cierre
-            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8) return;
+            // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
+            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
 
             this.next_text();
-                
+
             if (this.current_message === '') {
+                // Hemos agotado el mensaje actual (todas sus partes)
+                const onFinish = this.full_message[this.ini].onFinish;
+
                 this.ini += 1;
                 if (this.ini === this.fin) {
+                    // Se ha vaciado la cola de mensajes
                     this.ini = 0;
                     this.fin = 0;
                     this.hideDialogue();
 
-                    if (this.onFinish !== null) {
-                        const callback = this.onFinish;
-                        this.onFinish = null; 
-                        callback();
+                    if (onFinish && typeof onFinish === 'function') {
+                        onFinish();
                     }
                 } else {
-                    const nextMsg = this.full_message[this.ini];
-                    if (!nextMsg || nextMsg.nombre === '') {
-                        this.hideName();
-                    } else {
-                        this.nameText.setText(nextMsg.nombre);
-                        this.showName();
-                    }
-                    this.next_text();
-                    this.dialogueText.setText(this.current_message);
+                    // Hay más mensajes en espera (diálogos anidados o secuenciales)
+                    this._displayCurrent();
                 }
             } else {
+                // El mensaje actual tiene más partes
                 this.dialogueText.setText(this.current_message);
             }
         });
+    }
+
+    /**
+     * Muestra el mensaje actual de la cola en la interfaz
+     * @private
+     */
+    _displayCurrent() {
+        const nextMsg = this.full_message[this.ini];
+        if (!nextMsg) return;
+
+        if (nextMsg.nombre === '') {
+            this.hideName();
+        } else {
+            this.nameText.setText(nextMsg.nombre);
+            this.showName();
+        }
+
+        this.next_text();
+        this.dialogueText.setText(this.current_message);
     }
 
     /**
@@ -120,35 +137,21 @@ export default class DialogueManager {
         // Aseguramos que nombre sea un string si es null/undefined
         if (!nombre) nombre = '';
 
-        this.full_message[this.fin] = new Datos(nombre, message.split(' '));
+        this.full_message[this.fin] = new Datos(nombre, message.split(' '), onFinish);
         this.fin += 1;
 
-        if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.1) {
-            if (this.scene.player) {
-                this.scene.player.freeze();
-            }
-
-            this.onFinish = onFinish;
-            this.ini = 0;
-            this.next_text();
-            this.dialogueText.setText(this.current_message);
-            this.dialogueBox.setVisible(true);
-            this.dialogueBox.setAlpha(0);
-
+        // Si la caja no es visible O si está en medio de un fundido de salida (alpha bajo)
+        // O si la cola estaba vacía (ini acaba de resetearse), (re)iniciamos la visualización
+        if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.9 || (this.ini === this.fin - 1)) {
             this.scene.tweens.killTweensOf(this.dialogueBox);
-            this.scene.tweens.add({
-                targets: this.dialogueBox,
-                alpha: 1,
-                duration: 200
-            });
 
-            if (nombre !== '') {
-                this.nameText.setText(nombre);
-                this.showName();
-            } else {
-                this.nameText.setText('');
-                this.hideName();
-            }
+            const cam = this.scene.cameras.main;
+            this.dialogueBox.setPosition(cam.worldView.x + 608, cam.worldView.y + 550);
+
+            this.dialogueBox.setVisible(true);
+            this.dialogueBox.setAlpha(1);
+
+            this._displayCurrent();
         }
     }
 
@@ -167,9 +170,6 @@ export default class DialogueManager {
             duration: 200,
             onComplete: () => {
                 this.dialogueBox.setVisible(false);
-                if (this.scene.player) {
-                    this.scene.player.unfreeze();
-                }
             }
         });
     }

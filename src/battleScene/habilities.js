@@ -75,7 +75,7 @@ export const HABILITIES = {
         cost: 10,
         type: 'damage',
         effectFn: (source, target) => {
-            const potencia = 15;
+            const potencia = 50;
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
@@ -106,7 +106,7 @@ export const HABILITIES = {
         cost: 20,
         type: 'damage',
         effectFn: (source, target) => {
-            const potencia = 13;
+            const potencia = 50;
             const damage = Math.floor(source.damage * potencia) + 10;
             return {
                 damage,
@@ -119,10 +119,10 @@ export const HABILITIES = {
         id: 'triple_strike',
         name: 'Golpe Triple',
         description: 'Ataca tres veces rápidamente.',
-        cost: 25,
+        cost: 15,
         type: 'damage',
         effectFn: (source, target) => {
-            const potencia = 6; // Tres golpes de 6 de potencia cada uno
+            const potencia = 15; // Tres golpes de 6 de potencia cada uno
             const damage = Math.floor(source.damage * potencia) * 3;
             return {
                 damage,
@@ -204,14 +204,14 @@ export const HABILITIES = {
     'Golpe Debilitador': new Hability({
         id: 'weakening_strike',
         name: 'Golpe Debilitador',
-        description: 'Ataca al enemigo y reduce su ataque un 25%.',
+        description: 'Ataca al enemigo y reduce su ataque un 15%.',
         cost: 20,
         type: 'damage+nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const potencia = 11;
+            const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const nerfAmount = Math.floor(target.baseDamage * 0.25);
+            const nerfAmount = Math.floor(target.baseDamage * 0.15);
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 damage,
@@ -224,19 +224,19 @@ export const HABILITIES = {
     'Golpe Vigorizante': new Hability({
         id: 'invigorating_strike',
         name: 'Golpe Vigorizante',
-        description: 'Ataca al objetivo y sube tu propio ataque un 25%.',
+        description: 'Ataca al objetivo y sube tu propio ataque un 15%.',
         cost: 20,
         type: 'damage+buff',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const potencia = 10;
+            const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const buffAmount = Math.floor(source.baseDamage * 0.25);
+            const buffAmount = Math.floor(source.baseDamage * 0.15);
             source.damage += buffAmount;
             return {
                 damage,
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su ataque sube ${buffAmount} puntos!`
+                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su propio ataque sube ${buffAmount} puntos!`
             };
         }
     }),

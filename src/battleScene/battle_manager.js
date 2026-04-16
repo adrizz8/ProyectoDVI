@@ -18,7 +18,7 @@ export default class BattleManager {
      * @param {Object[]} enemiesStatsArr Lista de stats de los enemigos
      * @param {Phaser.Scene} scene       Referencia a la escena
      */
-    constructor(playerStatsArr, enemiesStatsArr, scene) {
+    constructor(playerStatsArr, enemiesStatsArr, scene, npcid,nivel) {
         this._scene = scene;
 
         // Inicializar jugadores y enemigos
@@ -41,6 +41,9 @@ export default class BattleManager {
             onMessage: null,
             onTurnChanged: null // (participant)
         };
+
+        this.npcid=npcid;
+        this.nivel=nivel;
     }
 
     setCallbacks(callbacks) {
@@ -304,69 +307,98 @@ export default class BattleManager {
 
         if (action.type === 'skill') {
             const skill = HABILITIES[action.skillName];
-            const isSelf = skill && skill.targetType === 'self';
-            const finalTargetIndex = isSelf ? currentEnemyData.index : targetIdx;
-            const finalTargetType = isSelf ? 'enemy' : 'player';
+            let finalTargetIndex = targetIdx;
+            let finalTargetType = 'player';
+            let finalTarget = target;
 
-            // Ejecutar habilidad del enemigo
-            const result = currentEnemy.useSkill(action.skillName, isSelf ? currentEnemy : target);
-
-            if (!result.success) {
-                // Habilidad fallida (sin MP): 70% guardia, 30% ataque básico
-                if (Math.random() < 0.70) {
-                    this._runEnemyGuard(currentEnemyData, currentEnemy);
-                    return;
+            // Lógica especial de selección de objetivo para habilidades de curación
+            if (skill && skill.type === 'heal') {
+                const enemies = this.getEnemies();
+                const needsHeal = enemies.filter(e => !e.isDead && e.hp < e.maxHp * 0.8);
+                
+                if (needsHeal.length > 0) {
+                    // Seleccionar al aliado con menor HP porcentual
+                    const worstAlley = needsHeal.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
+                    finalTarget = worstAlley;
+                    finalTargetIndex = enemies.indexOf(worstAlley);
+                    finalTargetType = 'enemy';
                 } else {
+                    // Si nadie necesita curación pero se eligió cura, fallback a ataque básico
                     this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
+                    return;
                 }
             } else {
-                // Aplicar daño si lo hay
+                const isSelf = skill && skill.targetType === 'self';
+                finalTargetIndex = isSelf ? currentEnemyData.index : targetIdx;
+                finalTargetType = isSelf ? 'enemy' : 'player';
+                finalTarget = isSelf ? currentEnemy : target;
+            }
+
+            // Ejecutar habilidad del enemigo
+            const result = currentEnemy.useSkill(action.skillName, finalTarget);
+
+            if (!result.success) {
+                // Fallback de seguridad (aunque chooseAction ya valida MP)
+                this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
+            } else {
                 let damageTaken = 0;
                 if (result.damage) {
-                    const dmgResult = (isSelf ? currentEnemy : target).receiveDamage(result.damage);
+                    const dmgResult = finalTarget.receiveDamage(result.damage);
                     damageTaken = dmgResult.damageTaken;
                 }
 
-                // Aplicar curación si la hubiera
                 if (result.heal) {
-                    const healTarget = isSelf ? currentEnemy : target;
-                    healTarget.hp = Math.min(healTarget.maxHp, healTarget.hp + result.heal);
+                    finalTarget.hp = Math.min(finalTarget.maxHp, finalTarget.hp + result.heal);
                 }
 
                 this._callbacks.onEnemyActionResult?.({
                     actionName: result.actionName,
                     damage: damageTaken,
-                    targetName: (isSelf ? currentEnemy : target).name,
+                    targetName: finalTarget.name,
                     targetIndex: finalTargetIndex,
                     targetType: finalTargetType,
-                    targetHP: (isSelf ? currentEnemy : target).hp,
-                    targetDead: (isSelf ? currentEnemy : target).isDead,
+                    targetHP: finalTarget.hp,
+                    targetDead: finalTarget.isDead,
                     attackerIndex: currentEnemyData.index,
                     isCrit: result.isCrit || false,
                     nerf: result.nerf || null,
                     buff: result.buff || null,
+                    heal: result.heal || 0,
                     message: result.message
                 });
+
+                this._scene.time.delayedCall(2200, () => this._checkPostTurn());
             }
         } else if (action.type === 'guard') {
             this._runEnemyGuard(currentEnemyData, currentEnemy);
-            return;
         } else {
-            this._runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx);
-        }
+            // Ataque básico (action.type === 'attack')
+            // El daño ya viene calculado desde EnemyBattle.chooseAction()
+            const result = target.receiveDamage(action.damage);
 
-        this._scene.time.delayedCall(2200, () => {
-            if (this._isPlayer1Dead()) {
-                this._endBattle('enemy');
-            } else {
-                this.nextTurn();
-            }
-        });
+            this._callbacks.onEnemyActionResult?.({
+                actionName: action.actionName,
+                damage: result.damageTaken,
+                targetName: target.name,
+                targetIndex: targetIdx,
+                targetHP: target.hp,
+                targetDead: result.isDead,
+                guarded: result.guarded,
+                attackerIndex: currentEnemyData.index,
+                isCrit: action.isCrit,
+                nerf: null,
+                buff: null
+            });
+
+            this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+        }
     }
 
     _runEnemyBasicAttack(currentEnemyData, currentEnemy, target, targetIdx) {
-        const isCrit = Math.random() < (currentEnemy.luck / 50);
-        const finalDamage = isCrit ? Math.floor(currentEnemy.damage * 1.5) : currentEnemy.damage;
+        // Método de fallback si falla una habilidad por MP inesperadamente
+        const isCrit = Math.random() < (currentEnemy.luck / 100);
+        const rawDamage = Math.floor(currentEnemy.damage * 30);
+        const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
         const result = target.receiveDamage(finalDamage);
 
         this._callbacks.onEnemyActionResult?.({
@@ -382,6 +414,16 @@ export default class BattleManager {
             nerf: null,
             buff: null
         });
+
+        this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+    }
+
+    _checkPostTurn() {
+        if (this._isPlayer1Dead()) {
+            this._endBattle('enemy');
+        } else {
+            this.nextTurn();
+        }
     }
 
     _runEnemyGuard(currentEnemyData, currentEnemy) {
@@ -434,11 +476,12 @@ export default class BattleManager {
     }
 
     _endBattle(winner) {
-        this.syncToManager();
+
+        this.syncToManager(winner);
         this._callbacks.onBattleEnd?.({ winner });
     }
 
-    syncToManager() {
+    syncToManager(winner) {
         const gm = GameManager.getInstance();
         this.players.forEach(p => {
             if (gm.playerStats[p.name]) {
@@ -446,6 +489,14 @@ export default class BattleManager {
                 gm.playerStats[p.name].mp = p.mp;
             }
         });
+
+        if(winner=='player'){
+            gm.markDefeated(this.npcid);
+            gm.setJustDefeated(this.npcid);
+            if(this.nivel!=null){
+                gm.CompleteNivel(this.nivel);
+            }
+        }
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────
