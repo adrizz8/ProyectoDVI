@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import EncounterManager from '../encounters/encounter_manager.js';
+import GameManager from '../manager.js';
 
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
@@ -150,6 +151,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
     iniciarCombate() {
         this.frozen = true;
         this.body.setVelocity(0, 0);
+
+
+        //Mover a otro sitio
+        GameManager.getInstance().setPlayerPosition(this.x, this.y, this.lastDirection);
+
 
         // Transición de cámara
         this.scene.cameras.main.fadeOut(500, 0, 0, 0);

@@ -77,14 +77,13 @@ export default class BattleScene extends Phaser.Scene {
         const nombreAzar = nombresEquipo[Math.floor(Math.random() * nombresEquipo.length)];
         const ref = gm.playerStats[nombreAzar];
 
-        const variacion = () => Math.floor(Math.random() * 9) - 4;
+        const variacion = () => Math.floor(Math.random() * 0.2) + 0.9;
 
-        // Calculamos los valores base primero sumando una variación de -4 a +4
-        const calculadoMaxHp = Math.max(1, ref.maxHp + variacion());
-        const calculadoMaxMp = Math.max(1, ref.maxMp + variacion());
-        const calculadoBaseDamage = Math.max(1, ref.damage + variacion());
-        const calculadoBaseSpeed = Math.max(1, ref.speed + variacion());
-        const calculadoBaseDefense = Math.max(1, ref.defense + variacion());
+        const calculadoMaxHp = Math.max(1, ref.maxHp * variacion());
+        const calculadoMaxMp = Math.max(1, ref.maxMp * variacion());
+        const calculadoBaseDamage = Math.max(1, ref.damage * variacion());
+        const calculadoBaseSpeed = Math.max(1, ref.speed * variacion());
+        const calculadoBaseDefense = Math.max(1, ref.defense * variacion());
 
         return {
             name: `Toy Salvaje`,

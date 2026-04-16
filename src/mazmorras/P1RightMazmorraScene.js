@@ -14,7 +14,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         super({ key: 'p1RightMazmorra' });
     }
 
-    create() {
+    create(data) {
         const map = this.make.tilemap({ key: 'p1RightMazmorra' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
@@ -35,20 +35,27 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
 
+        var entradas = new Map();
+        entradas.set('lobby', { x: 970, y: 810, direccion: 'right' });
 
         // Jugador
         // Recuperar posición guardada o usar la de defecto
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
-        const startX = savedPos ? savedPos.x : 970;
-        const startY = savedPos ? savedPos.y : 810;
 
-        // Restaurar dirección si existía
-        if (savedPos && savedPos.direction) {
+        // Spawn del jugador
+        const posi = entradas.get(data.entrada) || entradas.get('lobby');
+        const spawnX = posi.x;
+        const spawnY = posi.y;
+        const direccion = posi.direccion;
+        this.player = new Player(this, spawnX, spawnY, direccion, true);
+        this.player.setDirection(direccion);
+
+        if (savedPos) {
+            gm.clearPlayerPosition();
             this.player.setDirection(savedPos.direction);
+            this.player.setPosition(savedPos.x, savedPos.y);
         }
-
-        this.player = new Player(this, startX, startY, direccion, true);
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);

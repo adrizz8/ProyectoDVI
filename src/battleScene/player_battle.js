@@ -147,7 +147,7 @@ export default class PlayerBattle {
         const currentDefense = Math.max(1, this.defense); // Prevent division by zero
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        const damageAfterDefense = Math.max(1, Math.floor(rawDamage * 0.6 / currentDefense));
+        const damageAfterDefense = Math.max(1, Math.floor(rawDamage / currentDefense));
 
         let damageTaken = guarded ? Math.floor(damageAfterDefense / 2) : damageAfterDefense;
         damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado

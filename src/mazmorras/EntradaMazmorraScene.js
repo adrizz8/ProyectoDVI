@@ -40,8 +40,17 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
+        const gm = GameManager.getInstance();
+        const savedPos = gm.getPlayerPosition();
+
         this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
+
+        if (savedPos) {
+            gm.clearPlayerPosition();
+            this.player.setDirection(savedPos.direction);
+            this.player.setPosition(savedPos.x, savedPos.y);
+        }
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
@@ -75,7 +84,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
             this.scene.start('pasillo', { entrada: 'salida_mazmorra' });
         });
         this.physics.add.overlap(this.player, this.entrada_der, () => {
-            this.scene.start('p1RightMazmorra');
+            this.scene.start('p1RightMazmorra', { entrada: 'lobby' });
         });
         this.physics.add.overlap(this.player, this.entrada_izq, () => {
             this.scene.start('p1LeftMazmorra', { entrada: 'lobby' });

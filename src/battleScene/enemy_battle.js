@@ -149,7 +149,7 @@ export default class EnemyBattle {
         const currentDefense = Math.max(1, this.defense);
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        let damageTaken = Math.floor(damage * 0.6 / currentDefense);
+        let damageTaken = Math.floor(damage / currentDefense);
         damageTaken = Math.max(1, damageTaken);
 
         // La guardia reduce el daño a la mitad

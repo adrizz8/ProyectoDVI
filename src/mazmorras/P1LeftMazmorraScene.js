@@ -37,22 +37,21 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         // Recuperar posición guardada o usar la de defecto
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
-        const startX = savedPos ? savedPos.x : 100;
-        const startY = savedPos ? savedPos.y : 400;
-
-        // Restaurar dirección si existía
-        if (savedPos && savedPos.direction) {
-            this.player.setDirection(savedPos.direction);
-        }
 
         // Spawn del jugador
-        const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
+        const posi = entradas.get(data.entrada) || entradas.get('lobby');
         const spawnX = posi.x;
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
         this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
+
+        if (savedPos) {
+            gm.clearPlayerPosition();
+            this.player.setDirection(savedPos.direction);
+            this.player.setPosition(savedPos.x, savedPos.y);
+        }
 
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
