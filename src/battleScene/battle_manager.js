@@ -18,7 +18,7 @@ export default class BattleManager {
      * @param {Object[]} enemiesStatsArr Lista de stats de los enemigos
      * @param {Phaser.Scene} scene       Referencia a la escena
      */
-    constructor(playerStatsArr, enemiesStatsArr, scene, npcid,nivel) {
+    constructor(playerStatsArr, enemiesStatsArr, scene, npcid, nivel) {
         this._scene = scene;
 
         // Inicializar jugadores y enemigos
@@ -39,11 +39,12 @@ export default class BattleManager {
             onEnemyActionResult: null,
             onBattleEnd: null,
             onMessage: null,
-            onTurnChanged: null // (participant)
+            onTurnChanged: null, // (participant)
+            onReadyForNextTurn: null // (nextTurnFn) → la escena llama a nextTurnFn() cuando el jugador confirme
         };
 
-        this.npcid=npcid;
-        this.nivel=nivel;
+        this.npcid = npcid;
+        this.nivel = nivel;
     }
 
     setCallbacks(callbacks) {
@@ -75,7 +76,8 @@ export default class BattleManager {
         this.turnQueue = participants.sort((a, b) => b.data.speed - a.data.speed);
 
         this._callbacks.onMessage?.(`--- Ronda ${this.roundCount} ---`);
-        this._scene.time.delayedCall(1500, () => this.nextTurn());
+        // Notificar a la escena: cuando el jugador confirme el mensaje de ronda, avanzar
+        this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
     }
 
     nextTurn() {
@@ -114,7 +116,8 @@ export default class BattleManager {
             this._callbacks.onMessage?.(`Turno de ${current.data.name}`);
         } else {
             this._isBusy = true;
-            this._scene.time.delayedCall(1500, () => this._runEnemyTurn());
+            // Pequeño delay para que las animaciones del glow sean visibles antes del turno enemigo
+            this._scene.time.delayedCall(600, () => this._runEnemyTurn());
         }
     }
 
@@ -144,9 +147,9 @@ export default class BattleManager {
             this._handleAllEnemiesDeath();
         } else if (result.isDead) {
             this._callbacks.onMessage?.(`¡${targetEnemy.name} fue derrotado!`);
-            this._scene.time.delayedCall(2000, () => this.nextTurn());
+            this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
         } else {
-            this._scene.time.delayedCall(2000, () => this.nextTurn());
+            this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
         }
     }
 
@@ -167,7 +170,7 @@ export default class BattleManager {
             message: `${player.name} se pone en posición de defensa.`
         });
 
-        this._scene.time.delayedCall(1800, () => this.nextTurn());
+        this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
     }
 
     onSkill(skillName, targetType, targetIndex) {
@@ -217,9 +220,9 @@ export default class BattleManager {
             this._handleAllEnemiesDeath();
         } else if (enemyResult.isDead) {
             this._callbacks.onMessage?.(`¡${target.name} fue derrotado!`);
-            this._scene.time.delayedCall(2000, () => this.nextTurn());
+            this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
         } else {
-            this._scene.time.delayedCall(2000, () => this.nextTurn());
+            this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
         }
     }
 
@@ -281,7 +284,7 @@ export default class BattleManager {
             usedItem: item
         });
 
-        this._scene.time.delayedCall(2200, () => this.nextTurn());
+        this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
     }
 
     onFlee() {
@@ -315,7 +318,7 @@ export default class BattleManager {
             if (skill && skill.type === 'heal') {
                 const enemies = this.getEnemies();
                 const needsHeal = enemies.filter(e => !e.isDead && e.hp < e.maxHp * 0.8);
-                
+
                 if (needsHeal.length > 0) {
                     // Seleccionar al aliado con menor HP porcentual
                     const worstAlley = needsHeal.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
@@ -367,7 +370,7 @@ export default class BattleManager {
                     message: result.message
                 });
 
-                this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+                this._callbacks.onReadyForNextTurn?.(() => this._checkPostTurn());
             }
         } else if (action.type === 'guard') {
             this._runEnemyGuard(currentEnemyData, currentEnemy);
@@ -390,7 +393,7 @@ export default class BattleManager {
                 buff: null
             });
 
-            this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+            this._callbacks.onReadyForNextTurn?.(() => this._checkPostTurn());
         }
     }
 
@@ -415,7 +418,7 @@ export default class BattleManager {
             buff: null
         });
 
-        this._scene.time.delayedCall(2200, () => this._checkPostTurn());
+        this._callbacks.onReadyForNextTurn?.(() => this._checkPostTurn());
     }
 
     _checkPostTurn() {
@@ -445,7 +448,7 @@ export default class BattleManager {
             message: `${currentEnemy.name} se prepara para el siguiente ataque.`
         });
 
-        this._scene.time.delayedCall(2200, () => {
+        this._callbacks.onReadyForNextTurn?.(() => {
             if (this._isPlayer1Dead()) {
                 this._endBattle('enemy');
             } else {
@@ -458,10 +461,15 @@ export default class BattleManager {
 
     _handleAllEnemiesDeath() {
         this._scene.time.delayedCall(1000, () => {
-            const totalExp = this.enemies.reduce((acc, e) => acc + e.expReward, 0);
-            this._callbacks.onMessage?.(`¡Victoria! +${totalExp} EXP`);
+            const totalExp = this.enemies.reduce((acc, e) => acc + (e.expReward || 0), 0);
+            const totalMoney = this.enemies.reduce((acc, e) => acc + (e.moneyReward || 0), 0);
+
+            let winMessage = `¡Victoria! +${totalExp} EXP`;
+            if (totalMoney > 0) winMessage += ` y +${totalMoney}€`;
+            this._callbacks.onMessage?.(winMessage);
 
             const gm = GameManager.getInstance();
+            if (totalMoney >= 0) gm.addDinero(totalMoney);
             this.players.forEach(p => {
                 if (!p.isDead) {
                     const leveled = gm.gainExp(p.name, totalExp);
@@ -490,10 +498,10 @@ export default class BattleManager {
             }
         });
 
-        if(winner=='player'){
+        if (winner == 'player') {
             gm.markDefeated(this.npcid);
             gm.setJustDefeated(this.npcid);
-            if(this.nivel!=null){
+            if (this.nivel != null) {
                 gm.CompleteNivel(this.nivel);
             }
         }

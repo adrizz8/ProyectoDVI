@@ -129,6 +129,7 @@ export default class GameManager {
         this.defeatedNPCs = new Set();
 
         this.justdefeated = null;
+        this.dinero = 0;
 
     }
 
@@ -157,6 +158,24 @@ export default class GameManager {
      */
     clearPlayerPosition() {
         this.playerPosition = null;
+    }
+
+    // ── Helpers de Dinero ─────────────────────────────────────────────────────
+
+    getDinero() {
+        return this.dinero;
+    }
+
+    addDinero(amount) {
+        this.dinero += amount;
+    }
+
+    gastarDinero(amount) {
+        if (this.dinero >= amount) {
+            this.dinero -= amount;
+            return true;
+        }
+        return false;
     }
 
     // ── Helpers de mochila ────────────────────────────────────────────────────

@@ -203,7 +203,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('entradaMazmorra', { entrada: 'pasillo' });
+    this.scene.start('TitleScene');
 
   }
 }
