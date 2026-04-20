@@ -49,10 +49,14 @@ export default class DialogueManager {
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
 
         this.dialogueText = this.scene.add.text(0, 0, "", {
-            fontSize: '22px',
+            fontSize: '24px',
+            fontFamily: '"Pixelify Sans", "Courier New", monospace',
             fill: '#ffffff',
             align: 'center',
-            wordWrap: { width: bgWidth - 60 }
+            wordWrap: { width: bgWidth - 60 },
+            stroke: '#000000',
+            strokeThickness: 3,
+            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
         }).setOrigin(0.5, 0.5);
 
         this.dialogueBox.add([bg, this.dialogueText]);
@@ -66,9 +70,13 @@ export default class DialogueManager {
 
         // Texto del nombre
         this.nameText = this.scene.add.text(-(bgWidth / 2) + 110, -bgHeight / 2 - 25, "", {
-            fontSize: '18px',
-            fill: '#ffffff',
-            align: 'center'
+            fontSize: '20px',
+            fontFamily: '"Pixelify Sans", "Courier New", monospace',
+            fill: '#f1c40f', // Vibrant Gold
+            align: 'center',
+            stroke: '#000000',
+            strokeThickness: 3,
+            shadow: { offsetX: 1, offsetY: 1, color: '#000000', blur: 2, stroke: true, fill: true }
         }).setOrigin(0.5, 0.5).setVisible(false);
 
         this.dialogueBox.add([this.nameBg, this.nameText]);

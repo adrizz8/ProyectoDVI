@@ -40,7 +40,7 @@ export default class EstrategiaScene extends Phaser.Scene {
         this.add.text(608, 620, 'Presiona ESPACIO para volver', {
             fontSize: '14px',
             fill: '#aaaaaa',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
@@ -70,12 +70,13 @@ export default class EstrategiaScene extends Phaser.Scene {
 
         const displayName = stats.displayName || `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
         this.add.text(posNombre.x, posNombre.y, displayName, {
-            fontSize: '25px',
+            fontSize: '28px',
             fill: '#ffffff',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold',
             stroke: '#000000',
-            strokeThickness: 5
+            strokeThickness: 5,
+            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 3, stroke: true, fill: true }
         });
 
         // Nivel y experiencia restante
@@ -99,15 +100,15 @@ export default class EstrategiaScene extends Phaser.Scene {
         // Barra de HP colocada exactamente bajo la barra PS del UI
         this.add.rectangle(barraX, barraY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, barraY, Math.max(0.1, (stats.hp / stats.maxHp) * barraWidth), barraHeight, 0x1e7b1e).setOrigin(0, 0);
-        this.add.text(barraX - 40, barraY - 1, '', { fontSize: '11px', fill: '#86efac', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
-        this.add.text(barraX + barraWidth / 2, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', justify: 'center' , stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5, 0);
+        this.add.text(barraX - 40, barraY - 1, '', { fontSize: '11px', fill: '#86efac', fontFamily: 'Pixelify Sans', fontStyle: 'bold' });
+        this.add.text(barraX + barraWidth / 2, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Pixelify Sans', fontStyle: 'bold', justify: 'center' , stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5, 0);
 
         // Barra de MP colocada exactamente bajo la barra PM del UI
         const mpY = barraY + barraHeight + 34;
         this.add.rectangle(barraX, mpY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, mpY, Math.max(0.1, (stats.mp / stats.maxMp) * barraWidth), barraHeight, 0x1e4fbf).setOrigin(0, 0);
-        this.add.text(barraX - 40, mpY - 1, '', { fontSize: '11px', fill: '#93c5fd', fontFamily: 'Distant Galaxy', fontStyle: 'bold' });
-        this.add.text(barraX + barraWidth / 2, mpY + barraHeight + 2, `${stats.mp}/${stats.maxMp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', justify: 'center', stroke: '#000000', strokeThickness: 5  }).setOrigin(0.5, 0);
+        this.add.text(barraX - 40, mpY - 1, '', { fontSize: '11px', fill: '#93c5fd', fontFamily: 'Pixelify Sans', fontStyle: 'bold' });
+        this.add.text(barraX + barraWidth / 2, mpY + barraHeight + 2, `${stats.mp}/${stats.maxMp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Pixelify Sans', fontStyle: 'bold', justify: 'center', stroke: '#000000', strokeThickness: 5  }).setOrigin(0.5, 0);
 
         const coordenadasStats = {
     Jugador1: {
@@ -162,7 +163,7 @@ const posNivel = coordenadasNivel[nombre];
 const estiloNivel = {
     fontSize: '16px',
     fill: '#ffffff',
-    fontFamily: 'Distant Galaxy',
+    fontFamily: 'Pixelify Sans',
     fontStyle: 'bold',
     stroke: '#000000',
     strokeThickness: 5
@@ -171,7 +172,7 @@ const estiloNivel = {
 const estiloExp = {
     fontSize: '14px',
     fill: '#ffffff',
-    fontFamily: 'Distant Galaxy',
+    fontFamily: 'Pixelify Sans',
     fontStyle: 'bold',
     stroke: '#000000',
     strokeThickness: 5
@@ -183,7 +184,7 @@ this.add.text(posNivel.exp.x, posNivel.exp.y, `${xpRestante}`, estiloExp);
 const estiloStats = {
     fontSize: '20px',
     fill: '#ffffff',
-    fontFamily: 'Distant Galaxy',
+    fontFamily: 'Pixelify Sans',
     fontStyle: 'bold',
     stroke: '#000000',
     strokeThickness: 5
@@ -195,7 +196,7 @@ this.add.text(pos.speed.x, pos.speed.y, `${stats.speed}`, estiloStats);
 this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
         // Botones interactivos en la UI
-        const btnStyle = { fontSize: '20px', fill: '#ffffff', fontFamily: 'Distant Galaxy', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5 };
+        const btnStyle = { fontSize: '20px', fill: '#ffffff', fontFamily: 'Pixelify Sans', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5 };
 
         // Posiciones predefinidas por personaje (similar al estilo de coordenadasNivel)
         const coordenadasBotones = {
@@ -240,7 +241,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         const titulo = this.add.text(608, panelY + 20, `HABILIDADES: ${displayName}`, {
             fontSize: '20px',
             fill: '#f5d442',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold'
         }).setOrigin(0.5, 0);
         group.add(titulo);
@@ -248,7 +249,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         const descripcion = this.add.text(panelX + 20, panelY + 50, '* Pulsa fuera del panel o ACEPTAR para cerrar', {
             fontSize: '12px',
             fill: '#cccccc',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'italic'
         });
         group.add(descripcion);
@@ -261,7 +262,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
                     `- ${nombreHab} ${hab ? `(Coste ${hab.cost} MP)` : ''}`, {
                         fontSize: '14px',
                         fill: '#f8fafc',
-                        fontFamily: 'Distant Galaxy',
+                        fontFamily: 'Pixelify Sans',
                         fontStyle: 'bold'
                     });
                 group.add(text);
@@ -270,7 +271,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
                 const descText = this.add.text(panelX + 40, listaY + idx * 36 + 16, desc, {
                     fontSize: '12px',
                     fill: '#d1d5db',
-                    fontFamily: 'Distant Galaxy'
+                    fontFamily: 'Pixelify Sans'
                 });
                 group.add(descText);
             });
@@ -278,7 +279,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
             const noText = this.add.text(panelX + 20, listaY, 'Este personaje no tiene habilidades asignadas.', {
                 fontSize: '14px',
                 fill: '#f5f5f5',
-                fontFamily: 'Distant Galaxy'
+                fontFamily: 'Pixelify Sans'
             });
             group.add(noText);
         }
@@ -286,7 +287,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         const cerrar = this.add.text(608, panelY + height - 30, 'CERRAR', {
             fontSize: '16px',
             fill: '#34d399',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         cerrar.on('pointerdown', () => this.closePanel());
@@ -317,7 +318,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
         const titulo = this.add.text(608, panelY + 20, `EQUIPAMIENTO: ${displayName}`, {
             fontSize: '20px',
             fill: '#ffffff',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold',
             stroke: '#000000',
             strokeThickness: 5
@@ -341,20 +342,20 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
             this.add.text(panelX + 20, y, `${item.slot}: ${item.value.name}`, {
                 fontSize: '14px',
                 fill: '#f8fafc',
-                fontFamily: 'Distant Galaxy',
+                fontFamily: 'Pixelify Sans',
                 fontStyle: 'bold'
             });
             this.add.text(panelX + 20, y + 18, item.value.description || 'Sin descripción', {
                 fontSize: '12px',
                 fill: '#d1d5db',
-                fontFamily: 'Distant Galaxy'
+                fontFamily: 'Pixelify Sans'
             });
         });
 
         const cerrar = this.add.text(608, panelY + height - 25, 'CERRAR', {
             fontSize: '16px',
             fill: '#34d399',
-            fontFamily: 'Distant Galaxy',
+            fontFamily: 'Pixelify Sans',
             fontStyle: 'bold'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         cerrar.on('pointerdown', () => this.closePanel());

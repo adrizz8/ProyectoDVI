@@ -31,12 +31,13 @@ export default class TitleScene extends Phaser.Scene {
         playButtonImage.setDisplaySize(buttonWidth, buttonHeight);
 
         const playButtonText = this.add.text(608, firstButtonY, 'Nueva Partida', {
-            fontSize: '32px',
+            fontSize: '36px',
             fill: '#ffffff',
             fontWeight: 'bold',
             stroke: '#000000',
-            strokeThickness: 5,
-            fontFamily: '"Pixelify Sans"'
+            strokeThickness: 6,
+            fontFamily: '"Pixelify Sans"',
+            shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5);
 
         // Botón Configuración
@@ -44,12 +45,13 @@ export default class TitleScene extends Phaser.Scene {
         configButtonImage.setDisplaySize(buttonWidth, buttonHeight);
 
         const configButtonText = this.add.text(608, secondButtonY, 'Configuración', {
-            fontSize: '32px',
+            fontSize: '36px',
             fill: '#ffffff',
             fontWeight: 'bold',
             stroke: '#000000',
-            strokeThickness: 5,
-            fontFamily: '"Pixelify Sans"'
+            strokeThickness: 6,
+            fontFamily: '"Pixelify Sans"',
+            shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5);
 
         // Eventos de los botones

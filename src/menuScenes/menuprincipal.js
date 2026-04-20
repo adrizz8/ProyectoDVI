@@ -25,13 +25,23 @@ class MenuPrincipal extends Phaser.Scene {
         const dinero = this.registry.get('dinero') ?? 0;
 
         this.horasText = this.add.text(305, 150, `Tiempo: ${this.formatearHoras(horasJuego)}`, {
-            fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
+            fontSize: '24px', 
+            fill: '#ffffff', 
+            fontFamily: '"Pixelify Sans"', 
+            stroke: '#000000', 
+            strokeThickness: 4,
+            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
         });
 
         this.horasJuego = horasJuego;
 
         this.add.text(305, 210, `Dinero: ${dinero.toLocaleString()}€`, {
-            fontSize: '22px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000000', strokeThickness: 4
+            fontSize: '24px', 
+            fill: '#ffffff', 
+            fontFamily: '"Pixelify Sans"', 
+            stroke: '#000000', 
+            strokeThickness: 4,
+            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
         });
 
         // ── Botones ────────────────────────────────────────────────────
@@ -44,12 +54,13 @@ class MenuPrincipal extends Phaser.Scene {
 
         botones.forEach(({ x, y, scene, text }) => {
             const btn = this.add.text(x, y, text, {
-                fontSize: '32px',
+                fontSize: '34px',
                 fill: '#ffffff',
-                fontFamily: 'Distant Galaxy',
+                fontFamily: '"Pixelify Sans"',
                 align: 'center',
                 stroke: '#000000',
-                strokeThickness: 5
+                strokeThickness: 5,
+                shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 3, stroke: true, fill: true }
             }).setOrigin(0.5).setInteractive();
 
             btn.on('pointerover', () => {

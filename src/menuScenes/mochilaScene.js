@@ -16,17 +16,18 @@ export default class MochilaScene extends Phaser.Scene {
 
         this.add.rectangle(608, 320, 1216, 640, 0x0a0a0f, 0.95);
         this.add.text(608, 25, 'MOCHILA', {
-            fontFamily: 'Distant Galaxy', fontSize: '42px', fill: '#f5d442', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5
+            fontFamily: '"Pixelify Sans"', fontSize: '48px', fill: '#f1c40f', fontStyle: 'bold', stroke: '#000000', strokeThickness: 6,
+            shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5, 0);
 
         this.add.text(80, 70, 'Categorías:', {
-            fontFamily: 'Distant Galaxy', fontSize: '22px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
+            fontFamily: 'Pixelify Sans', fontSize: '22px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
         });
 
         this.tabs = {
-            consumable: this.add.text(80, 110, 'Consumibles', { fontFamily: 'Distant Galaxy', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
-            equipment: this.add.text(240, 110, 'Equipamiento', { fontFamily: 'Distant Galaxy', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
-            key: this.add.text(440, 110, 'Objetos clave', { fontFamily: 'Distant Galaxy', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true })
+            consumable: this.add.text(80, 110, 'Consumibles', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
+            equipment: this.add.text(240, 110, 'Equipamiento', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
+            key: this.add.text(440, 110, 'Objetos clave', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true })
         };
 
         Object.keys(this.tabs).forEach(tab => {
@@ -40,20 +41,20 @@ export default class MochilaScene extends Phaser.Scene {
         this.itemTextList = [];
         for (let i = 0; i < 10; i++) {
             const itemText = this.add.text(80, 170 + i * 40, '', {
-                fontFamily: 'Distant Galaxy', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
+                fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
             }).setInteractive({ useHandCursor: true });
             itemText.on('pointerdown', () => this.selectItem(i));
             this.itemTextList.push(itemText);
         }
 
         this.add.text(80, 530, 'Selecciona personaje:', {
-            fontFamily: 'Distant Galaxy', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
+            fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
         });
 
         this.playerButtons = [];
         this.players.forEach((name, index) => {
             const btn = this.add.text(80 + index * 180, 560, name, {
-                fontFamily: 'Distant Galaxy', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
+                fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
             }).setInteractive({ useHandCursor: true });
             btn.on('pointerdown', () => {
                 this.selectedPlayer = name;
@@ -64,20 +65,20 @@ export default class MochilaScene extends Phaser.Scene {
         });
 
         this.detailBox = this.add.text(660, 130, '', {
-            fontFamily: 'Distant Galaxy', fontSize: '18px', fill: '#ffffff', wordWrap: { width: 460 }, stroke: '#000000', strokeThickness: 3
+            fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', wordWrap: { width: 460 }, stroke: '#000000', strokeThickness: 3
         });
 
         this.actionButton = this.add.text(660, 460, 'USAR OBJETO', {
-            fontFamily: 'Distant Galaxy', fontSize: '24px', fill: '#00ff00', stroke: '#000000', strokeThickness: 3
+            fontFamily: 'Pixelify Sans', fontSize: '24px', fill: '#00ff00', stroke: '#000000', strokeThickness: 3
         }).setInteractive({ useHandCursor: true });
         this.actionButton.on('pointerdown', () => this.onActionButton());
 
         this.statusText = this.add.text(660, 520, '', {
-            fontFamily: 'Distant Galaxy', fontSize: '18px', fill: '#ffffff', wordWrap: { width: 460 }, stroke: '#000000', strokeThickness: 2
+            fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', wordWrap: { width: 460 }, stroke: '#000000', strokeThickness: 2
         });
 
         this.add.text(608, 600, 'Presiona ESPACIO o ESC para volver', {
-            fontFamily: 'Distant Galaxy', fontSize: '16px', fill: '#cccccc'
+            fontFamily: 'Pixelify Sans', fontSize: '16px', fill: '#cccccc'
         }).setOrigin(0.5, 0);
 
         this.input.keyboard.on('keydown-ESC', () => this.closeScene());
