@@ -49,7 +49,7 @@ class MenuPrincipal extends Phaser.Scene {
             { x: 800, y: 275, scene: 'EstrategiaScene', text: 'Estrategia' },
             { x: 800, y: 345, scene: 'MochilaScene', text: 'Mochila' },
             //  { x: 800, y: 515, scene: null, text: 'Salir' },
-            //{ x: 800, y: 425, scene: 'OpcionesScene', text: 'Opciones' },
+            { x: 800, y: 425, scene: 'Configuracion', text: 'Configuración' },
         ];
 
         botones.forEach(({ x, y, scene, text }) => {
@@ -71,7 +71,7 @@ class MenuPrincipal extends Phaser.Scene {
             });
             btn.on('pointerdown', () => {
                 if (scene) {
-                    this.scene.start(scene);
+                    this.scene.start(scene, {});
                     this.scene.bringToTop(scene);
                 } else {
                     this.game.destroy(true);

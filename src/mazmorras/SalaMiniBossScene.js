@@ -47,7 +47,7 @@ export default class SalaMiniBossScene extends Phaser.Scene {
 
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {
-            if (this.dialogueManager && this.dialogueManager.dialogBox.visible) return;
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
@@ -56,6 +56,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
+
     }
 
     update(t, dt) {

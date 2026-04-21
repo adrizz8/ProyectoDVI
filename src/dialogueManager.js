@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GameManager from './manager';
 
 class Datos {
     constructor(nombre, texto, onFinish) {
@@ -129,12 +130,14 @@ export default class DialogueManager {
         this.isTyping = true;
         this.fullTextToType = text;
         this.dialogueText.setText("");
+
+        const gm= GameManager.getInstance();
         
         let charIndex = 0;
         if (this.typewriterTimer) this.typewriterTimer.remove();
 
         this.typewriterTimer = this.scene.time.addEvent({
-            delay: 25,
+            delay: gm.TextNum,
             callback: () => {
                 this.dialogueText.setText(text.substr(0, charIndex + 1));
                 charIndex++;

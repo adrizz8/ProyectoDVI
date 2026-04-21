@@ -62,6 +62,7 @@ export default class TitleScene extends Phaser.Scene {
         configButtonImage.on('pointerdown', () => {
             console.log('Configuración pulsada');
             // Aquí se podría abrir una escena de opciones si existiera
+            this.scene.start('Configuracion',{novacio:"aa"});
         });
 
         // Feedback visual al pasar el ratón (opcional pero recomendado)
