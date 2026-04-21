@@ -294,18 +294,13 @@ export default class Cafeteria extends Phaser.Scene {
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
                     this.showDialogue(
-                        '¡Habéis desbloqueado el acceso a la Planta 1, pero para poder liberar esta planta completa tendréis que derrotar a Lanchares que ha sellado el aula 1. Para entrar, necesitáis una "Llave Maestra de Hardware" que él mismo ha fragmentado. Y un consejo: con vosotros dos no basta. Buscad a otros alumnos que no hayan sido asimilados por la IA; necesitaréis un equipo completo para el examen final.',
+                        '¡Acceso a la Planta 1 desbloqueado! Pero cuidado: Lanchares ha sellado el aula 1. Necesitaréis la "Llave Maestra de Hardware" y un equipo completo para derrotarle.',
                         'Carlos'
                     );
                     this.showDialogue(
-                        'Antes del Glitch, Lanchares era una leyenda en la facultad. No solo por sus clases de Computadores, sino por su pasión por el Rugby y sus famosas tertulias con sus "camaradas" en el bar de la esquina. La IA ha retorcido esa mentalidad. Ahora ve la Planta 1 como su propio campo de juego. Se ha blindado con una armadura de placas base y cables de cobre.',
-                        'Ismael'
-                    );
-                    this.showDialogue(
-                        'Lanchares ha cerrado el tercer tiempo. Se ha encerrado en su aula y dice que solo los que tengan "espíritu de melé" pueden pasar. Si no le derrotáis, la planta seguirá bloqueada por su muro de silicio.',
+                        'Lanchares se ha blindado con una armadura de placas base y solo deja pasar a los que tengan "espíritu de melé". Si no le vencéis, la planta seguirá bloqueada.',
                         'Ismael', () => {
                             this.player.unfreeze();
-                            // Spawnar NPCs normales tras la victoria en esta misma sala
                             this._generarNPCsPostVictoria();
                         }
                     );
@@ -318,15 +313,15 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- NPCs de fondo asustados (moviéndose nerviosos) ---
         const npcData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡El conserje se ha vuelto loco! ¡Lleva una porra que suelta chispas!' },
-            { x: 200, y: 320, texture: 'npc2', frame: 4, message: '¡He intentado salir pero hay una barrera... un Cortafuegos en la puerta!' },
+            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡El de la puerta esta loco, dice que nadie sale de aqui con comida o bebida para ir a los laboratorios!' },
+            { x: 200, y: 320, texture: 'npc2', frame: 4, message: 'No puedo salir para ir a clase, pero tampoco tenia pensado hacerlo' },
             { x: 450, y: 320, texture: 'npc3', frame: 8, message: 'Cómo no puedo salir me voy a tomar un café y lo que surja' },
             { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'Nos falta uno para un mus, ¿te vienes?.' },
             { x: 100, y: 580, texture: 'npc4', frame: 8, message: 'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.' },
             { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
             { x: 860, y: 200, texture: 'npc4', frame: 8, message: '¿Alguien tiene un cargador de tipo C? Me he quedado sin batería.' },
-            { x: 850, y: 270, texture: 'npc3', frame: 8, message: '¡Mi código no funciona y no sé por qué! ¡Mi código funciona Y NO SÉ POR QUÉ!' },
-            { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
+            { x: 850, y: 270, texture: 'npc3', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
+            //  { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //{ x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
             { x: 970, y: 280, texture: 'npc4', frame: 8, message: '¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Ingeniería del Software!' },
             { x: 1050, y: 320, texture: 'npc2', frame: 12, message: '¿Y los profesores? ¡Han perdido la cabeza! ¡Creen que somos bugs que hay que debugear con fuego!' },

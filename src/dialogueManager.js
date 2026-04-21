@@ -42,21 +42,21 @@ export default class DialogueManager {
         // Fondo del diálogo
         const bg = this.scene.add.graphics();
         const bgWidth = 900;
-        const bgHeight = 100;
+        const bgHeight = 160;
         bg.fillStyle(0x000000, 0.85);
         bg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
         bg.lineStyle(2, 0xffffff, 1);
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
 
         this.dialogueText = this.scene.add.text(0, 0, "", {
-            fontSize: '24px',
-            fontFamily: '"Pixelify Sans", "Courier New", monospace',
+            fontSize: '26px',
+            fontFamily: '"Outfit", sans-serif',
             fill: '#ffffff',
             align: 'center',
-            wordWrap: { width: bgWidth - 60 },
+            wordWrap: { width: bgWidth - 80 },
             stroke: '#000000',
-            strokeThickness: 3,
-            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
+            strokeThickness: 4,
+            shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5, 0.5);
 
         this.dialogueBox.add([bg, this.dialogueText]);
@@ -70,21 +70,30 @@ export default class DialogueManager {
 
         // Texto del nombre
         this.nameText = this.scene.add.text(-(bgWidth / 2) + 110, -bgHeight / 2 - 25, "", {
-            fontSize: '20px',
-            fontFamily: '"Pixelify Sans", "Courier New", monospace',
-            fill: '#f1c40f', // Vibrant Gold
+            fontSize: '22px',
+            fontFamily: '"Orbitron", sans-serif',
+            fill: '#00d2ff', // Cyber Blue
             align: 'center',
+            fontWeight: '700',
             stroke: '#000000',
             strokeThickness: 3,
-            shadow: { offsetX: 1, offsetY: 1, color: '#000000', blur: 2, stroke: true, fill: true }
+            shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
         }).setOrigin(0.5, 0.5).setVisible(false);
 
         this.dialogueBox.add([this.nameBg, this.nameText]);
 
         // Evento para avanzar diálogo
         this.scene.input.keyboard.on('keydown', (event) => {
+            if (event.code !== 'Space' && event.code !== 'Enter' && event.code !== 'KeyE') return;
+
             // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
             if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
+
+            // Si el texto se está escribiendo, lo mostramos entero instantáneamente
+            if (this.isTyping) {
+                this.completeTypewriter();
+                return;
+            }
 
             this.next_text();
 
@@ -103,14 +112,44 @@ export default class DialogueManager {
                         onFinish();
                     }
                 } else {
-                    // Hay más mensajes en espera (diálogos anidados o secuenciales)
+                    // Hay más mensajes en espera
                     this._displayCurrent();
                 }
             } else {
                 // El mensaje actual tiene más partes
-                this.dialogueText.setText(this.current_message);
+                this.typeWriteText(this.current_message);
             }
         });
+    }
+
+    /**
+     * Efecto de máquina de escribir para el texto
+     */
+    typeWriteText(text) {
+        this.isTyping = true;
+        this.fullTextToType = text;
+        this.dialogueText.setText("");
+        
+        let charIndex = 0;
+        if (this.typewriterTimer) this.typewriterTimer.remove();
+
+        this.typewriterTimer = this.scene.time.addEvent({
+            delay: 25,
+            callback: () => {
+                this.dialogueText.setText(text.substr(0, charIndex + 1));
+                charIndex++;
+                if (charIndex === text.length) {
+                    this.isTyping = false;
+                }
+            },
+            repeat: text.length - 1
+        });
+    }
+
+    completeTypewriter() {
+        if (this.typewriterTimer) this.typewriterTimer.remove();
+        this.dialogueText.setText(this.fullTextToType);
+        this.isTyping = false;
     }
 
     /**
@@ -129,7 +168,7 @@ export default class DialogueManager {
         }
 
         this.next_text();
-        this.dialogueText.setText(this.current_message);
+        this.typeWriteText(this.current_message);
     }
 
     /**
@@ -154,7 +193,7 @@ export default class DialogueManager {
             this.scene.tweens.killTweensOf(this.dialogueBox);
 
             const cam = this.scene.cameras.main;
-            this.dialogueBox.setPosition(cam.worldView.x + 608, cam.worldView.y + 550);
+            this.dialogueBox.setPosition(cam.worldView.x + 608, cam.worldView.y + 530);
 
             this.dialogueBox.setVisible(true);
             this.dialogueBox.setAlpha(1);
@@ -213,13 +252,13 @@ export default class DialogueManager {
 
         if (!this.full_message[this.ini]) return;
 
-        while (cont < 200 && queda_text) {
+        while (cont < 600 && queda_text) {
             if (this.full_message[this.ini].contador >= this.full_message[this.ini].textoSplit.length) {
                 queda_text = false;
             } else {
                 cont += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador].length + 1;
 
-                if (cont < 200) {
+                if (cont < 600) {
                     this.current_message += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador] + ' ';
                     this.full_message[this.ini].contador += 1;
                 }

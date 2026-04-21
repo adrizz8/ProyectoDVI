@@ -317,27 +317,15 @@ export default class MapaFuera extends Phaser.Scene {
         // El DialogueManager los irá mostrando uno a uno al pulsar cualquier tecla.
         // El onFinish solo se asigna al último mensaje de la cadena.
         this.dialogueManager.showDialogue(
-            '¡Eh, tú! ¡El novato de la mochila! Menos mal, un humano que todavía no tiene el cerebro en la nube.',
+            '¡Eh, tú! La facultad ha sido infectada por una IA y los profes se han vuelto locos. Menos mal que encontramos a alguien sano.',
             'Carlos'
         );
         this.dialogueManager.showDialogue(
-            'Escucha bien. La facultad ha sido infectada por una IA de corrección masiva. Los demás profes se han vuelto locos; creen que sois bugs que hay que borrar.',
+            'Te hemos instalado un módulo de combate en la mochila. Debes limpiar cada planta del servidor central mientras nosotros te guiamos.',
             'Ismael'
         );
         this.dialogueManager.showDialogue(
-            'Hemos hackeado el sistema de la planta para crear una instancia segura desde DVI. Es un refugio, pero el servidor central sigue infectado por la IA.',
-            'Carlos'
-        );
-        this.dialogueManager.showDialogue(
-            'Necesitamos que alguien haga una limpieza manual de cada planta, servidor por servidor. Nosotros seremos vuestro centro de mando, vuestra voz en el pinganillo... pero la implementación final os toca a vosotros.',
-            'Ismael'
-        );
-        this.dialogueManager.showDialogue(
-            'Te hemos instalado un módulo de combate en tu mochila. No es un bug, es una feature. Úsalo contra los conserjes que bloquean la salida.',
-            'Ismael'
-        );
-        this.dialogueManager.showDialogue(
-            '¡Y no te olvides de recoger ese Pincho de Tortilla! En este motor de juego, la grasa es el combustible del héroe. ¡Suerte, Beta Tester!',
+            '¡Y no olvides el Pincho de Tortilla! Es el combustible del héroe en este motor. ¡Suerte, Beta Tester!',
             'Carlos',
             limpiarProfs
         );

@@ -22,7 +22,7 @@ export default class NPC_en_camino extends NPC {
         // Habilitar movimiento
         if (this.body) {
             this.body.moves = true;
-            this.body.setImmovable(false);
+            this.body.setImmovable(true);
             this.body.setSize(30, 30);
             this.body.setOffset(17, 30);
         }
@@ -63,6 +63,7 @@ export default class NPC_en_camino extends NPC {
         super.preUpdate(t, dt);
 
         if (this.walking && !this.frozen) {
+            this.body.setVelocityX(0);
             // Movimiento vertical hacia el objetivo
             if (this.lastDirection === 'down') {
                 this.body.setVelocityY(this.speed);
