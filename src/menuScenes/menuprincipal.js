@@ -1,3 +1,5 @@
+import GameManager from '../manager.js';
+
 class MenuPrincipal extends Phaser.Scene {
     constructor() {
         super('MenuPrincipal');
@@ -22,7 +24,8 @@ class MenuPrincipal extends Phaser.Scene {
         // ── Stats del jugador ──────────────────────────────────────────
         // Recupera los datos guardados en el registro global del juego
         const horasJuego = this.registry.get('horasJuego') ?? 0;
-        const dinero = this.registry.get('dinero') ?? 0;
+        const gm = GameManager.getInstance();
+        const dinero = gm.getDinero() ?? 0;
 
         this.horasText = this.add.text(305, 150, `Tiempo: ${this.formatearHoras(horasJuego)}`, {
             fontSize: '24px', 

@@ -9,6 +9,7 @@ import miron from './personajes/miron.js';
 import GameManager from './manager.js';
 import amigo1 from './personajes/amigo1.js';
 import conserje from './personajes/conserje.js'
+import TiendaUI from './menuScenes/tienda.js';
 
 /**
  * Escena de la Cafetería.
@@ -424,7 +425,15 @@ export default class Cafeteria extends Phaser.Scene {
                     }, 1);
                     this.gm.markDefeated('andres_dio_pincho');
                     this.time.delayedCall(300, () => {
-                        this.showDialogue('¡Has recibido: Pincho de Tortilla!', '');
+                        this.showDialogue('¡Has recibido: Pincho de Tortilla!\n¡A partir de ahora podrás comprarme cosas si tienes dinero!', 'Andrés (Barra)', () => {
+                            this.player.freeze();
+                            new TiendaUI(this, () => this.player.unfreeze());
+                        });
+                    });
+                } else {
+                    this.showDialogue('¿Qué te pongo? Necesitarás energías para aprobar este curso.', 'Andrés (Barra)', () => {
+                        this.player.freeze();
+                        new TiendaUI(this, () => this.player.unfreeze());
                     });
                 }
             },
@@ -494,7 +503,12 @@ export default class Cafeteria extends Phaser.Scene {
             'npc2',
             8,
             'Menos mal que habéis limpiado la planta baja. Otra de tortilla para celebrarlo.',
-            null,
+            () => {
+                this.showDialogue('¿Qué te pongo? Necesitarás energías para probar este curso.', 'Andrés (Barra)', () => {
+                    this.player.freeze();
+                    new TiendaUI(this, () => this.player.unfreeze());
+                });
+            },
             null,
             'Andrés (Barra)'
         );

@@ -21,6 +21,8 @@ import P1LeftMazmorra from './mazmorras/P1LeftMazmorraScene.js';
 import SalaLanchares from './mazmorras/SalaLancharesScene.js';
 import SalaMiniBoss from './mazmorras/SalaMiniBossScene.js';
 
+import TiendaScene from './menuScenes/tienda.js';
+
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
  * la clase Game de Phaser, encargada de crear e iniciar el juego.

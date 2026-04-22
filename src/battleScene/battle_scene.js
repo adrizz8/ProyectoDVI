@@ -101,6 +101,7 @@ export default class BattleScene extends Phaser.Scene {
             luck: ref.luck,
             spriteKey: 'toy',
             expReward: Math.floor(50 / cantidad),
+            moneyReward: Math.floor((20 + Math.random() * 20) / cantidad),
             // Llamamos a la nueva función para obtener 2 habilidades aleatorias
             habilidades: this.obtenerHabilidadesAleatorias(2),
             objeto: this.obtenerObjetoAleatorio()
@@ -152,7 +153,8 @@ export default class BattleScene extends Phaser.Scene {
             onEnemyActionResult: (r) => this._onEnemyActionResult(r),
             onBattleEnd: (r) => this._onBattleEnd(r),
             onMessage: (m) => this._setMessage(m),
-            onTurnChanged: (p) => this._updateTurnIndicator(p)
+            onTurnChanged: (p) => this._updateTurnIndicator(p),
+            onReadyForNextTurn: (fn) => this._scheduleNextTurn(fn)
         });
 
         this._buildBackground(W, H);
@@ -160,6 +162,7 @@ export default class BattleScene extends Phaser.Scene {
         this._buildEnemiesSprites();
         this._buildTurnIndicator();
         this._buildMessageBox(H);
+        this._buildActionIndicator();
 
         // Inicializar menú de acciones principal
         this.actionMenu = new ActionMenu(this, this.battle_manager, {
@@ -301,21 +304,174 @@ export default class BattleScene extends Phaser.Scene {
         });
     }
 
+    _buildActionIndicator() {
+        // En lugar de hacer el tween directamente sobre los objetos (lo que bloqueaba su posición Y),
+        // los metemos en un contenedor. Movemos el contenedor y el tween anima los objetos por dentro.
+        this._actionIndicatorContainer = this.add.container(0, 0)
+            .setDepth(20)
+            .setVisible(false);
 
-    // Revisar no me convence mucho como queda
+        this._actionIndicatorCircle = this.add.circle(0, 0, 22, 0xffffff, 1);
+
+        this._actionIndicatorStroke = this.add.circle(0, 0, 22)
+            .setStrokeStyle(3, 0x000000);
+
+        this._actionIndicatorText = this.add.text(0, 0, '', { fontSize: '24px', fontFamily: 'Arial' })
+            .setOrigin(0.5);
+
+        this._actionIndicatorContainer.add([this._actionIndicatorCircle, this._actionIndicatorStroke, this._actionIndicatorText]);
+
+        // Pequeña animación de flotación sobre los elementos DENTRO del contenedor
+        this.tweens.add({
+            targets: [this._actionIndicatorCircle, this._actionIndicatorStroke, this._actionIndicatorText],
+            y: -5,
+            duration: 800,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+    }
+
+    _updateActionIndicator() {
+        if (!this._actionIndicatorContainer) return;
+
+        const participant = this.battle_manager.getActiveParticipant();
+        if (!participant || participant.type !== 'player') {
+            this._actionIndicatorContainer.setVisible(false);
+            return;
+        }
+
+        const spr = this._playerSprites[participant.index];
+        if (!spr) return;
+
+        const x = spr.x - 90;
+        // Calculamos la posición encima de la cabeza, lo cual se adapta a la altura (displayHeight) de CADA personaje!
+        const y = spr.y - spr.displayHeight / 2 + 10;
+
+        let show = false;
+        let symbol = '';
+        let bgColor = 0xffffff;
+
+        if (this._actionState === 'SELECTING_TARGET_ATTACK') {
+            show = true;
+            symbol = '⚔️';
+            bgColor = 0xff4444; // Rojo para ataque
+        } else if (this._actionState === 'SELECTING_TARGET_SKILL') {
+            show = true;
+            const skill = HABILITIES[this._currentSkill];
+            if (skill) {
+                if (skill.type === 'heal' || skill.type === 'buff') {
+                    symbol = '✚';
+                    bgColor = 0x44ff44; // Verde para curas y buffs
+                } else if (skill.type === 'nerf') {
+                    symbol = '🔻'; // Flecha hacia abajo para nerfs
+                    bgColor = 0x081A41;
+                } else {
+                    symbol = '✨'; // Estrella mágica para habilidades de daño
+                    bgColor = 0xcc44ff; // Naranja para habilidades de daño
+                }
+            }
+        } else if (this._actionState === 'SELECTING_TARGET_ITEM') {
+            show = true;
+            symbol = '🎒';
+            bgColor = 0x44aaff; // Azul para items
+        }
+
+        if (show) {
+            this._actionIndicatorContainer.setPosition(x, y).setVisible(true);
+            this._actionIndicatorCircle.setFillStyle(bgColor);
+            this._actionIndicatorText.setText(symbol);
+        } else {
+            this._actionIndicatorContainer.setVisible(false);
+        }
+    }
+
+
     _buildMessageBox(H) {
-        const cx = 120;
-        const cy = H - 370;
+        const W = this.scale.width;
 
-        // Fondo semi-transparente con borde para los mensajes
-        this._msgBoxBg = this.add.rectangle(cx, cy - 15, 200, 60, 0xffffff, 0.85)
-            .setStrokeStyle(4, 0x000000)
-            .setOrigin(0.5, 0).setDepth(4).setVisible(false);
+        // Panel grande sobre los botones (parte inferior de la pantalla)
+        const panelX = W / 2;
+        const panelY = H - 240;
+        const panelW = W - 200;
+        const panelH = 80;
 
-        this._msgText = this.add.text(cx, cy, '', {
-            fontFamily: 'SFDistantGalaxy, monospace', fontSize: '13px', fill: '#000000',
-            wordWrap: { width: 180 }, align: 'center', lineSpacing: 5
-        }).setOrigin(0.5, 0).setDepth(5);
+        //DISEÑO DE LA CAJA DE MENSAJES
+        // Sombra exterior
+        this._msgBoxShadow = this.add.rectangle(panelX + 4, panelY + 4, panelW, panelH, 0x000000, 0.55)
+            .setOrigin(0.5, 1).setDepth(19).setVisible(false);
+
+        // Fondo principal oscuro con borde dorado
+        this._msgBoxBg = this.add.rectangle(panelX, panelY, panelW, panelH, 0x0d0d1a, 0.95)
+            .setStrokeStyle(3, 0xf0c040)
+            .setOrigin(0.5, 1).setDepth(20).setVisible(false);
+
+        // Texto del mensaje — centrado dentro del panel
+        this._msgText = this.add.text(panelX, panelY - panelH + 12, '', {
+            fontFamily: 'SFDistantGalaxy, monospace',
+            fontSize: '16px',
+            fill: '#f5e6c8',
+            wordWrap: { width: panelW - 40 },
+            align: 'center',
+            lineSpacing: 6
+        }).setOrigin(0.5, 0).setDepth(21).setVisible(false);
+
+        // Indicador "pulsa ESPACIO/ENTER" parpadeante
+        this._msgContinue = this.add.text(panelX + panelW / 2 - 20, panelY - 18, '▼ CONTINÚA', {
+            fontFamily: 'SFDistantGalaxy, monospace',
+            fontSize: '11px',
+            fill: '#f0c040'
+        }).setOrigin(1, 1).setDepth(21).setVisible(false);
+
+        this.tweens.add({
+            targets: this._msgContinue,
+            alpha: 0,
+            duration: 500,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // Estado interno del diálogo — resetear completamente en cada create()
+        this._dialogPending = false;
+        this._typewriterEvent = null;
+        this._autoCloseEvent = null;
+        this._fullMessage = '';
+        this._dialogCallback = null;
+
+        // ── Teclas de confirmación ──────────────────────────────────────────────
+        // Pondremos las que queramos
+        const spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        const enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
+        const handleConfirm = () => {
+            if (!this._dialogPending) return;
+
+            // 1ª pulsación: si el typewriter corre, completar el texto
+            if (this._typewriterEvent) {
+                this._typewriterEvent.remove(false);
+                this._typewriterEvent = null;
+                this._msgText.setText(this._fullMessage);
+                this._msgContinue.setVisible(true);
+                return;
+            }
+
+            // Texto ya completo: cerrar el panel y ejecutar la acción pendiente
+            this._dialogPending = false;
+            this._msgBoxBg.setVisible(false);
+            this._msgBoxShadow.setVisible(false);
+            this._msgText.setVisible(false);
+            this._msgContinue.setVisible(false);
+
+            if (this._dialogCallback) {
+                const cb = this._dialogCallback;
+                this._dialogCallback = null;
+                cb();
+            }
+        };
+
+        spaceKey.on('down', handleConfirm);
+        enterKey.on('down', handleConfirm);
     }
 
     // ── Acciones desde Menús ──────────────────────────────────────────────────
@@ -326,23 +482,22 @@ export default class BattleScene extends Phaser.Scene {
         this._actionState = 'IDLE';
         this._currentSkill = null;
         this._currentItem = null;
+        this._updateActionIndicator();
     }
 
     _onAttackIntent() {
         if (this._actionState === 'SELECTING_TARGET_ATTACK') {
             this._cancelAllMenus();
-            this._setMessage("Acción cancelada.");
         } else {
             this._cancelAllMenus();
             this._actionState = 'SELECTING_TARGET_ATTACK';
-            this._setMessage("Selecciona un enemigo para atacar.");
+            this._updateActionIndicator();
         }
     }
 
     _onSkillsIntent() {
         if (this._actionState === 'SELECTING_SKILL' || this._actionState === 'SELECTING_TARGET_SKILL') {
             this._cancelAllMenus();
-            this._setMessage("Acción cancelada.");
         } else {
             this._cancelAllMenus();
             const participant = this.battle_manager.getActiveParticipant();
@@ -352,6 +507,7 @@ export default class BattleScene extends Phaser.Scene {
                 return;
             }
             this._actionState = 'SELECTING_SKILL';
+            this._updateActionIndicator();
             this.skillMenu.show(player.habilidades);
         }
     }
@@ -359,7 +515,7 @@ export default class BattleScene extends Phaser.Scene {
     _onSkillMenuCancelExternal() {
         if (this._actionState === 'SELECTING_SKILL') {
             this._actionState = 'IDLE';
-            this._setMessage("Acción cancelada.");
+            this._updateActionIndicator();
         }
     }
 
@@ -373,18 +529,18 @@ export default class BattleScene extends Phaser.Scene {
 
         if (skill && skill.targetType === 'self') {
             this._actionState = 'IDLE';
+            this._updateActionIndicator();
             this.battle_manager.onSkill(this._currentSkill, participant.type, participant.index);
             this._currentSkill = null;
         } else {
             this._actionState = 'SELECTING_TARGET_SKILL';
-            this._setMessage(`Selecciona un objetivo para ${skill ? skill.name : this._currentSkill}.`);
+            this._updateActionIndicator();
         }
     }
 
     _onBagIntent() {
         if (this._actionState === 'SELECTING_ITEM' || this._actionState === 'SELECTING_TARGET_ITEM') {
             this._cancelAllMenus();
-            this._setMessage("Acción cancelada.");
         } else {
             this._cancelAllMenus();
             const gm = GameManager.getInstance();
@@ -393,6 +549,7 @@ export default class BattleScene extends Phaser.Scene {
                 return;
             }
             this._actionState = 'SELECTING_ITEM';
+            this._updateActionIndicator();
             this.bagMenu.show(gm.backpack);
         }
     }
@@ -400,7 +557,7 @@ export default class BattleScene extends Phaser.Scene {
     _onBagMenuCancelExternal() {
         if (this._actionState === 'SELECTING_ITEM') {
             this._actionState = 'IDLE';
-            this._setMessage("Acción cancelada.");
+            this._updateActionIndicator();
         }
     }
 
@@ -408,10 +565,10 @@ export default class BattleScene extends Phaser.Scene {
         if (this._actionState !== 'SELECTING_ITEM') return;
 
         this._currentItem = item;
-
         this._actionState = 'SELECTING_TARGET_ITEM';
-        this._setMessage(`Selecciona un objetivo para ${item.name}.`);
+        this._updateActionIndicator();
     }
+
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
     _onSpriteClicked(type, index) {
@@ -423,6 +580,7 @@ export default class BattleScene extends Phaser.Scene {
                     return;
                 }
                 this._actionState = 'IDLE';
+                this._updateActionIndicator();
                 this.battle_manager.onAttack(index);
             } else {
                 this._setMessage("¡No puedes atacar a un aliado!");
@@ -457,6 +615,7 @@ export default class BattleScene extends Phaser.Scene {
                 return;
             }
             this._actionState = 'IDLE';
+            this._updateActionIndicator();
             this.battle_manager.onSkill(this._currentSkill, type, index);
             this._currentSkill = null;
         } else if (this._actionState === 'SELECTING_TARGET_ITEM') {
@@ -471,6 +630,7 @@ export default class BattleScene extends Phaser.Scene {
                 return;
             }
             this._actionState = 'IDLE';
+            this._updateActionIndicator();
             this.battle_manager.onItem(this._currentItem, type, index);
             this._currentItem = null;
         }
@@ -669,7 +829,13 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _onBattleEnd(result) {
-        const msg = result.winner === 'player' ? "¡VICTORIA!" : result.winner === 'enemy' ? "DERROTA..." : "Has huido.";
+        // Limpiar cualquier diálogo pendiente
+        this._dialogPending = false;
+        this._dialogCallback = null;
+        if (this._typewriterEvent) { this._typewriterEvent.remove(false); this._typewriterEvent = null; }
+        if (this._autoCloseEvent) { this._autoCloseEvent.remove(false); this._autoCloseEvent = null; }
+
+        const msg = result.winner === 'player' ? '¡VICTORIA!' : result.winner === 'enemy' ? 'DERROTA...' : 'Has huido.';
         this._setMessage(msg);
         this.time.delayedCall(2000, () => {
             this.music_battle.stop();
@@ -716,14 +882,98 @@ export default class BattleScene extends Phaser.Scene {
 
     // ── Utils ─────────────────────────────────────────────────────────────────
 
-    _setMessage(msg) {
-        this._msgText.setText(msg);
-        if (msg && msg.trim() !== '') {
-            this._msgBoxBg.setVisible(true);
-            const bounds = this._msgText.getBounds();
-            this._msgBoxBg.setSize(Math.max(200, bounds.width + 30), Math.max(50, bounds.height + 30));
+    /**
+     * Muestra un mensaje con efecto typewriter en el panel de diálogo.
+     * Si lleva onConfirm, espera input del jugador para continuar.
+     * Si no lleva onConfirm (mensaje informativo), se cierra solo tras mostrarse.
+     * @param {string} msg
+     * @param {Function} [onConfirm] Callback cuando el jugador confirma.
+     */
+    _setMessage(msg, onConfirm) {
+        if (!msg || msg.trim() === '') return;
+
+        // Cancelar typewriter anterior si existe
+        if (this._typewriterEvent) {
+            this._typewriterEvent.remove(false);
+            this._typewriterEvent = null;
+        }
+        // Cancelar auto-cierre anterior si existe
+        if (this._autoCloseEvent) {
+            this._autoCloseEvent.remove(false);
+            this._autoCloseEvent = null;
+        }
+
+        this._fullMessage = msg;
+        this._dialogPending = !!onConfirm; // solo bloquea si hay callback
+        this._dialogCallback = onConfirm || null;
+
+        // Mostrar panel
+        this._msgBoxBg.setVisible(true);
+        this._msgBoxShadow.setVisible(true);
+        this._msgText.setText('').setVisible(true);
+        this._msgContinue.setVisible(false);
+
+        // Efecto typewriter
+        let charIndex = 0;
+        const chars = msg.split('');
+        this._typewriterEvent = this.time.addEvent({
+            delay: 28,
+            repeat: chars.length - 1,
+            callback: () => {
+                charIndex++;
+                this._msgText.setText(chars.slice(0, charIndex).join(''));
+                if (charIndex >= chars.length) {
+                    this._typewriterEvent = null;
+                    if (onConfirm || this._dialogPending) {
+                        // Mensaje con acción (o _scheduleNextTurn llegó mientras se escribía)
+                        this._msgContinue.setVisible(true);
+                    } else {
+                        // Mensaje informativo: auto-cerrar tras 1.2s
+                        this._autoCloseEvent = this.time.delayedCall(1200, () => {
+                            this._msgBoxBg.setVisible(false);
+                            this._msgBoxShadow.setVisible(false);
+                            this._msgText.setVisible(false);
+                            this._msgContinue.setVisible(false);
+                            this._autoCloseEvent = null;
+                        });
+                    }
+                }
+            }
+        });
+        // NOTA: los listeners de teclado se registran en _buildMessageBox(),
+        // no aquí, para evitar duplicados entre batallas.
+    }
+
+    /**
+     * Enlaza el callback de "siguiente turno" del BattleManager al sistema de diálogo.
+     * Toma el control del mensaje activo: cancela el auto-cierre y espera input del jugador.
+     * @param {Function} nextTurnFn
+     */
+    _scheduleNextTurn(nextTurnFn) {
+        // Cancelar cualquier auto-cierre pendiente
+        if (this._autoCloseEvent) {
+            this._autoCloseEvent.remove(false);
+            this._autoCloseEvent = null;
+        }
+
+        // Guardar el callback y bloquear el diálogo
+        this._dialogCallback = nextTurnFn;
+        this._dialogPending = true;
+
+        if (this._msgBoxBg.visible) {
+            // Hay un mensaje abierto: si el typewriter ya acabó, mostrar indicador ahora
+            if (!this._typewriterEvent) {
+                this._msgContinue.setVisible(true);
+            }
+            // Si el typewriter aún corre, el indicador aparecerá cuando termine
+            // (la lógica del typewriter comprueba _dialogPending implícitamente
+            //  al revisar si hay _dialogCallback al terminar)
         } else {
-            this._msgBoxBg.setVisible(false);
+            // No hay mensaje visible: mostrar el panel con indicador de continuar
+            this._msgBoxBg.setVisible(true);
+            this._msgBoxShadow.setVisible(true);
+            this._msgText.setText('▼').setVisible(true);
+            this._msgContinue.setVisible(true);
         }
     }
 
@@ -749,10 +999,11 @@ export default class BattleScene extends Phaser.Scene {
         const ox = sprite.x;
         this.tweens.add({
             targets: sprite,
-            x: ox + 10,
-            duration: 50,
+            x: ox + 12,
+            duration: 80,
             yoyo: true,
-            repeat: 4,
+            repeat: 5,
+            ease: 'Sine.easeInOut',
             onComplete: () => sprite.x = ox
         });
     }
@@ -764,9 +1015,10 @@ export default class BattleScene extends Phaser.Scene {
         sprite.setTintFill(color);
         this.tweens.add({
             targets: sprite,
-            y: oy - 15,
-            duration: 150,
+            y: oy - 20,
+            duration: 280,
             yoyo: true,
+            ease: 'Sine.easeOut',
             onComplete: () => {
                 sprite.clearTint();
                 sprite.y = oy;
@@ -777,32 +1029,44 @@ export default class BattleScene extends Phaser.Scene {
     _showFloatingText(sprite, text, colorStr) {
         if (!sprite) return;
         const floatText = this.add.text(sprite.x, sprite.y - 50, text, {
-            fontFamily: 'SFDistantGalaxy', fontSize: '24px', fill: colorStr, stroke: '#000', strokeThickness: 4
-        }).setOrigin(0.5).setDepth(20);
+            fontFamily: 'SFDistantGalaxy', fontSize: '26px', fill: colorStr,
+            stroke: '#000', strokeThickness: 5
+        }).setOrigin(0.5).setDepth(22);
 
+        // Fase 1: subir rápido
         this.tweens.add({
             targets: floatText,
-            y: sprite.y - 120,
-            alpha: 0,
-            duration: 1200,
-            ease: 'Power2',
-            onComplete: () => floatText.destroy()
+            y: sprite.y - 100,
+            duration: 400,
+            ease: 'Power2.Out',
+            onComplete: () => {
+                // Fase 2: quedarse visible un momento y luego desvanecerse
+                this.tweens.add({
+                    targets: floatText,
+                    y: sprite.y - 140,
+                    alpha: 0,
+                    duration: 900,
+                    delay: 200,
+                    ease: 'Power1.In',
+                    onComplete: () => floatText.destroy()
+                });
+            }
         });
     }
 
     _shieldAnimation(sprite) {
         if (!sprite) return;
 
-        // Creamos un óvalo/escudo azul superpuesto al sprite
-        const shield = this.add.ellipse(sprite.x, sprite.y, sprite.displayWidth * 1.1, sprite.displayHeight * 1.3, 0x44aaff, 0.5)
+        // Óvalo de escudo que aparece y luego se expande
+        const shield = this.add.ellipse(sprite.x, sprite.y, sprite.displayWidth * 1.1, sprite.displayHeight * 1.3, 0x44aaff, 0.6)
             .setDepth(sprite.depth + 1);
 
         this.tweens.add({
             targets: shield,
             alpha: 0,
-            scaleX: 1.4,
-            scaleY: 1.4,
-            duration: 800,
+            scaleX: 1.6,
+            scaleY: 1.6,
+            duration: 1100,
             ease: 'Sine.easeOut',
             onComplete: () => shield.destroy()
         });
@@ -813,26 +1077,26 @@ export default class BattleScene extends Phaser.Scene {
     _nerfAnimation(sprite) {
         if (!sprite) return;
 
-        // Lanzar varias partículas moradas que caen girando
-        const count = 6;
+        // Más partículas y más lentas para que se vea mejor
+        const count = 9;
         for (let i = 0; i < count; i++) {
             const angle = (i / count) * Math.PI * 2;
-            const radius = 30;
+            const radius = 35;
             const px = sprite.x + Math.cos(angle) * radius;
             const py = sprite.y + Math.sin(angle) * radius - 10;
 
-            const particle = this.add.circle(px, py, 5, 0xaa22ff, 0.9)
+            const particle = this.add.circle(px, py, 6, 0xaa22ff, 0.95)
                 .setDepth(sprite.depth + 2);
 
             this.tweens.add({
                 targets: particle,
-                x: sprite.x + (Math.random() - 0.5) * 20,
-                y: sprite.y + 60,
+                x: sprite.x + (Math.random() - 0.5) * 30,
+                y: sprite.y + 80,
                 alpha: 0,
-                scaleX: 0.3,
-                scaleY: 0.3,
-                duration: 700 + Math.random() * 300,
-                delay: i * 60,
+                scaleX: 0.2,
+                scaleY: 0.2,
+                duration: 1000 + Math.random() * 400,
+                delay: i * 80,
                 ease: 'Power2',
                 onComplete: () => particle.destroy()
             });
@@ -840,6 +1104,6 @@ export default class BattleScene extends Phaser.Scene {
 
         // Tinte morado temporal sobre el sprite
         sprite.setTintFill(0xaa22ff);
-        this.time.delayedCall(400, () => sprite.clearTint());
+        this.time.delayedCall(600, () => sprite.clearTint());
     }
 }

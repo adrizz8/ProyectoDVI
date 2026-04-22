@@ -3,7 +3,7 @@ export default class EncounterManager {
         this.distanciaAcumulada = 0;
         this.pasosParaGracia = 0;
         this.pixelsPorPaso = 128;
-        this.probabilidad = 0.05;
+        this.probabilidad = 0.1;
         this.graciaMinima = 4;
     }
 

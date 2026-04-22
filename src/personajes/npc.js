@@ -53,6 +53,7 @@ export default class NPC extends Phaser.GameObjects.Sprite {
             this.say(this.message, () => {
                 // Si el NPC nos tiene que dar un objeto, se procesa aquí
                 this.receiveItem();
+                if (this.onFinish) this.onFinish();
             });
         }
     }

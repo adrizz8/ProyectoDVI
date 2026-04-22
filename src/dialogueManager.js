@@ -109,6 +109,11 @@ export default class DialogueManager {
                     this.fin = 0;
                     this.hideDialogue();
 
+                    // Descongela al jugador si existe
+                    if (this.scene && this.scene.player && this.scene.player.unfreeze) {
+                        this.scene.player.unfreeze();
+                    }
+
                     if (onFinish && typeof onFinish === 'function') {
                         onFinish();
                     }
@@ -200,6 +205,11 @@ export default class DialogueManager {
 
             this.dialogueBox.setVisible(true);
             this.dialogueBox.setAlpha(1);
+
+            // Congela al jugador mientras el diálogo está activo
+            if (this.scene && this.scene.player && this.scene.player.freeze) {
+                this.scene.player.freeze();
+            }
 
             this._displayCurrent();
         }
