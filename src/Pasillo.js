@@ -78,9 +78,9 @@ export default class Pasillo extends Phaser.Scene {
             classType: trigger
         });
 
-        this.physics.add.overlap(this.player,this.entrada_mazmorra,()=>{
+        this.physics.add.overlap(this.player, this.entrada_mazmorra, () => {
 
-            this.scene.start('entradaMazmorra',{entrada:'pasillo'});
+            this.scene.start('entradaMazmorra', { entrada: 'pasillo' });
         });
 
         // --- NPCs del lore de la Planta 1 ---
@@ -114,7 +114,7 @@ export default class Pasillo extends Phaser.Scene {
             this.scene.pause();
         });
 
-            this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
+        this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
@@ -149,11 +149,11 @@ export default class Pasillo extends Phaser.Scene {
                         name: "Regla de L'Hôpital",
                         type: 'consumable',
                         statusRecovery: true,
-                        description: 'Cuando te aturden y pierdes un turno de ataque, úsala para quitarte el efecto.'
+                        description: 'Elimina estados de aturdimiento binario.'
                     }, 1);
                     this.gm.markDefeated('npc_calculo_dio_item');
                     this.time.delayedCall(300, () => {
-                        this.showDialogue("¡Has recibido: Regla de L'Hôpital!", '');
+                        this.showDialogue("¡RECURSO OBTENIDO!\nHas recibido: [Regla de L'Hôpital]", 'Estudiante de Cálculo');
                     });
                 }
             },
@@ -201,7 +201,7 @@ export default class Pasillo extends Phaser.Scene {
             this, this.player,
             500, 350,
             'npc1', 4,
-            'La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Si no manejas bien la memoria dinámica, te borrarán el perfil.',
+            'La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Toma este Puntero a NULL, si se lo lanzas a alguien, dejará de existir un rato.',
             () => {
                 if (!this.gm.isDefeated('npc_fp2_dio_item')) {
                     this.gm.addItem({
@@ -213,7 +213,7 @@ export default class Pasillo extends Phaser.Scene {
                     }, 1);
                     this.gm.markDefeated('npc_fp2_dio_item');
                     this.time.delayedCall(300, () => {
-                        this.showDialogue('¡Has recibido: Puntero a NULL!', '');
+                        this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Puntero a NULL]', 'Estudiante de FP (2)');
                     });
                 }
             },
@@ -221,53 +221,52 @@ export default class Pasillo extends Phaser.Scene {
             'Estudiante de FP (2)'
         );
 
-        // NPC Veterano - aviso sobre Lanchares
+        // NPC Veterano - da Apuntes de ansiedad
         new npc(
             this, this.player,
             300, 400,
             'npc2', 12,
-            '¿Vais a por el Capitán? Tened cuidado. Lanchares dice que ganar un partido de Rugby contra unos novatos es un resultado trivial. Dice que ni siquiera necesita sudar la camiseta para transformaros en bits de baja prioridad.',
-            null, null,
-            'Veterano'
-        );
-
-        // NPC6 - MDL1, da puzzle y luego Apuntes de lo Trivial
-        // Este NPC tiene un mensaje largo con el puzzle explicado
-        const npc6msg = '¡No lo entiendo! La profesora de Discreta dice que la solución es trivial por inspección visual... ¡Pero cada vez que toco uno, la regla me electrocuta! La regla dice: "Cada pedestal DEBE tener exactamente un vecino encendido". Ni cero, ni dos... ¡UNO! Los pedestales están conectados: A con B y C, B con A y D, C con A y D, D con B y C. ¡PISTA! La solución es encender A y B. ¡Si lo descubres, te daré algo que lo vale!';
-        new npc(
-            this, this.player,
-            700, 400,
-            'npc3', 8,
-            npc6msg,
+            "Ten estos Apuntes. No se entiende la letra porque los escribí durante un ataque de ansiedad, pero la intención es lo que cuenta.",
             () => {
-                if (!this.gm.isDefeated('npc_mdl1_dio_item')) {
+                if (!this.gm.isDefeated('npc_ansiedad_dio_item')) {
                     this.gm.addItem({
-                        id: 'apuntes_trivial',
-                        name: 'Apuntes de lo Trivial',
+                        id: 'apuntes_ansi',
+                        name: 'Apuntes de Ansiedad',
                         type: 'consumable',
-                        disable_enemy: true,
-                        description: 'El enemigo se queda parado un turno intentando comprender por qué el ataque es "trivial".'
+                        recMp: 15,
+                        description: 'Apuntes ilegibles. Restauran 15 Energía por el esfuerzo.'
                     }, 1);
-                    this.gm.markDefeated('npc_mdl1_dio_item');
+                    this.gm.markDefeated('npc_ansiedad_dio_item');
                     this.time.delayedCall(300, () => {
-                        this.showDialogue('¿En serio era solo eso? ¡¿Solo tenía que admitir que soy un fracasado para que la puerta se abriera?! ¡Es tan trivial que me dan ganas de llorar otra vez! Tomad, espero que esto os sirva.', 'Estudiante de MDL', () => {
-                            this.showDialogue('¡Has recibido: Apuntes de lo Trivial!', '');
-                        });
+                        this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Apuntes de Ansiedad]', 'Estudiante Agobiado');
                     });
                 }
             },
             null,
-            'Estudiante de MDL'
+            'Estudiante Agobiado'
         );
-
-        // --- Nuevos NPCs graciosos ---
-        // Estudiante borracho
+        // NPC Borracho - da Tinto
         new npc(
             this, this.player,
             150, 450,
             'npc4', 4,
-            'Hip... colega... ¿tienes un... un "garbage collector"? Es que creo que mi memoria... hip... se está desbordando por el pasillo.',
-            null, null,
+            "Toma este Tinto. Si el código no compila estando sobrio, quizá borracho le veas la lógica.",
+            () => {
+                if (!this.gm.isDefeated('npc_tinto_dio_item')) {
+                    this.gm.addItem({
+                        id: 'tinto_verano',
+                        name: 'Tinto de Verano',
+                        type: 'consumable',
+                        buffAtt: 15,
+                        description: 'Aumenta el ataque temporalmente.'
+                    }, 1);
+                    this.gm.markDefeated('npc_tinto_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Tinto de Verano]', 'Estudiante de Fiesta');
+                    });
+                }
+            },
+            null,
             'Estudiante de Fiesta'
         );
 
@@ -276,19 +275,52 @@ export default class Pasillo extends Phaser.Scene {
             this, this.player,
             900, 500,
             'npc2', 8,
-            'for(let i=0; i<ganas_de_vivir; i++) { beber_cafe(); }. El problema es que ganas_de_vivir es una constante igual a cero.',
+            "He intentado hacer un 'undo' en mi vida después de elegir esta carrera, pero el Ctrl+Z no funciona en la realidad.",
             null, null,
             'Estudiante en Bucle'
         );
 
-        // Estudiante de salir a fumar
+        // Estudiante estresado
         new npc(
             this, this.player,
             1100, 300,
             'npc1', 0,
-            'Salgo un segundo a por aire... o a por nicotina... lo que compile antes. La IA no me deja pasar de la puerta, dice que mi aliento es un riesgo de seguridad.',
+            "Toma este Cigarro. Es para cuando el merge conflict en Git sea tan grande que prefieras borrar la carpeta y mudarte a otro país.",
+            () => {
+                if (!this.gm.isDefeated('npc_git_dio_item')) {
+                    this.gm.addItem({
+                        id: 'cigarro',
+                        name: 'Cigarro',
+                        type: 'consumable',
+                        description: 'Reduce el estrés (Restaura 30 Energía).'
+                    }, 1);
+                    this.gm.markDefeated('npc_git_dio_item');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cigarro]', 'Estudiante de Git');
+                    });
+                }
+            },
+            null,
+            'Estudiante de Git'
+        );
+        // NPC Claude
+        new npc(
+            this, this.player,
+            500, 550,
+            'npc3', 4,
+            "Claude me ha salvado la vida tantas veces que estoy pensando en ponerles en mi testamento.",
             null, null,
-            'Estudiante Estresado'
+            'Fan de la IA'
+        );
+
+        // NPC Boeing
+        new npc(
+            this, this.player,
+            200, 580,
+            'npc4', 8,
+            "Mi PC suena como una turbina de un Boeing 747. Creo que está intentando abrir el Chrome o viajar en el tiempo.",
+            null, null,
+            'Dueño de Tostadora'
         );
     }
 

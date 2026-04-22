@@ -4,89 +4,89 @@
  * Diccionario de todos los objetos que existen en el juego.
  **/
 export const ITEM_TYPES = {
-    'pocion': {
-        id: 'pocion',
-        name: 'Poción',
+    'pincho_tortilla': {
+        id: 'pincho_tortilla',
+        name: 'Pincho de Tortilla',
         type: 'consumable',
         heal: 50,
-        description: 'Cura 50 HP.'
+        description: 'Recupera 50 HP (Energía vital de la cafetería).'
     },
-    'eter': {
-        id: 'eter',
-        name: 'Éter',
+    'monster': {
+        id: 'monster',
+        name: 'Monster',
         type: 'consumable',
         recMp: 20,
-        description: 'Restaura 20 MP.'
+        description: 'Restaura 20 MP (Concentración extrema).'
     },
-    'elixir': {
-        id: 'elixir',
-        name: 'Elixir',
+    'menu_dia': {
+        id: 'menu_dia',
+        name: 'Menú del Día',
         type: 'consumable',
         heal: 100,
         recMp: 50,
-        description: 'Restaura 100 HP y 50 MP.'
+        description: 'Restaura 100 HP y 50 MP (El banquete del estudiante).'
     },
-    'pocion_fuerza': {
-        id: 'pocion_fuerza',
-        name: 'Poción de Fuerza',
+    'tinto_verano': {
+        id: 'tinto_verano',
+        name: 'Tinto de Verano',
         type: 'consumable',
         buffAtt: 15,
-        description: 'Aumenta el ataque en 15.'
+        description: 'Aumenta el ataque en 15 (Efecto euforia).'
     },
-    'pocion_defensa': {
-        id: 'pocion_defensa',
-        name: 'Poción de Defensa',
+    'palmera_chocolate': {
+        id: 'palmera_chocolate',
+        name: 'Palmera de Chocolate',
         type: 'consumable',
         buffDef: 10,
-        description: 'Aumenta la defensa en 10.'
+        description: 'Aumenta la defensa en 10 (Capa de grasa protectora).'
     },
-    'pocion_rapidez': {
-        id: 'pocion_rapidez',
-        name: 'Poción de Rapidez',
+    'cafe': {
+        id: 'cafe',
+        name: 'Café',
         type: 'consumable',
         buffSpd: 10,
-        description: 'Aumenta la velocidad en 10.'
+        description: 'Aumenta la velocidad en 10 (Cafeína directa).'
     },
-    'pocion_suerte': {
-        id: 'pocion_suerte',
-        name: 'Poción de Suerte',
+    'amuleto_delegacion': {
+        id: 'amuleto_delegacion',
+        name: 'Amuleto de Delegación',
         type: 'consumable',
         buffLck: 5,
-        description: 'Aumenta la suerte en 5.'
+        description: 'Aumenta la suerte en 5 (El carisma del delegado).'
     },
-    'pocion_resistencia': {
-        id: 'pocion_resistencia',
-        name: 'Poción Restauradora',
+    'cigarro': {
+        id: 'cigarro',
+        name: 'Cigarro',
         type: 'consumable',
         statusRecovery: true,
-        description: 'Elimina estado anómalo.'
+        description: 'Elimina estado anómalo (Reduce el estrés).'
     },
-    'pocion_nivel': {
-        id: 'pocion_nivel',
-        name: 'Poción de Nivel',
+    'convalidacion_directa': {
+        id: 'convalidacion_directa',
+        name: 'Convalidación Directa',
         type: 'consumable',
         levelUp: true,
-        description: 'Suma un nivel al personaje.'
+        description: 'Suma un nivel al personaje (Saltarse una asignatura).'
     },
-    'espada_basica': {
-        id: 'espada_basica',
-        name: 'Espada de Bronce',
+    'teclado_mecanico': {
+        id: 'teclado_mecanico',
+        name: 'Teclado Mecánico',
         type: 'equipment',
         bonusStats: { damage: 5 },
-        description: 'Arma cuerpo a cuerpo +5 daño.'
+        description: 'Arma periférica +5 daño (Switches Blue para más ruido).'
     },
-    'armadura_lejana': {
-        id: 'armadura_lejana',
-        name: 'Coraza ligera',
+    'sudadera_facu': {
+        id: 'sudadera_facu',
+        name: 'Sudadera de la Facu',
         type: 'equipment',
         bonusStats: { defense: 5 },
-        description: 'Armadura que ofrece +5 defensa.'
+        description: 'Prenda reglamentaria que ofrece +5 defensa.'
     },
-    'llave_caverna': {
-        id: 'llave_caverna',
-        name: 'Llave de la Caverna',
+    'llave_lab': {
+        id: 'llave_lab',
+        name: 'Llave del Lab 1.4',
         type: 'key',
-        description: 'Abre la puerta de la caverna del Norte.'
+        description: 'Abre la puerta del laboratorio de sistemas.'
     },
     'monster_dorada': {
         id: 'monster_dorada',
@@ -94,12 +94,12 @@ export const ITEM_TYPES = {
         type: 'key_item',
         description: 'Un objeto legendario.'
     },
-    'pincho_tortilla': {
-        id: 'pincho_tortilla',
-        name: 'Pincho de Tortilla',
+    'pincho_tortilla_viejo': {
+        id: 'pincho_tortilla_viejo',
+        name: 'Pincho Frío',
         type: 'consumable',
         heal: 30,
-        description: 'El combustible del héroe. Te lo dio Andrés en tu primer día. Cura 30 HP.'
+        description: 'Un pincho que lleva demasiado tiempo en la barra. Cura 30 HP.'
     },
     'llave_planta1': {
         id: 'llave_planta1',
@@ -135,5 +135,20 @@ export const ITEM_TYPES = {
         type: 'consumable',
         disable_enemy: true,
         description: 'El enemigo se queda parado un turno intentando comprender por qué el ataque es trivial.'
+    },
+    'cerveza': {
+        id: 'cerveza',
+        name: 'Cerveza',
+        type: 'consumable',
+        heal: 20,
+        recMp: 10,
+        description: 'Una Mahou bien fría. Recupera 20 HP y 10 MP.'
+    },
+    'apuntes_ansi': {
+        id: 'apuntes_ansi',
+        name: 'Apuntes de Ansiedad',
+        type: 'consumable',
+        recMp: 15,
+        description: 'Apuntes ilegibles. Restauran 15 Energía por el esfuerzo.'
     }
 };

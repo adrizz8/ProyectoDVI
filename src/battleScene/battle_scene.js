@@ -508,7 +508,7 @@ export default class BattleScene extends Phaser.Scene {
             }
             this._actionState = 'SELECTING_SKILL';
             this._updateActionIndicator();
-            this.skillMenu.show(player.habilidades);
+            this.skillMenu.show(player.habilidades, player.mp);
         }
     }
 

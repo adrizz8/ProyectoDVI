@@ -140,7 +140,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
     this.load.image('toybatalla', toybatalla);
-    this.load.image('configuracion',configuracion);
+    this.load.image('configuracion', configuracion);
 
     this.load.spritesheet('tileset', tileset, {
       frameWidth: 32,
@@ -191,7 +191,7 @@ export default class Boot extends Phaser.Scene {
 
     this.load.image('finalFaculty', finalFaculty);
     this.load.image('botonPrincipio', botonPrincipio);
-    
+
 
   }
 

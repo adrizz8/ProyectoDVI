@@ -81,11 +81,10 @@ export default class MapaFuera extends Phaser.Scene {
             classType: trigger
         });
 
-        // COMENTADO: entrada izquierda desactivada de momento, solo entrar por la derecha
-        // this.entrada_izq = map.createFromObjects('triggers', {
-        //     name: 'entrada_izq',
-        //     classType: trigger
-        // });
+        this.entrada_izq = map.createFromObjects('triggers', {
+            name: 'entrada_izq',
+            classType: trigger
+        });
 
         this.physics.add.overlap(this.salida_bus, this.player, () => {
             this.scene.start('level3');
@@ -93,10 +92,9 @@ export default class MapaFuera extends Phaser.Scene {
         this.physics.add.overlap(this.entrada_der, this.player, () => {
             this.scene.start('cafeteria', { entrada: 'puerta_izq' });
         });
-        // COMENTADO: overlap izquierda desactivado de momento
-        // this.physics.add.overlap(this.entrada_izq, this.player, () => {
-        //     this.scene.start('cafeteria', { entrada: 'puerta_izq' });
-        // });
+        this.physics.add.overlap(this.entrada_izq, this.player, () => {
+            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+        });
 
 
         // Colisiones del jugador con la capa dedicada

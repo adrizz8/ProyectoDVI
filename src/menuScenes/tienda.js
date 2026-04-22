@@ -34,9 +34,10 @@ export default class TiendaUI {
 
         // Artículos a vender
         this.articulos = [
-            { id: 'pocion', precio: 50 },
-            { id: 'eter', precio: 100 },
-            { id: 'pincho_tortilla', precio: 30 }
+            { id: 'pincho_tortilla', precio: 50 },
+            { id: 'monster', precio: 100 },
+            { id: 'cafe', precio: 40 },
+            { id: 'tinto_verano', precio: 80 }
         ];
 
         let startY = 160;
@@ -75,14 +76,14 @@ export default class TiendaUI {
 
         // Feedback Text (Oculto al inicio)
         this.feedbackText = this.scene.add.text(panelX + panelW / 2, startY + this.articulos.length * 105, '', {
-            fontSize: '18px', fill: '#ffffff', fontStyle: 'bold'
+            fontSize: '18px', fill: '#ffffff', fontStyle: 'bold', fontFamily: 'Outfit'
         }).setOrigin(0.5).setAlpha(0);
 
         this.container.add([this.feedbackText]);
 
         // Botón salir
         const btnSalir = this.scene.add.text(panelX + panelW / 2, 580, 'SALIR', {
-            fontSize: '26px', fill: '#ffffff', fontFamily: 'Distant Galaxy', stroke: '#000', strokeThickness: 3
+            fontSize: '26px', fill: '#ffffff', fontFamily: 'Orbitron', stroke: '#000', strokeThickness: 3
         }).setOrigin(0.5).setInteractive();
 
         btnSalir.on('pointerover', () => btnSalir.setStyle({ fill: '#ff4444' }));

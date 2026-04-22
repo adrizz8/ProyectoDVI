@@ -43,11 +43,14 @@ export default class DialogueManager {
         // Fondo del diálogo
         const bg = this.scene.add.graphics();
         const bgWidth = 900;
-        const bgHeight = 160;
+        const bgHeight = 180; // Aumentado de 160
         bg.fillStyle(0x000000, 0.85);
         bg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
         bg.lineStyle(2, 0xffffff, 1);
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 15);
+        this._bgWidth = bgWidth;
+        this._bgHeight = bgHeight;
+        this._bgGraphics = bg;
 
         this.dialogueText = this.scene.add.text(0, 0, "", {
             fontSize: '26px',
@@ -70,7 +73,7 @@ export default class DialogueManager {
         this.nameBg.strokeRoundedRect(-(bgWidth / 2) + 10, -bgHeight / 2 - 45, 200, 40, 10);
 
         // Texto del nombre
-        this.nameText = this.scene.add.text(-(bgWidth / 2) + 110, -bgHeight / 2 - 25, "", {
+        this.nameText = this.scene.add.text(-(this._bgWidth / 2) + 110, -this._bgHeight / 2 - 25, "", {
             fontSize: '22px',
             fontFamily: '"Orbitron", sans-serif',
             fill: '#00d2ff', // Cyber Blue
@@ -222,6 +225,18 @@ export default class DialogueManager {
         this.scene.tweens.killTweensOf([this.nameBg, this.nameText]);
         this.nameBg.setVisible(true);
         this.nameText.setVisible(true);
+
+        // Ajustar ancho del fondo del nombre al texto
+        const nameWidth = Math.max(200, this.nameText.width + 40);
+        this.nameBg.clear();
+        this.nameBg.fillStyle(0x000000, 1);
+        this.nameBg.fillRoundedRect(-(this._bgWidth / 2) + 10, -this._bgHeight / 2 - 45, nameWidth, 40, 10);
+        this.nameBg.lineStyle(2, 0xffffff, 1);
+        this.nameBg.strokeRoundedRect(-(this._bgWidth / 2) + 10, -this._bgHeight / 2 - 45, nameWidth, 40, 10);
+        
+        // Reposicionar el texto del nombre para que esté centrado en su caja
+        this.nameText.setX(-(this._bgWidth / 2) + 10 + nameWidth / 2);
+
         this.scene.tweens.add({
             targets: [this.nameBg, this.nameText],
             alpha: 1,
@@ -236,13 +251,14 @@ export default class DialogueManager {
 
         if (!this.full_message[this.ini]) return;
 
-        while (cont < 600 && queda_text) {
+        const MAX_CHARS = 400; // Reducido de 600 para asegurar que quepa en el alto del cuadro
+        while (cont < MAX_CHARS && queda_text) {
             if (this.full_message[this.ini].contador >= this.full_message[this.ini].textoSplit.length) {
                 queda_text = false;
             } else {
                 cont += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador].length + 1;
 
-                if (cont < 600) {
+                if (cont < MAX_CHARS) {
                     this.current_message += this.full_message[this.ini].textoSplit[this.full_message[this.ini].contador] + ' ';
                     this.full_message[this.ini].contador += 1;
                 }

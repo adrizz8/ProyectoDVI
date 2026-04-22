@@ -24,6 +24,8 @@ export default class amigo1 extends NPC {
         // ¿Ya se unió P1 al grupo?
         this._unidoAlGrupo = this.gm.ActualPlayers.includes('Jugador2');
 
+        this.history = []; // Historial de posiciones del jugador
+
         if (this._unidoAlGrupo && this.body) {
             this.body.moves = true;
             this.body.setImmovable(false);
@@ -90,29 +92,61 @@ export default class amigo1 extends NPC {
                 this.collider = null;
             }
 
-            const dist = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
-            const stopDist = 50;
-            const followDist = 70;
+            // 1. Registrar la posición del jugador si se ha movido lo suficiente
+            const distToPlayer = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
 
-            if (dist > followDist) {
-                const angle = Phaser.Math.Angle.Between(this.x, this.y, this.player.x, this.player.y);
-                const speed = 180;
-                this.body.setVelocityX(Math.cos(angle) * speed);
-                this.body.setVelocityY(Math.sin(angle) * speed);
+            // Snap directo si se separa demasiado (300 píxeles por ejemplo)
+            if (distToPlayer > 300) {
+                this.x = this.player.x;
+                this.y = this.player.y;
+                this.history = [];
+                this.body.setVelocity(0, 0);
+                return;
+            }
 
-                const deg = Phaser.Math.RadToDeg(angle);
-                const absDeg = Math.abs(deg);
-                if (absDeg < 45) this.lastDirection = 'right';
-                else if (absDeg > 135) this.lastDirection = 'left';
-                else if (deg > 0) this.lastDirection = 'down';
-                else this.lastDirection = 'up';
+            // Solo guardamos si el jugador se está moviendo
+            if (this.player.body.velocity.x !== 0 || this.player.body.velocity.y !== 0) {
+                const lastPos = this.history[this.history.length - 1];
+                // Solo añadir si la distancia al último punto guardado es significativa (evita saturar el historial)
+                if (!lastPos || Phaser.Math.Distance.Between(lastPos.x, lastPos.y, this.player.x, this.player.y) > 8) {
+                    this.history.push({ x: this.player.x, y: this.player.y });
+                }
+            }
 
-                this.play(`walk5-${this.lastDirection}`, true);
+            // 2. Seguir el historial de posiciones
+            // El seguidor se queda a una distancia de N puntos del historial
+            const followDelay = 7; // Ajustar para que vaya más o menos cerca
+
+            if (this.history.length > followDelay) {
+                const target = this.history[0];
+                const distToTarget = Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y);
+
+                if (distToTarget > 5) {
+                    const angle = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
+                    const speed = 250; // Velocidad del seguidor
+                    this.body.setVelocityX(Math.cos(angle) * speed);
+                    this.body.setVelocityY(Math.sin(angle) * speed);
+
+                    // Determinar dirección de animación según el movimiento hacia el target
+                    const deg = Phaser.Math.RadToDeg(angle);
+                    const absDeg = Math.abs(deg);
+                    if (absDeg < 45) this.lastDirection = 'right';
+                    else if (absDeg > 135) this.lastDirection = 'left';
+                    else if (deg > 0) this.lastDirection = 'down';
+                    else this.lastDirection = 'up';
+
+                    this.play(`walk5-${this.lastDirection}`, true);
+                } else {
+                    // Hemos llegado a este punto del historial, lo quitamos para ir al siguiente
+                    this.history.shift();
+                }
             } else {
+                // Si no hay suficiente historial, se queda quieto
                 this.body.setVelocity(0, 0);
                 this.play(`idle5-${this.lastDirection}`, true);
             }
-        } else {
+        }
+        else {
             // No unido: estático
             this.body.setVelocity(0, 0);
             this.play(`idle5-${this.lastDirection}`, true);

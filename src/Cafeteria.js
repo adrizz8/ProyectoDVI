@@ -31,7 +31,7 @@ export default class Cafeteria extends Phaser.Scene {
         entradas.set('puerta_der', { x: 896, y: 580, direccion: 'up' });
         // Vuelta desde el pasillo
         entradas.set('desde_pasillo_izq', { x: 80, y: 160, direccion: 'down' });
-        entradas.set('desde_pasillo_der', { x: 1145, y: 20, direccion: 'down' });
+        entradas.set('desde_pasillo_der', { x: 1145, y: 160, direccion: 'down' });
 
         this.physics.world.setBounds(
             0,
@@ -97,17 +97,17 @@ export default class Cafeteria extends Phaser.Scene {
         const cafeteriaCompletada = this.gm.estadoNivel('cafeteria');
 
         if (!cafeteriaCompletada) {
-            // Cafetería en modo CAOS: NPC asustados, conserje boss en puerta
             this.enemies = this.add.group();
             this._generarCafeteriaConCaos();
         } else {
-            // Cafetería liberada: NPCs normales andando tranquilos (menos, más relajados)
             this._generarCafeteriaLibeada();
         }
 
-        // Si P1 ya está en el grupo, lo spawneamos para que nos siga (si no ha sido spawneado ya como NPC en caos)
+        // --- Lógica de Compañero (P1) ---
+        // Se asegura de que P1 aparezca si ya está en el equipo, evitando duplicados
         if (this.gm.ActualPlayers.includes('Jugador2') && !this.amigo1) {
             this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
         }
 
         // Colisiones para los NPC que siguen al jugador (P1)
@@ -123,17 +123,20 @@ export default class Cafeteria extends Phaser.Scene {
         // Si el jugador spawea ENCIMA de zonaIzq (vuelta desde pasillo),
         // esperar a que salga de la zona antes de activar el trigger.
         this._zonaIzqMustExit = (data.entrada === 'desde_pasillo_izq');
+        this._zonaDerMustExit = (data.entrada === 'desde_pasillo_der');
 
         if (cafeteriaCompletada) {
             // puerta_der → pasillo (extremo derecho del mapa, filas 4-5)
             const zonaDer = this.add.zone(1200, 160, 48, 128);
+            this._zonaDer = zonaDer;
             this.physics.world.enable(zonaDer, Phaser.Physics.Arcade.STATIC_BODY);
 
             this.physics.add.overlap(zonaDer, this.player, () => {
-                if (this._transitioning) return;
+                if (this._transitioning || this._zonaDerMustExit) return;
 
                 // Bloqueo de progresión: requiere derrotar al boss y a los otros dos npcs
                 if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf') || !this.gm.isDefeated('npc_miron_caf')) {
+                    this._zonaDerMustExit = true;
                     this.showDialogue("¡Espera! No puedes pasar al pasillo todavía. El conserje y esos dos tipos raros siguen dando problemas. ¡Encárgate de ellos primero!", "Veterano de Rugby");
                     return;
                 }
@@ -148,6 +151,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         // puerta_izq → pasillo
         const zonaIzq = this.add.zone(80, 160, 100, 60);
+        this._zonaIzq = zonaIzq;
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
         // puerta exterior con color para que se note que hay una puerta
@@ -160,6 +164,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         // Zona de salida baja izquierda → volver al exterior (x=161, coincide con trigger en mapaFuera)
         const zonaExitIzq = this.add.zone(161, 635, 100, 32);
+        this.physics.world.enable(zonaExitIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
         this.physics.add.overlap(zonaIzq, this.player, () => {
             // Solo activar si el jugador entró (no si spaweó encima)
@@ -252,13 +257,19 @@ export default class Cafeteria extends Phaser.Scene {
             this._wanderingNpcs.forEach(n => { if (n && n.update) n.update(t, dt); });
         }
 
-        // Cuando el jugador sale de zonaIzq (bounds: x[30-130], y[130-190]),
-        // se desactiva el flag para que el trigger vuelva a funcionar al re-entrar
+        // Cuando el jugador sale de las zonas de puerta, se desactivan los flags
+        // para que los triggers vuelvan a funcionar al re-entrar
         if (this._zonaIzqMustExit && this.player) {
-            const px = this.player.x;
-            const py = this.player.y;
-            if (px < 30 || px > 130 || py < 130 || py > 190) {
+            // Comprobamos si el cuerpo del jugador sigue tocando la zona
+            const stillOverlapping = this.physics.overlap(this.player, this._zonaIzq);
+            if (!stillOverlapping) {
                 this._zonaIzqMustExit = false;
+            }
+        }
+        if (this._zonaDerMustExit && this.player) {
+            const stillOverlapping = this.physics.overlap(this.player, this._zonaDer);
+            if (!stillOverlapping) {
+                this._zonaDerMustExit = false;
             }
         }
     }
@@ -318,7 +329,7 @@ export default class Cafeteria extends Phaser.Scene {
             { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'Nos falta uno para un mus, ¿te vienes?.' },
             { x: 100, y: 580, texture: 'npc4', frame: 8, message: 'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.' },
             { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
-            { x: 860, y: 200, texture: 'npc4', frame: 8, message: '¿Alguien tiene un cargador de tipo C? Me he quedado sin batería.' },
+            { x: 860, y: 200, texture: 'npc4', frame: 8, message: 'Mírale que conento  en su primer día de carrera, me recuerda a mi cuando la empecé hace ocho años' },
             { x: 850, y: 270, texture: 'npc3', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //  { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //{ x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
@@ -404,40 +415,7 @@ export default class Cafeteria extends Phaser.Scene {
         this.enemies.add(per_miron);
 
         // --- Andrés en la barra (da el Pincho de Tortilla) ---
-        this.andres = new npc(
-            this,
-            this.player,
-            310, 140,   // cerca de la barra, fuera de la colisión de la fila 3
-            'npc2',
-            8,
-            'Bienvenido, chaval. Primer día, ¿eh? Toma, un Pincho de Tortilla. En este caos hay que mantener las fuerzas.',
-            () => {
-                // Da el pincho de tortilla la primera vez
-                if (!this.gm.isDefeated('andres_dio_pincho')) {
-                    this.gm.addItem({
-                        id: 'pincho_tortilla',
-                        name: 'Pincho de Tortilla',
-                        type: 'consumable',
-                        heal: 30,
-                        description: 'El combustible del héroe. Cura 30 HP.'
-                    }, 1);
-                    this.gm.markDefeated('andres_dio_pincho');
-                    this.time.delayedCall(300, () => {
-                        this.showDialogue('¡Has recibido: Pincho de Tortilla!\n¡A partir de ahora podrás comprarme cosas si tienes dinero!', 'Andrés (Barra)', () => {
-                            this.player.freeze();
-                            new TiendaUI(this, () => this.player.unfreeze());
-                        });
-                    });
-                } else {
-                    this.showDialogue('¿Qué te pongo? Necesitarás energías para aprobar este curso.', 'Andrés (Barra)', () => {
-                        this.player.freeze();
-                        new TiendaUI(this, () => this.player.unfreeze());
-                    });
-                }
-            },
-            null,
-            'Andrés (Barra)'
-        );
+        this._spawnAndres(140);
 
         // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
         // P1 es amigo1 pero con los diálogos del lore del GDD
@@ -464,14 +442,47 @@ export default class Cafeteria extends Phaser.Scene {
         this._wanderingNpcs = [];
 
         const postBossNpcs = [
-            { x: 400, y: 300, texture: 'npc1', frame: 0, message: '¡Por fin! ¡El conserje ha caído! ¡Somos libres!' },
-            { x: 600, y: 400, texture: 'npc3', frame: 0, message: '¡No me lo puedo creer! ¡Habéis tumbado al guarda!' },
-            { x: 800, y: 250, texture: 'npc2', frame: 4, message: '¿Podemos salir? ¿Es seguro por fin?' },
+            { x: 400, y: 300, texture: 'npc1', frame: 0, message: '¡Por fin! ¡El conserje ha caído! ¡Pero aún nos queda el examen de Redes!' },
+            { x: 600, y: 390, texture: 'npc3', frame: 0, message: '¿Examen? ¿Qué examen? Yo solo vine por la oferta del tinto y las salchipapas. Si el mundo se acaba, que me pille con el estómago lleno.' },
+            { x: 830, y: 250, texture: 'npc2', frame: 4, message: '¡Somos libres! Ahora a celebrarlo con un pincho.' },
         ];
 
         postBossNpcs.forEach(data => {
             new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante');
         });
+
+        // RECREAR ANDRÉS (vendedor)
+        this._spawnAndres(120);
+
+        // RECREAR COMPAÑERO (si está en el grupo)
+        if (this.gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
+        }
+    }
+
+    _spawnAndres(y = 140) {
+        this.andres = new npc(this, this.player, 310, y, 'npc2', 8, " ", () => {
+            const msg = this.gm.isDefeated('andres_dio_pincho')
+                ? '¿Qué te pongo chaval?.'
+                : '¡Qué pasa niño! Primer día, ¿eh? Toma, un Pincho de Tortilla para que cojas energías.';
+
+            this.showDialogue(msg, 'Andrés (Barra)', () => {
+                if (!this.gm.isDefeated('andres_dio_pincho')) {
+                    this.gm.addItem({ id: 'pincho_tortilla', name: 'Pincho de Tortilla', type: 'consumable', heal: 50, description: 'Recupera 50 HP.' }, 1);
+                    this.gm.markDefeated('andres_dio_pincho');
+                    this.time.delayedCall(300, () => {
+                        this.showDialogue('Has recibido: [Pincho de Tortilla]', 'Andrés (Barra)', () => {
+                            this.player.freeze();
+                            new TiendaUI(this, () => this.player.unfreeze());
+                        });
+                    });
+                } else {
+                    this.player.freeze();
+                    new TiendaUI(this, () => this.player.unfreeze());
+                }
+            });
+        }, null, 'Andrés (Barra)');
     }
 
     /**
@@ -480,36 +491,56 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarCafeteriaLibeada() {
         const npcPostData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Lanchares controla la planta entera. Dicen que si te pilla, te hace un backup del cerebro y te estalla la cabeza.' },
+            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Secretaría es el Boss final secreto. Tiene una habilidad pasiva que hace que siempre te falte un papel, no importa cuántos lleves.' },
             { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues en el parcial saqué un 1.' },
-            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. ¡Pero el resto de la facultad sigue infectada!' },
+            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. Pero tened cuidado, los camaradas de Lanchares siguen por ahí' },
             { x: 900, y: 450, texture: 'npc3', frame: 0, message: 'Pues ahora que estamos aqui a salvo habrá que echarse una cerveza.' },
             { x: 500, y: 580, texture: 'npc1', frame: 8, message: 'A mi me da igual que haya enemigo o no, no iba a salir de la cafetería de todas formas.' },
             { x: 1000, y: 200, texture: 'npc2', frame: 0, message: '¿Borracha? No, no... es que tengo el horario tan partido que me esta volviendo loca.' },
             { x: 200, y: 400, texture: 'npc4', frame: 4, message: 'Relajate un poco, ¿quieres un piti?.' },
         ];
 
-        this._wanderingNpcs = npcPostData.map(data =>
-            new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, null, null, 'Estudiante')
-        );
+        this._wanderingNpcs = [];
 
-        // Andrés en la barra, más tranquilo
-        const andres = new npc(
-            this,
-            this.player,
-            310, 120,
-            'npc2',
-            8,
-            'Menos mal que habéis limpiado la planta baja. Otra de tortilla para celebrarlo.',
-            () => {
-                this.showDialogue('¿Qué te pongo? Necesitarás energías para probar este curso.', 'Andrés (Barra)', () => {
-                    this.player.freeze();
-                    new TiendaUI(this, () => this.player.unfreeze());
-                });
-            },
-            null,
-            'Andrés (Barra)'
-        );
+        npcPostData.forEach(data => {
+            let onInteract = null;
+            let name = 'Estudiante';
+
+            // NPC de la Cerveza
+            if (data.x === 1000 && data.y === 200) {
+                onInteract = () => {
+                    if (!this.gm.isDefeated('npc_cerveza_caf_dio')) {
+                        this.gm.addItem({ id: 'cerveza', name: 'Cerveza', type: 'consumable', heal: 20, recMp: 10, description: 'Una Mahou bien fría. Recupera 20 HP y 10 MP.' }, 1);
+                        this.gm.markDefeated('npc_cerveza_caf_dio');
+                        this.time.delayedCall(300, () => {
+                            this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cerveza]', 'Estudiante de Fiesta');
+                        });
+                    }
+                };
+                name = 'Estudiante de Fiesta';
+            }
+
+            // NPC del Cigarro
+            if (data.x === 200 && data.y === 400) {
+                onInteract = () => {
+                    if (!this.gm.isDefeated('npc_cigarro_caf_dio')) {
+                        this.gm.addItem({ id: 'cigarro', name: 'Cigarro', type: 'consumable', description: 'Reduce el estrés.' }, 1);
+                        this.gm.markDefeated('npc_cigarro_caf_dio');
+                        this.time.delayedCall(300, () => {
+                            this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cigarro]', 'Estudiante Relajado');
+                        });
+                    }
+                };
+                name = 'Estudiante Relajado';
+            }
+
+            this._wanderingNpcs.push(
+                new npc(this, this.player, data.x, data.y, data.texture, data.frame, data.message, onInteract, null, name)
+            );
+        });
+
+
+        this._spawnAndres(120);
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
