@@ -11,7 +11,7 @@ export default class MochilaScene extends Phaser.Scene {
 
     create() {
         this.gm = GameManager.getInstance();
-        this.players = Object.keys(this.gm.playerStats);
+        this.players =  this.gm.ActualPlayers;
         this.selectedPlayer = null;
         this.playerSelectionContainer=null;
 
