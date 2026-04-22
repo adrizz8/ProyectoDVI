@@ -12,7 +12,8 @@ export default class MochilaScene extends Phaser.Scene {
     create() {
         this.gm = GameManager.getInstance();
         this.players = Object.keys(this.gm.playerStats);
-        this.selectedPlayer = this.players[0] || null;
+        this.selectedPlayer = null;
+        this.playerSelectionContainer=null;
 
         this.add.rectangle(608, 320, 1216, 640, 0x0a0a0f, 0.95);
         this.add.text(608, 25, 'MOCHILA', {
@@ -35,34 +36,74 @@ export default class MochilaScene extends Phaser.Scene {
                 this.selectedTab = tab;
                 this.selectedItem = null;
                 this.refreshView();
+                this.resetPlayer();
             });
         });
 
-        this.itemTextList = [];
-        for (let i = 0; i < 10; i++) {
-            const itemText = this.add.text(80, 170 + i * 40, '', {
-                fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
-            }).setInteractive({ useHandCursor: true });
-            itemText.on('pointerdown', () => this.selectItem(i));
-            this.itemTextList.push(itemText);
-        }
 
-        this.add.text(80, 530, 'Selecciona personaje:', {
-            fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
+        this.itemsContainer = this.add.container(80, 150);
+        this.itemTextList = [];
+
+        for (let i = 0; i < this.gm.getNumItems(); i++) { 
+            const itemText = this.add.text(0, 20 + i * 40, '', {
+                fontFamily: 'Pixelify Sans',
+                fontSize: '18px',
+                fill: '#ffffff',
+                stroke: '#000000',
+                strokeThickness: 3
+            }).setInteractive({ useHandCursor: true });
+
+            itemText.on('pointerdown', () => this.selectItem(i));
+
+            this.itemsContainer.add(itemText);
+            this.itemTextList.push(itemText);      
+        }
+        const maskShape = this.add.rectangle(80, 150, 500, 380, 0x000000)
+            .setOrigin(0)
+            .setAlpha(0);  
+
+        const mask = maskShape.createGeometryMask();
+        this.itemsContainer.setMask(mask);
+
+        this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
+             this.itemsContainer.y -= deltaY * 0.5;
+
+            const contentHeight =20+ this.itemTextList.length * 40;
+            const viewHeight = 380 ;
+
+            const maxY = 150;
+            const minY = 150 + Math.min(0, viewHeight - contentHeight);
+
+            this.itemsContainer.y = Phaser.Math.Clamp(this.itemsContainer.y, minY, maxY);
         });
 
+
+        this.playerSelectionContainer = this.add.container(0, 0);
+
+        const title = this.add.text(80, 530, 'Selecciona personaje:', {
+            fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff',
+            stroke: '#000000', strokeThickness: 3 });
+        this.playerSelectionContainer.add(title);
+
         this.playerButtons = [];
+
         this.players.forEach((name, index) => {
             const btn = this.add.text(80 + index * 180, 560, name, {
-                fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3
-            }).setInteractive({ useHandCursor: true });
+                fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff',
+                stroke: '#000000', strokeThickness: 3 })
+                .setInteractive({ useHandCursor: true });
+
             btn.on('pointerdown', () => {
                 this.selectedPlayer = name;
                 this.updatePlayerSelection();
                 this.updateStatusText(`${name} seleccionado para uso de objetos.`);
             });
+
             this.playerButtons.push(btn);
+            this.playerSelectionContainer.add(btn);
         });
+
+        this.resetPlayer();
 
         this.detailBox = this.add.text(660, 130, '', {
             fontFamily: 'Pixelify Sans', fontSize: '18px', fill: '#ffffff', wordWrap: { width: 460 }, stroke: '#000000', strokeThickness: 3
@@ -110,7 +151,7 @@ export default class MochilaScene extends Phaser.Scene {
         const item = items[index];
         if (item) {
             this.selectedItem = item;
-            this.renderSelectedItem();
+            this.renderItems();
             this.updateStatusText(`${item.name} seleccionado.`);
         }
     }
@@ -120,8 +161,17 @@ export default class MochilaScene extends Phaser.Scene {
         for (let i = 0; i < this.itemTextList.length; i++) {
             if (i < items.length) {
                 const item = items[i];
-                this.itemTextList[i].setText(`${item.name} x${item.quantity}`);
-                this.itemTextList[i].setVisible(true);
+
+                if(this.selectedItem &&item===this.selectedItem){
+                    this.itemTextList[i].setText(`${item.name} x${item.quantity}`);
+                    this.itemTextList[i].setColor('#ffff00');
+                    this.itemTextList[i].setVisible(true);
+                    this.renderSelectedItem();
+                }else{
+                    this.itemTextList[i].setText(`${item.name} x${item.quantity}`);
+                    this.itemTextList[i].setColor('#cccccc');
+                    this.itemTextList[i].setVisible(true);
+                }
             } else {
                 this.itemTextList[i].setText('');
                 this.itemTextList[i].setVisible(false);
@@ -131,10 +181,7 @@ export default class MochilaScene extends Phaser.Scene {
             this.itemTextList[0].setText('No hay items en esta categoría.');
             this.itemTextList[0].setVisible(true);
         }
-        if (!this.selectedItem || this.selectedItem.type !== this.selectedTab) {
-            this.selectedItem = items[0] || null;
-        }
-        this.renderSelectedItem();
+
     }
 
     renderSelectedItem() {
@@ -167,16 +214,21 @@ export default class MochilaScene extends Phaser.Scene {
             if (canUse) {
                 this.actionButton.setText('USAR OBJETO');
                 this.actionButton.setStyle({ fill: '#00ff00' });
+                this.playerSelectionContainer.setVisible(true);
             } else {
                 this.actionButton.setText('NO USABLE FUERA DE BATALLA');
                 this.actionButton.setStyle({ fill: '#ff5555' });
+                this.resetPlayer();
+
             }
         } else if (item.type === 'equipment') {
             this.actionButton.setText('EQUIPAMIENTO (GESTIONAR EN ESTRATEGIA)');
             this.actionButton.setStyle({ fill: '#cccccc' });
+            this.resetPlayer();
         } else if (item.type === 'key') {
             this.actionButton.setText('OBJETO CLAVE (NO USABLE)');
             this.actionButton.setStyle({ fill: '#cccccc' });
+            this.resetPlayer();
         }
     }
 
@@ -245,4 +297,12 @@ export default class MochilaScene extends Phaser.Scene {
     updateStatusText(message) {
         this.statusText.setText(message);
     }
+
+    resetPlayer(){
+        this.playerSelectionContainer.setVisible(false);
+        this.selectedPlayer = null;
+        this.updatePlayerSelection();
+    }
+
+
 }

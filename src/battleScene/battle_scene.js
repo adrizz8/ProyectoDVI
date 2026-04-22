@@ -890,6 +890,8 @@ export default class BattleScene extends Phaser.Scene {
      * @param {Function} [onConfirm] Callback cuando el jugador confirma.
      */
     _setMessage(msg, onConfirm) {
+        const gm= GameManager.getInstance();
+
         if (!msg || msg.trim() === '') return;
 
         // Cancelar typewriter anterior si existe
@@ -917,7 +919,7 @@ export default class BattleScene extends Phaser.Scene {
         let charIndex = 0;
         const chars = msg.split('');
         this._typewriterEvent = this.time.addEvent({
-            delay: 28,
+            delay: gm.TextNum,
             repeat: chars.length - 1,
             callback: () => {
                 charIndex++;

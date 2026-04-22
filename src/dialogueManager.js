@@ -83,49 +83,20 @@ export default class DialogueManager {
 
         this.dialogueBox.add([this.nameBg, this.nameText]);
 
-        // Evento para avanzar diálogo
+
+        // Teclado
         this.scene.input.keyboard.on('keydown', (event) => {
             if (event.code !== 'Space' && event.code !== 'Enter' && event.code !== 'KeyE') return;
+            this.avanzarDialogo();
+        });
 
-            // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
-            if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
-
-            // Si el texto se está escribiendo, lo mostramos entero instantáneamente
-            if (this.isTyping) {
-                this.completeTypewriter();
-                return;
-            }
-
-            this.next_text();
-
-            if (this.current_message === '') {
-                // Hemos agotado el mensaje actual (todas sus partes)
-                const onFinish = this.full_message[this.ini].onFinish;
-
-                this.ini += 1;
-                if (this.ini === this.fin) {
-                    // Se ha vaciado la cola de mensajes
-                    this.ini = 0;
-                    this.fin = 0;
-                    this.hideDialogue();
-
-                    // Descongela al jugador si existe
-                    if (this.scene && this.scene.player && this.scene.player.unfreeze) {
-                        this.scene.player.unfreeze();
-                    }
-
-                    if (onFinish && typeof onFinish === 'function') {
-                        onFinish();
-                    }
-                } else {
-                    // Hay más mensajes en espera
-                    this._displayCurrent();
-                }
-            } else {
-                // El mensaje actual tiene más partes
-                this.typeWriteText(this.current_message);
+        // Click izquierdo
+        this.scene.input.on('pointerdown', (pointer) => {
+            if (pointer.leftButtonDown()) {
+                this.avanzarDialogo();
             }
         });
+
     }
 
     /**
@@ -278,4 +249,47 @@ export default class DialogueManager {
             }
         }
     }
+
+
+    avanzarDialogo() {
+        // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
+        if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
+
+        // Si el texto se está escribiendo, lo mostramos entero instantáneamente
+        if (this.isTyping) {
+            this.completeTypewriter();
+            return;
+        }
+
+        this.next_text();
+
+        if (this.current_message === '') {
+            // Hemos agotado el mensaje actual (todas sus partes)
+            const onFinish = this.full_message[this.ini].onFinish;
+
+            this.ini += 1;
+            if (this.ini === this.fin) {
+                // Se ha vaciado la cola de mensajes
+                this.ini = 0;
+                this.fin = 0;
+                this.hideDialogue();
+
+                // Descongela al jugador si existe
+                if (this.scene && this.scene.player && this.scene.player.unfreeze) {
+                    this.scene.player.unfreeze();
+                }
+
+                if (onFinish && typeof onFinish === 'function') {
+                    onFinish();
+                }
+            } else {
+                // Hay más mensajes en espera
+                this._displayCurrent();
+            }
+        } else {
+            // El mensaje actual tiene más partes
+            this.typeWriteText(this.current_message);
+        }
+    };
+
 }

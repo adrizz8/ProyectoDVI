@@ -225,9 +225,9 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     getTextSpeed() {
-        if (this.textSpeed === 'Lento') return 50;
+        if (this.textSpeed === 'Lento') return 40;
         if (this.textSpeed === 'Medio') return 25;
-        return 10;
+        return 15;
     }
 
     updateTextSpeed() {

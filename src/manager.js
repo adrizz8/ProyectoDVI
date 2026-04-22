@@ -220,6 +220,10 @@ export default class GameManager {
         return this.backpack.filter(i => i.type === type);
     }
 
+    getNumItems() {
+        return this.backpack.length;
+    }
+
     canUseItemOutsideBattle(item) {
         if (!item || item.type !== 'consumable') return false;
         return Boolean(item.heal || item.recMp || item.statusRecovery);
