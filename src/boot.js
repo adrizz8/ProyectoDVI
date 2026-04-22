@@ -80,6 +80,7 @@ import salaMiniBoss from '../assets/images/salaminiboss.json';
 import amigo1 from '../assets/images/amigo1dvi.png'
 import finalFaculty from '../assets/images/FINAL FACULTY.png'
 import botonPrincipio from '../assets/images/boton principio.png'
+import configuracion from '../assets/images/configuracion.png'
 
 
 /**
@@ -139,6 +140,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
     this.load.image('toybatalla', toybatalla);
+    this.load.image('configuracion',configuracion);
 
     this.load.spritesheet('tileset', tileset, {
       frameWidth: 32,
@@ -189,7 +191,7 @@ export default class Boot extends Phaser.Scene {
 
     this.load.image('finalFaculty', finalFaculty);
     this.load.image('botonPrincipio', botonPrincipio);
-
+    
 
   }
 
