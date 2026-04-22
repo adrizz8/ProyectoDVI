@@ -131,6 +131,12 @@ export default class GameManager {
         this.justdefeated = null;
         this.dinero = 0;
 
+        this.TextNum=25;
+
+        this.TextMode='Medio';
+
+        this.TextIndex=1;
+
     }
 
     // ── Helpers de posición ───────────────────────────────────────────────────

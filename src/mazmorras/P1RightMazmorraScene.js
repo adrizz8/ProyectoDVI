@@ -79,7 +79,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         // Limpiamos la posición para que no se use de nuevo si cambiamos de nivel después
         if (savedPos) gm.clearPlayerPosition();
         this.player.setDepth(1);
-        this.dialogueManager = new DialogueManager(this);
+        
 
         // 1. Entradas (Botones)
         this.boton1 = new Boton(this, this.player, 190, 730);
@@ -259,7 +259,17 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         this.cableSalida.setDisplaySize(202, 10)
         this.cableSalida.angle = 0;
         this.cableSalida.connectInput(this.and_gate3);
-        this.cableSalida.setCompleted('puzleDerechaCompletado');
+
+        this.cableSalida_left = new Cable(this, 113, 74, 'cable_right_off');
+        this.cableSalida_left.angle = 180
+        this.cableSalida_left.connectInput(this.and_gate3);
+
+        this.cableSalida2 = new Cable(this, 105, 224);
+        this.cableSalida2.setDisplaySize(280, 10)
+        this.cableSalida2.angle = 90;
+        this.cableSalida2.connectInput(this.and_gate3);
+
+        this.cableSalida2.setCompleted('puzleDerechaCompletado');
 
         this.circuitComponents = [
             this.boton1, this.boton2, this.boton3, this.boton4,
@@ -275,7 +285,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
             this.cable_left11, this.cable_right11,
             this.cable_left8, this.cable_right8, this.cable_up8, this.cable_right_up8,
             this.cable_9,
-            this.cableSalida_right, this.cableSalida
+            this.cableSalida_right, this.cableSalida,this.cableSalida_left,this.cableSalida2
         ];
 
         // Ajustes de profundidad y tamaño masivos (opcional, simplificado)
@@ -285,7 +295,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
 
         // Menu con espacio
         this.input.keyboard.on('keydown-SPACE', () => {
-            if (this.dialogueManager && this.dialogueManager.dialogBox.visible) return;
+            console.log(this.dialogueManager);
+            if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
         });
@@ -294,6 +305,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
+        
     }
 
     update(t, dt) {

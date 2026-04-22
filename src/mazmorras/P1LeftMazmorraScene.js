@@ -188,6 +188,7 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
     }
 
     update(t, dt) {

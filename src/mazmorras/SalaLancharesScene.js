@@ -13,6 +13,7 @@ export default class SalaLancharesScene extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'salaLanchares' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
+
         // Capas
         const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
         const suelos = map.createLayer('Suelos', tileset, 0, 0);
@@ -60,6 +61,8 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
+
     }
 
     update(t, dt) {
