@@ -70,8 +70,8 @@ export default class Hability {
 export const HABILITIES = {
     'Ataque Potente': new Hability({
         id: 'power_attack',
-        name: 'Ataque Potente',
-        description: 'Inflige un ataque físico de gran potencia.',
+        name: 'Entrega Última Hora',
+        description: 'Inflige un ataque físico de gran potencia (crítico si hay suerte).',
         cost: 10,
         type: 'damage',
         effectFn: (source, target) => {
@@ -86,8 +86,8 @@ export const HABILITIES = {
 
     'Cura': new Hability({
         id: 'heal',
-        name: 'Cura',
-        description: 'Restaura 50 puntos de salud al aliado seleccionado.',
+        name: 'Asentir sin entender',
+        description: 'Restaura 50 puntos de salud fingiendo que todo va bien.',
         cost: 15,
         type: 'heal',
         effectFn: (source, target) => {
@@ -101,8 +101,8 @@ export const HABILITIES = {
 
     'Fuego': new Hability({
         id: 'fireball',
-        name: 'Fuego',
-        description: 'Lanza una bola de fuego mágica que hace daño ignorando parte del ataque.',
+        name: 'Funciona en mi PC',
+        description: 'Lanza una excusa que hace daño ignorando parte de la defensa.',
         cost: 20,
         type: 'damage',
         effectFn: (source, target) => {
@@ -117,8 +117,8 @@ export const HABILITIES = {
 
     'Golpe Triple': new Hability({
         id: 'triple_strike',
-        name: 'Golpe Triple',
-        description: 'Ataca tres veces rápidamente.',
+        name: 'Pregunta a ChatGPT',
+        description: 'Tres respuestas rápidas que asestan tres golpes.',
         cost: 15,
         type: 'damage',
         effectFn: (source, target) => {
@@ -133,8 +133,8 @@ export const HABILITIES = {
 
     'Ataque UP': new Hability({
         id: 'attack_up',
-        name: 'Ataque UP',
-        description: 'Sube tu propio ataque un 25% de tu ataque base para este combate.',
+        name: 'Prácticas Wuolah',
+        description: 'Sube tu propio ataque un 25% gracias a unos buenos apuntes.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
@@ -150,8 +150,8 @@ export const HABILITIES = {
 
     'Defensa UP': new Hability({
         id: 'defense_up',
-        name: 'Defensa UP',
-        description: 'Sube tu propia defensa un 25% de tu defensa base para este combate.',
+        name: 'Sentarse Atrás',
+        description: 'Sube tu propia defensa un 25% evitando que te vean.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
@@ -167,8 +167,8 @@ export const HABILITIES = {
 
     'Velocidad UP': new Hability({
         id: 'speed_up',
-        name: 'Velocidad UP',
-        description: 'Sube tu propia velocidad un 25% de tu velocidad base para este combate.',
+        name: 'Código Fácil',
+        description: 'Sube tu propia velocidad un 25% simplificando el trabajo.',
         cost: 15,
         type: 'buff',
         targetType: 'self',
@@ -184,8 +184,8 @@ export const HABILITIES = {
 
     'Ataque NERF': new Hability({
         id: 'attack_nerf',
-        name: 'Ataque NERF',
-        description: 'Baja el ataque del enemigo un 25% de su ataque base para este combate.',
+        name: 'Correo Vacío',
+        description: 'Baja el ataque del enemigo un 25% por el error cometido.',
         cost: 15,
         type: 'nerf',
         targetType: 'selectable',
@@ -203,8 +203,8 @@ export const HABILITIES = {
 
     'Golpe Debilitador': new Hability({
         id: 'weakening_strike',
-        name: 'Golpe Debilitador',
-        description: 'Ataca al enemigo y reduce su ataque un 15%.',
+        name: 'Preguntar Duda',
+        description: 'Ataca al enemigo y reduce su ataque un 15% al distraerlo.',
         cost: 20,
         type: 'damage+nerf',
         targetType: 'selectable',
@@ -223,8 +223,8 @@ export const HABILITIES = {
 
     'Golpe Vigorizante': new Hability({
         id: 'invigorating_strike',
-        name: 'Golpe Vigorizante',
-        description: 'Ataca al objetivo y sube tu propio ataque un 15%.',
+        name: 'Ir a la Academia',
+        description: 'Ataca al objetivo y sube tu propio ataque un 15% por lo aprendido.',
         cost: 20,
         type: 'damage+buff',
         targetType: 'selectable',

@@ -45,8 +45,19 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque UP', 'Golpe Triple', 'Cura', 'Defensa UP', 'Velocidad UP', 'Ataque Potente', 'Fuego', 'Ataque NERF', 'Golpe Debilitador', 'Golpe Vigorizante'],
-                objeto: 'espada_basica'
+                habilidades: [
+                    'Pregunta a ChatGPT', 
+                    'Copia al Compañero', 
+                    'Asentir sin entender', 
+                    'Proyecto Documentado', 
+                    'Practicas Wuolah', 
+                    'Entrega Última Hora', 
+                    'Funciona en mi PC', 
+                    'Correo Vacío', 
+                    'Juegos en Clase', 
+                    'Siesta en Clase'
+                ],
+                objeto: 'teclado_mecanico'
             },
             'Jugador2': {
 
@@ -105,18 +116,18 @@ export default class GameManager {
         // ── Mochila / Inventario ──────────────────────────────────────────────
         // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
         this.backpack = [
-            { id: 'pocion', name: 'Poción', quantity: 5, type: 'consumable', heal: 50, description: 'Cura 50 HP.' },
-            { id: 'eter', name: 'Éter', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP.' },
-            { id: 'elixir', name: 'Elixir', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP.' },
-            { id: 'pocion_fuerza', name: 'Poción de Fuerza', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (solo batalla).' },
-            { id: 'pocion_defensa', name: 'Poción de Defensa', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (solo batalla).' },
-            { id: 'pocion_rapidez', name: 'Poción de Rapidez', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (solo batalla).' },
-            { id: 'pocion_suerte', name: 'Poción de Suerte', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5 (solo batalla).' },
-            { id: 'pocion_resistencia', name: 'Poción Restauradora', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo.' },
-            { id: 'pocion_nivel', name: 'Poción de Nivel', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje.' },
-            { id: 'espada_basica', name: 'Espada de Bronce', quantity: 1, type: 'equipment', description: 'Arma cuerpo a cuerpo +5 daño.' },
-            { id: 'armadura_lejana', name: 'Coraza ligera', quantity: 1, type: 'equipment', description: 'Armadura que ofrece +5 defensa.' },
-            { id: 'llave_caverna', name: 'Llave de la Caverna', quantity: 1, type: 'key', description: 'Abre la puerta de la caverna del Norte.' }
+            { id: 'pincho_tortilla', name: 'Pincho de Tortilla', quantity: 5, type: 'consumable', heal: 50, description: 'Recupera 50 HP (Energía vital de la cafetería).' },
+            { id: 'monster', name: 'Monster', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP (Concentración extrema).' },
+            { id: 'menu_dia', name: 'Menú del Día', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP (El banquete del estudiante).' },
+            { id: 'tinto_verano', name: 'Tinto de Verano', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (Efecto euforia).' },
+            { id: 'palmera_chocolate', name: 'Palmera de Chocolate', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (Capa de grasa protectora).' },
+            { id: 'cafe', name: 'Café', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (Cafeína directa).' },
+            { id: 'amuleto_delegacion', name: 'Amuleto de Delegación', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5 (El carisma del delegado).' },
+            { id: 'cigarro', name: 'Cigarro', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo (Reduce el estrés).' },
+            { id: 'convalidacion_directa', name: 'Convalidación Directa', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje (Saltarse una asignatura).' },
+            { id: 'teclado_mecanico', name: 'Teclado Mecánico', quantity: 1, type: 'equipment', description: 'Arma periférica +5 daño (Switches Blue para más ruido).' },
+            { id: 'sudadera_facu', name: 'Sudadera de la Facu', quantity: 1, type: 'equipment', description: 'Prenda reglamentaria que ofrece +5 defensa.' },
+            { id: 'llave_lab', name: 'Llave del Lab 1.4', quantity: 1, type: 'key', description: 'Abre la puerta del laboratorio de sistemas.' }
         ];
 
         // ── Posición del jugador ──────────────────────────────────────────────
@@ -198,6 +209,20 @@ export default class GameManager {
         } else {
             this.backpack.push({ ...itemDef, quantity });
         }
+    }
+
+    /**
+     * Añade una habilidad a la lista del jugador si no la tiene.
+     * @param {string} playerName 
+     * @param {string} skillName 
+     */
+    addSkill(playerName, skillName) {
+        const p = this.playerStats[playerName];
+        if (p && !p.habilidades.includes(skillName)) {
+            p.habilidades.push(skillName);
+            return true;
+        }
+        return false;
     }
 
     /**

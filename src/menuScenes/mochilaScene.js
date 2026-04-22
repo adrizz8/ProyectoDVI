@@ -17,7 +17,7 @@ export default class MochilaScene extends Phaser.Scene {
 
         this.add.rectangle(608, 320, 1216, 640, 0x0a0a0f, 0.95);
         this.add.text(608, 25, 'MOCHILA', {
-            fontFamily: '"Pixelify Sans"', fontSize: '48px', fill: '#f1c40f', fontStyle: 'bold', stroke: '#000000', strokeThickness: 6,
+            fontFamily: 'Orbitron', fontSize: '48px', fill: '#f1c40f', fontStyle: 'bold', stroke: '#000000', strokeThickness: 6,
             shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5, 0);
 
@@ -26,9 +26,9 @@ export default class MochilaScene extends Phaser.Scene {
         });
 
         this.tabs = {
-            consumable: this.add.text(80, 110, 'Consumibles', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
-            equipment: this.add.text(240, 110, 'Equipamiento', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
-            key: this.add.text(440, 110, 'Objetos clave', { fontFamily: 'Pixelify Sans', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true })
+            consumable: this.add.text(80, 110, 'SUMINISTROS', { fontFamily: 'Orbitron', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
+            equipment: this.add.text(260, 110, 'MATERIAL', { fontFamily: 'Orbitron', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true }),
+            key: this.add.text(420, 110, 'TRÁMITES', { fontFamily: 'Orbitron', fontSize: '20px', fill: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setInteractive({ useHandCursor: true })
         };
 
         Object.keys(this.tabs).forEach(tab => {
@@ -44,9 +44,9 @@ export default class MochilaScene extends Phaser.Scene {
         this.itemsContainer = this.add.container(80, 150);
         this.itemTextList = [];
 
-        for (let i = 0; i < this.gm.getNumItems(); i++) { 
+        for (let i = 0; i < 50; i++) { 
             const itemText = this.add.text(0, 20 + i * 40, '', {
-                fontFamily: 'Pixelify Sans',
+                fontFamily: 'Outfit',
                 fontSize: '18px',
                 fill: '#ffffff',
                 stroke: '#000000',
@@ -194,20 +194,20 @@ export default class MochilaScene extends Phaser.Scene {
 
         const item = this.selectedItem;
         const details = [];
-        details.push(`Nombre: ${item.name}`);
-        details.push(`Cantidad: ${item.quantity}`);
-        details.push(`Tipo: ${item.type}`);
+        details.push(`>> ${item.name.toUpperCase()} <<`);
+        details.push(`---------------------------`);
         details.push(`Descripción: ${item.description || 'Sin descripción.'}`);
-        if (item.heal) details.push(`Cura HP: ${item.heal}`);
-        if (item.recMp) details.push(`Recupera MP: ${item.recMp}`);
-        if (item.levelUp) details.push('Efecto: Sube un nivel.');
-        if (item.statusRecovery) details.push('Efecto: Recupera estado anómalo.');
-        if (item.buffAtt) details.push(`Buff ataque: +${item.buffAtt}`);
-        if (item.buffDef) details.push(`Buff defensa: +${item.buffDef}`);
-        if (item.buffSpd) details.push(`Buff velocidad: +${item.buffSpd}`);
-        if (item.buffLck) details.push(`Buff suerte: +${item.buffLck}`);
+        details.push(`Cantidad: ${item.quantity}`);
+        if (item.heal) details.push(`Restaura Energía: +${item.heal} HP`);
+        if (item.recMp) details.push(`Restaura Concentración: +${item.recMp} MP`);
+        if (item.levelUp) details.push('Efecto: Sube un nivel académico.');
+        if (item.statusRecovery) details.push('Efecto: Elimina estados de estrés.');
+        if (item.buffAtt) details.push(`Potencia: +${item.buffAtt}`);
+        if (item.buffDef) details.push(`Defensa: +${item.buffDef}`);
+        if (item.buffSpd) details.push(`Agilidad: +${item.buffSpd}`);
+        if (item.buffLck) details.push(`Suerte: +${item.buffLck}`);
 
-        this.detailBox.setText(details.join('\n'));
+        this.detailBox.setText(details.join('\n\n'));
 
         if (item.type === 'consumable') {
             const canUse = this.gm.canUseItemOutsideBattle(item);
