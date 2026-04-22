@@ -18,7 +18,6 @@ import cafeteria from '../assets/images/cafeteria.json'
 import tileset from '../assets/images/tilesetexterior.png'
 import tilesInterior from "../assets/images/tilesinterior.png"
 import tilesInterior2 from "../assets/images/tilesInterior2.png"
-import tilesCafeteria from "../assets/images/tilesCafeteria.png"
 import boton_luchar from '../assets/images/boton_luchar.png'
 import boton_habilidades from '../assets/images/boton_habilidades.png'
 import boton_mochila from '../assets/images/boton_mochila.png'
@@ -81,6 +80,7 @@ import amigo1 from '../assets/images/amigo1dvi.png'
 import finalFaculty from '../assets/images/FINAL FACULTY.png'
 import botonPrincipio from '../assets/images/boton principio.png'
 import configuracion from '../assets/images/configuracion.png'
+import tilesCafeteria from '../assets/images/tilesetinteriordvifinal.png'
 
 
 /**

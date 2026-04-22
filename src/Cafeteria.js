@@ -42,28 +42,26 @@ export default class Cafeteria extends Phaser.Scene {
 
 
         // Tilesets 
-        const tilesInterior2 = map.addTilesetImage('tilesInterior2', 'tilesInterior2');
-        const tilesInterior = map.addTilesetImage('tilesinterior', 'tilesinterior');
-        const tilesCafeteria = map.addTilesetImage('tilesCafeteria', 'tilesCafeteria');
-        const tilesExterior = map.addTilesetImage('tilesetexterior', 'tilesetexterior');
 
-        const allTilesets = [tilesInterior2, tilesInterior, tilesCafeteria, tilesExterior];
+        const tilesCafeteria = map.addTilesetImage('tilesetinteriordvifinal', 'tilesCafeteria');
 
-        // Capas del mapa
-        const fondo = map.createLayer('fondo', allTilesets, 0, 0);
-        const pared = map.createLayer('pared', allTilesets, 0, 0);
-        const puerta = map.createLayer('puerta', allTilesets, 0, 0);
-        const barra = map.createLayer('barra', allTilesets, 0, 0);
-        const sillas = map.createLayer('sillas', allTilesets, 0, 0);
-        const mesas = map.createLayer('mesas', allTilesets, 0, 0);
-        const decoracion = map.createLayer('decoracion', allTilesets, 0, 0);
-        const sillas2 = map.createLayer('sillas2', allTilesets, 0, 0);
+        const suelo = map.createLayer('suelo', tilesCafeteria, 0, 0);
+                const pared = map.createLayer('pared', tilesCafeteria, 0, 0);
+                     const puertas = map.createLayer('puertas', tilesCafeteria, 0, 0);
+                       const decoracion = map.createLayer('decoracion', tilesCafeteria, 0, 0);
+        const decoracion2 = map.createLayer('decoracion2', tilesCafeteria, 0, 0);
+      
+   
 
-        const colisiones = map.createLayer('colisiones', allTilesets, 0, 0);
+
+        const colisiones = map.createLayer('colisiones', tilesCafeteria, 0, 0);
 
         // Colisiones
-        colisiones.setCollisionByExclusion([-1]);
+        colisiones.setCollisionByProperty({ collides: true });
         colisiones.setVisible(false);
+
+
+
 
         const posi = entradas.get(data.entrada);
         const spawnX = posi.x;
