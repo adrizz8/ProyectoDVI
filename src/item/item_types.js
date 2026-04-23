@@ -61,13 +61,6 @@ export const ITEM_TYPES = {
         statusRecovery: true,
         description: 'Elimina estado anómalo (Reduce el estrés).'
     },
-    'convalidacion_directa': {
-        id: 'convalidacion_directa',
-        name: 'Convalidación Directa',
-        type: 'consumable',
-        levelUp: true,
-        description: 'Suma un nivel al personaje (Saltarse una asignatura).'
-    },
     'teclado_mecanico': {
         id: 'teclado_mecanico',
         name: 'Teclado Mecánico',

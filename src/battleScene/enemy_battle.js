@@ -127,7 +127,7 @@ export default class EnemyBattle {
      */
     guard() {
         this._guardActive = true;
-        const mpGain = 10;
+        const mpGain = 3;
         this.mp = Math.min(this.maxMp, this.mp + mpGain);
         return { actionName: 'Guardia', mpGained: mpGain };
     }
@@ -150,7 +150,7 @@ export default class EnemyBattle {
         const currentDefense = Math.max(1, this.defense);
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        let damageTaken = Math.floor(damage / currentDefense);
+        let damageTaken = Math.floor(damage / (currentDefense * 0.2));
         damageTaken = Math.max(1, damageTaken);
 
         // La guardia reduce el daño a la mitad

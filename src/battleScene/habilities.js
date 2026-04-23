@@ -68,11 +68,11 @@ export default class Hability {
  * Centralizar aquí las habilidades facilita la gestión y el balance.
  */
 export const HABILITIES = {
-    'Ataque Potente': new Hability({
+    'Entrega Última Hora': new Hability({
         id: 'power_attack',
         name: 'Entrega Última Hora',
         description: 'Inflige un ataque físico de gran potencia (crítico si hay suerte).',
-        cost: 10,
+        cost: 3,
         type: 'damage',
         effectFn: (source, target) => {
             const potencia = 50;
@@ -84,14 +84,14 @@ export const HABILITIES = {
         }
     }),
 
-    'Cura': new Hability({
+    'Asentir sin entender': new Hability({
         id: 'heal',
         name: 'Asentir sin entender',
-        description: 'Restaura 50 puntos de salud fingiendo que todo va bien.',
-        cost: 15,
+        description: 'Restaura el 25% de la vida fingiendo que todo va bien.',
+        cost: 5,
         type: 'heal',
         effectFn: (source, target) => {
-            const healAmount = 50;
+            const healAmount = source.maxHp * 0.25;
             return {
                 heal: healAmount,
                 message: `${source.name} lanza Cura sobre ${target.name}!`
@@ -99,14 +99,14 @@ export const HABILITIES = {
         }
     }),
 
-    'Fuego': new Hability({
+    'Funciona en mi PC': new Hability({
         id: 'fireball',
         name: 'Funciona en mi PC',
         description: 'Lanza una excusa que hace daño ignorando parte de la defensa.',
-        cost: 20,
+        cost: 4,
         type: 'damage',
         effectFn: (source, target) => {
-            const potencia = 50;
+            const potencia = 60;
             const damage = Math.floor(source.damage * potencia) + 10;
             return {
                 damage,
@@ -115,15 +115,15 @@ export const HABILITIES = {
         }
     }),
 
-    'Golpe Triple': new Hability({
+    'Pregunta a ChatGPT': new Hability({
         id: 'triple_strike',
         name: 'Pregunta a ChatGPT',
-        description: 'Tres respuestas rápidas que asestan tres golpes.',
-        cost: 15,
+        description: 'Tres preguntas que resuelven rápido.',
+        cost: 2,
         type: 'damage',
         effectFn: (source, target) => {
-            const potencia = 15; // Tres golpes de 6 de potencia cada uno
-            const damage = Math.floor(source.damage * potencia) * 3;
+            const potencia = 40;
+            const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
                 message: `${source.name} asesta un Golpe Triple a ${target.name}!`
@@ -131,11 +131,11 @@ export const HABILITIES = {
         }
     }),
 
-    'Ataque UP': new Hability({
+    'Prácticas Wuolah': new Hability({
         id: 'attack_up',
         name: 'Prácticas Wuolah',
         description: 'Sube tu propio ataque un 25% gracias a unos buenos apuntes.',
-        cost: 15,
+        cost: 2,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
@@ -148,11 +148,11 @@ export const HABILITIES = {
         }
     }),
 
-    'Defensa UP': new Hability({
+    'Sentarse Atrás': new Hability({
         id: 'defense_up',
         name: 'Sentarse Atrás',
         description: 'Sube tu propia defensa un 25% evitando que te vean.',
-        cost: 15,
+        cost: 2,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
@@ -165,11 +165,11 @@ export const HABILITIES = {
         }
     }),
 
-    'Velocidad UP': new Hability({
+    'Código Fácil': new Hability({
         id: 'speed_up',
         name: 'Código Fácil',
         description: 'Sube tu propia velocidad un 25% simplificando el trabajo.',
-        cost: 15,
+        cost: 2,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
@@ -182,11 +182,11 @@ export const HABILITIES = {
         }
     }),
 
-    'Ataque NERF': new Hability({
+    'Correo Vacío': new Hability({
         id: 'attack_nerf',
         name: 'Correo Vacío',
         description: 'Baja el ataque del enemigo un 25% por el error cometido.',
-        cost: 15,
+        cost: 2,
         type: 'nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
@@ -201,11 +201,11 @@ export const HABILITIES = {
 
     // ── Habilidades Híbridas (daño + efecto secundario) ────────────────────────
 
-    'Golpe Debilitador': new Hability({
+    'Preguntar Duda': new Hability({
         id: 'weakening_strike',
         name: 'Preguntar Duda',
         description: 'Ataca al enemigo y reduce su ataque un 15% al distraerlo.',
-        cost: 20,
+        cost: 4,
         type: 'damage+nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
@@ -221,11 +221,11 @@ export const HABILITIES = {
         }
     }),
 
-    'Golpe Vigorizante': new Hability({
+    'Ir a la Academia': new Hability({
         id: 'invigorating_strike',
         name: 'Ir a la Academia',
         description: 'Ataca al objetivo y sube tu propio ataque un 15% por lo aprendido.',
-        cost: 20,
+        cost: 4,
         type: 'damage+buff',
         targetType: 'selectable',
         effectFn: (source, target) => {

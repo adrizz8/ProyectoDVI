@@ -46,12 +46,12 @@ export default class Cafeteria extends Phaser.Scene {
         const tilesCafeteria = map.addTilesetImage('tilesetinteriordvifinal', 'tilesCafeteria');
 
         const suelo = map.createLayer('suelo', tilesCafeteria, 0, 0);
-                const pared = map.createLayer('pared', tilesCafeteria, 0, 0);
-                     const puertas = map.createLayer('puertas', tilesCafeteria, 0, 0);
-                       const decoracion = map.createLayer('decoracion', tilesCafeteria, 0, 0);
+        const pared = map.createLayer('pared', tilesCafeteria, 0, 0);
+        const puertas = map.createLayer('puertas', tilesCafeteria, 0, 0);
+        const decoracion = map.createLayer('decoracion', tilesCafeteria, 0, 0);
         const decoracion2 = map.createLayer('decoracion2', tilesCafeteria, 0, 0);
-      
-   
+
+
 
 
         const colisiones = map.createLayer('colisiones', tilesCafeteria, 0, 0);
@@ -283,14 +283,15 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
         this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {
             name: 'Conserje',
-            hp: 350,
-            maxHp: 350,
-            damage: 25,
+            hp: 80,
+            maxHp: 80,
+            damage: 5,
             speed: 4,
-            defense: 15,
-            mp: 60,
-            maxMp: 60,
-            habilidades: ['Ataque Potente', 'Defensa UP', 'Fuego'],
+            defense: 8,
+            mp: 50,
+            maxMp: 50,
+            expReward: 300,
+            habilidades: ['Ir a la Academia'],
             spriteKey: 'toy'
         }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
@@ -360,14 +361,15 @@ export default class Cafeteria extends Phaser.Scene {
         // --- NPC Loco (cafeteria_loco) --- 
         const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, {
             name: 'Marcos',
-            hp: 150,
-            maxHp: 150,
-            damage: 18,
-            speed: 10,
-            defense: 8,
-            mp: 30,
-            maxMp: 30,
-            habilidades: ['Golpe Triple', 'Velocidad UP'],
+            hp: 30,
+            maxHp: 30,
+            damage: 7,
+            speed: 14,
+            defense: 11,
+            mp: 8,
+            maxMp: 8,
+            expReward: 50,
+            habilidades: ['Entrega Última Hora', 'Sentarse Atrás'],
             spriteKey: 'npc1'
         }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 
@@ -389,14 +391,15 @@ export default class Cafeteria extends Phaser.Scene {
         // --- NPC Mirón ---
         const per_miron = new miron(this, this.player, 707, 340, null, 0, {
             name: 'Mirón',
-            hp: 100,
-            maxHp: 100,
-            damage: 12,
-            speed: 6,
-            defense: 10,
+            hp: 25,
+            maxHp: 25,
+            damage: 2,
+            speed: 3,
+            defense: 6,
             mp: 20,
             maxMp: 20,
-            habilidades: ['Ataque NERF'],
+            expReward: 100,
+            habilidades: ['Correo Vacío'],
             spriteKey: 'npc3'
         }, 'Te pille', null, null, 'npc_miron_caf');
 

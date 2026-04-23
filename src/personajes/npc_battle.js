@@ -75,6 +75,8 @@ export default class NPCBattle extends NPC {
             enemyMaxMp: this.stats.maxMp,
             enemyHabilidades: this.stats.habilidades,
             enemyObjeto: this.stats.objeto,
+            enemyExpReward: this.stats.expReward,
+            enemyMoneyReward: this.stats.moneyReward,
             originScene: this.scene.scene.key, // Para saber a dónde volver tras el combate
             npcid: this.id,
             nivel:this.nivel

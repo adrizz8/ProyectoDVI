@@ -39,7 +39,9 @@ export default class BattleScene extends Phaser.Scene {
                 mp: data.enemyMp,
                 maxMp: data.enemyMaxMp,
                 habilidades: data.enemyHabilidades,
-                objeto: data.enemyObjeto
+                objeto: data.enemyObjeto,
+                expReward: data.enemyExpReward,
+                moneyReward: data.enemyMoneyReward
             }];
         } else if (data && data.enemies) {
             this._enemiesStats = data.enemies;
@@ -890,7 +892,7 @@ export default class BattleScene extends Phaser.Scene {
      * @param {Function} [onConfirm] Callback cuando el jugador confirma.
      */
     _setMessage(msg, onConfirm) {
-        const gm= GameManager.getInstance();
+        const gm = GameManager.getInstance();
 
         if (!msg || msg.trim() === '') return;
 

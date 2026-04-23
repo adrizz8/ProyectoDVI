@@ -11,6 +11,8 @@
  *   const gm = GameManager.getInstance();
  *   gm.playerStats.hp = 80;
  */
+import { ITEM_TYPES } from './item/item_types.js';
+
 export default class GameManager {
 
     /** @type {GameManager} */
@@ -34,78 +36,69 @@ export default class GameManager {
         this.playerStats = {
             'Jugador1': {
                 displayName: 'J1',
-                hp: 160,
-                maxHp: 160,
-                mp: 60,
-                maxMp: 60,
-                damage: 28,
-                speed: 16,
-                defense: 35,
+                hp: 20,
+                maxHp: 20,
+                mp: 10,
+                maxMp: 10,
+                damage: 10,
+                speed: 10,
+                defense: 10,
                 luck: 10,
                 level: 1,
                 exp: 0,
                 expNext: 100,
                 habilidades: [
-                    'Pregunta a ChatGPT', 
-                    'Copia al Compañero', 
-                    'Asentir sin entender', 
-                    'Proyecto Documentado', 
-                    'Practicas Wuolah', 
-                    'Entrega Última Hora', 
-                    'Funciona en mi PC', 
-                    'Correo Vacío', 
-                    'Juegos en Clase', 
-                    'Siesta en Clase'
+                    'Pregunta a ChatGPT'
                 ],
                 objeto: 'teclado_mecanico'
             },
             'Jugador2': {
 
                 displayName: 'Fernando',
-                hp: 160,
-                maxHp: 160,
-                mp: 40,
-                maxMp: 40,
-                damage: 38,
-                speed: 6,
-                defense: 14,
-                luck: 2,
+                hp: 30,
+                maxHp: 30,
+                mp: 10,
+                maxMp: 10,
+                damage: 20,
+                speed: 8,
+                defense: 20,
+                luck: 8,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Ataque Potente', 'Defensa UP'],
+                habilidades: ['Sentarse Atrás'],
                 objeto: ''
             },
             'Jugador3': {
                 displayName: 'Angela',
-                hp: 100,
-                maxHp: 100,
-                mp: 30,
-                maxMp: 30,
-                damage: 15,
-                speed: 12,
-                defense: 25,
-                luck: 4,
+                hp: 25,
+                maxHp: 25,
+                mp: 25,
+                maxMp: 25,
+                damage: 20,
+                speed: 25,
+                defense: 8,
+                luck: 15,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Cura', 'Ataque NERF', 'Defensa UP'],
+                habilidades: ['Asentir sin entender', 'Correo Vacío', 'Código Fácil'],
                 objeto: ''
             },
             'Jugador4': {
                 displayName: 'Victor',
-                hp: 100,
-                maxHp: 100,
-                mp: 70,
-                maxMp: 70,
-                damage: 30,
-                speed: 26,
+                hp: 15,
+                maxHp: 15,
+                mp: 15,
+                maxMp: 15,
+                damage: 25,
+                speed: 20,
                 defense: 10,
                 luck: 8,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Golpe Triple', 'Velocidad UP', 'Fuego'],
+                habilidades: ['Preguntar duda', 'Funciona en mi PC'],
                 objeto: ''
             },
         };
@@ -142,11 +135,32 @@ export default class GameManager {
         this.justdefeated = null;
         this.dinero = 0;
 
-        this.TextNum=25;
+        this.TextNum = 25;
 
-        this.TextMode='Medio';
+        this.TextMode = 'Medio';
 
-        this.TextIndex=1;
+        this.TextIndex = 1;
+
+        // ── Datos de Progresión ───────────────────────────────────────────────
+        // Define el crecimiento por nivel y las habilidades que se aprenden.
+        this.progression = {
+            'Jugador1': {
+                hp: 3, mp: 2, damage: 2, speed: 2, defense: 2,
+                skills: { 2: 'Prácticas Wuolah', 4: 'Entrega Última Hora', 7: 'Ir a la Academia' }
+            },
+            'Jugador2': {
+                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
+                skills: { 2: 'Sentarse Atrás', 5: 'Preguntar Duda' }
+            },
+            'Jugador3': {
+                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
+                skills: { 2: 'Asentir sin entender', 4: 'Código Fácil' }
+            },
+            'Jugador4': {
+                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
+                skills: { 2: 'Funciona en mi PC', 4: 'Pregunta a ChatGPT' }
+            }
+        };
 
     }
 
@@ -283,42 +297,59 @@ export default class GameManager {
         if (!p) return false;
 
         p.exp += amount;
-        let leveledUp = false;
+        let leveledLogs = [];
 
         while (p.exp >= p.expNext) {
-            this.levelUp(playerName);
-            leveledUp = true;
+            const log = this.levelUp(playerName);
+            leveledLogs.push(log);
         }
 
-        return leveledUp;
+        return leveledLogs.length > 0 ? leveledLogs : false;
     }
 
-    /** Sube de nivel: aumenta las stats base */
+    /** Sube de nivel: aumenta las stats base según su tabla de progresión */
     levelUp(playerName) {
         const p = this.playerStats[playerName];
-        if (!p) return;
+        const grow = this.progression[playerName];
+        if (!p || !grow) return null;
 
         p.level++;
         p.exp -= p.expNext;
-        p.expNext = Math.floor(p.expNext * 1.5);
 
-        // Mejora de stats (ejemplo)
-        p.maxHp += 20;
+        // Mejora de stats según progresión
+        p.maxHp += grow.hp;
         p.hp = p.maxHp;
-        p.maxMp += 10;
+        p.maxMp += grow.mp;
         p.mp = p.maxMp;
-        p.damage += 5;
-        p.speed += 2;
+        p.damage += grow.damage;
+        p.speed += grow.speed;
+        p.defense += grow.defense;
+        p.luck += grow.luck;
+
+        let learnedSkill = null;
+        if (grow.skills && grow.skills[p.level]) {
+            const skillName = grow.skills[p.level];
+            if (!p.habilidades.includes(skillName)) {
+                p.habilidades.push(skillName);
+                learnedSkill = skillName;
+            }
+        }
 
         console.log(`¡${playerName} ha subido al nivel ${p.level}!`);
+        return { level: p.level, learnedSkill };
     }
 
     /** Obtiene el array de stats para iniciar combates (convirtiendo el dict a lista si es necesario) */
     getPlayersForBattle(namesArray) {
         return namesArray.map(name => {
+            const stats = { ...this.playerStats[name] };
+            // Si el objeto es un string (ID), lo resolvemos al objeto real
+            if (typeof stats.objeto === 'string' && ITEM_TYPES[stats.objeto]) {
+                stats.objeto = ITEM_TYPES[stats.objeto];
+            }
             return {
                 name: name,
-                ...this.playerStats[name]
+                ...stats
             };
         });
     }

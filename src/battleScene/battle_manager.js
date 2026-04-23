@@ -472,9 +472,14 @@ export default class BattleManager {
             if (totalMoney >= 0) gm.addDinero(totalMoney);
             this.players.forEach(p => {
                 if (!p.isDead) {
-                    const leveled = gm.gainExp(p.name, totalExp);
-                    if (leveled) {
-                        this._callbacks.onMessage?.(`¡${p.name} subió de nivel!`);
+                    const leveledLogs = gm.gainExp(p.name, totalExp);
+                    if (leveledLogs) {
+                        leveledLogs.forEach(log => {
+                            this._callbacks.onMessage?.(`¡${p.name} subió al nivel ${log.level}!`);
+                            if (log.learnedSkill) {
+                                this._callbacks.onMessage?.(`¡${p.name} aprendió ${log.learnedSkill}!`);
+                            }
+                        });
                     }
                 }
             });

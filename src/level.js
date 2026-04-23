@@ -60,7 +60,7 @@ export default class Level extends Phaser.Scene {
             defense: 5,
             mp: 20,
             maxMp: 20,
-            habilidades: ['Ataque Potente']
+            habilidades: ['Entrega Última Hora']
         }, "¡No pasarás! ¡Prepárate para luchar!");
 
         const enemy2 = new NPCBattle(this, this.player, 700, 450, 'toy', null, {
@@ -72,7 +72,7 @@ export default class Level extends Phaser.Scene {
             defense: 12,
             mp: 40,
             maxMp: 40,
-            habilidades: ['Ataque Potente', 'Defensa UP']
+            habilidades: ['Entrega Última Hora', 'Sentarse Atrás']
         });
 
         const enemy3 = new NPCBattle(this, this.player, 500, 100, 'toy', null, {
@@ -84,7 +84,7 @@ export default class Level extends Phaser.Scene {
             defense: 4,
             mp: 30,
             maxMp: 30,
-            habilidades: ['Golpe Triple']
+            habilidades: ['Pregunta a ChatGPT']
         });
 
         // NPC que da un objeto al hablar
