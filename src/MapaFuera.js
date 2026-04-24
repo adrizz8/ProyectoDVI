@@ -188,8 +188,8 @@ export default class MapaFuera extends Phaser.Scene {
                 this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {
                     spriteKey: 'estudiantebattle',
                     name: 'Estudiante con prisa',
-                    hp: 22,
-                    maxHp: 22,
+                    hp: 2200,
+                    maxHp: 2200,
                     damage: 6,
                     speed: 3,
                     defense: 8,

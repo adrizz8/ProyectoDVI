@@ -125,7 +125,7 @@ export default class BattleManager {
                     
                 }
                 else if(this.roundCount==2){
-                    this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoAttack());       
+                    this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoHabilidad());       
                 }
                 else if(this.roundCount==3){
                     this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoGuardia());       
