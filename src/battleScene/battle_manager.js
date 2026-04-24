@@ -18,7 +18,7 @@ export default class BattleManager {
      * @param {Object[]} enemiesStatsArr Lista de stats de los enemigos
      * @param {Phaser.Scene} scene       Referencia a la escena
      */
-    constructor(playerStatsArr, enemiesStatsArr, scene, npcid, nivel) {
+    constructor(playerStatsArr, enemiesStatsArr, scene, npcid, nivel,Tutorial) {
         this._scene = scene;
 
         // Inicializar jugadores y enemigos
@@ -45,6 +45,7 @@ export default class BattleManager {
 
         this.npcid = npcid;
         this.nivel = nivel;
+        this.Tutorial=Tutorial;
     }
 
     setCallbacks(callbacks) {
@@ -78,6 +79,9 @@ export default class BattleManager {
         this._callbacks.onMessage?.(`--- Ronda ${this.roundCount} ---`);
         // Notificar a la escena: cuando el jugador confirme el mensaje de ronda, avanzar
         this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
+
+        
+
     }
 
     nextTurn() {
@@ -114,6 +118,26 @@ export default class BattleManager {
             this._isBusy = false;
             this._callbacks.onPlayerTurnStarted?.(current.index);
             this._callbacks.onMessage?.(`Turno de ${current.data.name}`);
+
+            if(this.Tutorial){
+                if(this.roundCount==1){
+                    this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoAttack());
+                    
+                }
+                else if(this.roundCount==2){
+                    this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoAttack());       
+                }
+                else if(this.roundCount==3){
+                    this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoGuardia());       
+                }
+                else if(this.roundCount==4){
+                    this._callbacks.onReadyForNextTurn?.(() => {
+                        this._callbacks.onMessage?.("En la mochila podras usar consumibles que te ayudaran durante los combates, Mucha suerte!!!!");
+                        this._callbacks.onReadyForNextTurn?.(() => this._scene.tutoReset());
+                    });
+                }
+            }
+
         } else {
             this._isBusy = true;
             // Pequeño delay para que las animaciones del glow sean visibles antes del turno enemigo

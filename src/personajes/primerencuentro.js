@@ -10,8 +10,8 @@ import NPCBattle from './npc_battle';
 
 export default class primerencuentro extends NPCBattle {
 
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null) {
-        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId);
+    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,Tutorial) {
+        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,null,null,Tutorial);
 
         
         this.lastDirection='';

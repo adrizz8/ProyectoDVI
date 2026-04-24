@@ -197,7 +197,7 @@ export default class MapaFuera extends Phaser.Scene {
                     maxMp: 10,
                     expReward: 100,
                     habilidades: []
-                }, " ¿Quien eres tu?, te vas a enterar.", null, null);
+                }, " ¿Quien eres tu?, te vas a enterar.", null, null,true);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug, this.player, () => {

@@ -25,6 +25,7 @@ export default class BattleScene extends Phaser.Scene {
 
         this.npcid = data.npcid;
         this.nivel = data.nivel;
+        this.Tutorial=data.Tutorial;
 
         // Si es un combate contra un enemigo concreto, usar los datos recibidos.
         if (data && data.enemyName) {
@@ -148,7 +149,7 @@ export default class BattleScene extends Phaser.Scene {
         this._currentSkill = null;
         this._currentItem = null;
 
-        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this, this.npcid, this.nivel);
+        this.battle_manager = new BattleManager(this._playerStats, this._enemiesStats, this, this.npcid, this.nivel,this.Tutorial);
         this.battle_manager.setCallbacks({
             onPlayerTurnStarted: (idx) => this._onPlayerTurnStarted(idx),
             onPlayerActionResult: (r) => this._onPlayerActionResult(r),
@@ -262,7 +263,7 @@ export default class BattleScene extends Phaser.Scene {
 
         enemies.forEach((enemy, index) => {
             const x = startX + (index * spacing);
-            const y = 155;
+            const y = 170;
 
             const sprite = this.add.image(x, y, enemy.spriteKey)
                 .setScale(1) // el originial era 4
@@ -574,6 +575,7 @@ export default class BattleScene extends Phaser.Scene {
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
     _onSpriteClicked(type, index) {
+        
         if (this._actionState === 'SELECTING_TARGET_ATTACK') {
             if (type === 'enemy') {
                 const enemies = this.battle_manager.getEnemies();
@@ -1109,5 +1111,44 @@ export default class BattleScene extends Phaser.Scene {
         // Tinte morado temporal sobre el sprite
         sprite.setTintFill(0xaa22ff);
         this.time.delayedCall(600, () => sprite.clearTint());
+    }
+
+    tutoAttack(){
+        this._setMessage("Primero vamos a probar el ataque basico, presiona luchar y elige enemigo",()=> {});
+        this.actionMenu.setButtonEnabled(0,true);
+        this.actionMenu.setButtonEnabled(1,false);
+        this.actionMenu.setButtonEnabled(2,false);
+        this.actionMenu.setButtonEnabled(3,false);
+        this.actionMenu.setButtonEnabled(4,false);
+        this.actionMenu.showTutorialArrow(0);
+    }
+    tutoHabilidad(){
+        this._setMessage("Ahora, usamos una habilidad, CUIDADO!!!, las habilidades usan energía.",()=> {});
+        this.actionMenu.setButtonEnabled(0,false);
+        this.actionMenu.setButtonEnabled(1,true);
+        this.actionMenu.setButtonEnabled(2,false);
+        this.actionMenu.setButtonEnabled(3,false);
+        this.actionMenu.setButtonEnabled(4,false);
+        this.actionMenu.showTutorialArrow(1);
+    }
+    tutoGuardia(){
+        this._setMessage("Por último, nos protegemos de parte del daño y nos aumentamos la enegía",()=> {});
+        this.actionMenu.setButtonEnabled(0,false);
+        this.actionMenu.setButtonEnabled(1,false);
+        this.actionMenu.setButtonEnabled(2,false);
+        this.actionMenu.setButtonEnabled(3,true);
+        this.actionMenu.setButtonEnabled(4,false);
+        this.actionMenu.showTutorialArrow(3);
+    }
+
+    tutoReset(){
+
+        this._setMessage("Fin del tutorial",()=> {});
+        this.actionMenu.setButtonEnabled(0,true);
+        this.actionMenu.setButtonEnabled(1,true);
+        this.actionMenu.setButtonEnabled(2,true);
+        this.actionMenu.setButtonEnabled(3,true);
+        this.actionMenu.setButtonEnabled(4,false);
+        this.actionMenu.hideTutorialArrow();
     }
 }

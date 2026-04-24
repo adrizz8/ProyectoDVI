@@ -3,6 +3,8 @@ import DialogueManager from '../dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from '../manager.js';
 import trigger from '../trigger.js';
+import npcBattle from '../personajes/npc_battle.js'
+import npc from '../personajes/npc.js'
 
 export default class SalaLancharesScene extends Phaser.Scene {
     constructor() {
@@ -13,6 +15,9 @@ export default class SalaLancharesScene extends Phaser.Scene {
         const map = this.make.tilemap({ key: 'salaLanchares' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
+
+        const gm=GameManager.getInstance();
+        gm.addNivel("salaLanchares");
 
         // Capas
         const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
@@ -32,6 +37,16 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
         this.physics.add.collider(this.player, decoracion);
+
+
+        const savedPos=gm.getPlayerPosition();
+
+         // Si hay posición guardada, es que venimos de la batalla
+        if (savedPos) {
+            gm.clearPlayerPosition();
+            this.player.setDirection(savedPos.direction);
+            this.player.setPosition(savedPos.x, savedPos.y);
+        }
 
         // Cámara
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -62,7 +77,31 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
+        if(!gm.estadoNivel("salaLanchares")){
 
+            this.lanchares= new npcBattle(this,this.player,650,150,'lanchares',0,{
+                    spriteKey: 'lancharesbatalla',
+                    name: 'Lanchares',
+                    hp: 120,
+                    maxHp: 120,
+                    damage: 15,
+                    speed: 8,
+                    defense: 5,
+                    mp: 40,
+                    maxMp: 40,
+                    habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante']
+                },null, null,null,'lanchares_',"salaLanchares");
+        }else{
+            this.lanchares= new npc(this,this.player,650,150,'lanchares',0,"b",null,'lanchares_','Lanchares');
+        }
+
+
+    }
+
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
+        }
     }
 
     update(t, dt) {

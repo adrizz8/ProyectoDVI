@@ -57,6 +57,10 @@ import npc2 from '../assets/sprites/npc2.png';
 import npc3 from '../assets/sprites/npc3.png';
 import npc4 from '../assets/sprites/npc4.png';
 import estudiantebattle from '../assets/sprites/estudianteconprisa.png';
+import lanchares from '../assets/sprites/lancharesow.png';
+import lancharesbatalla from '../assets/sprites/lancharesbatalla.png';
+import miniboss from '../assets/sprites/minibossOW.png';
+import minibossbatalla from '../assets/sprites/miniboss.png';
 
 import or_gate from '../assets/images/or.png';
 import and_gate from '../assets/images/and.png';
@@ -108,12 +112,16 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', base);
     this.load.image('star', star);
     this.load.spritesheet('player', player, { frameWidth: 68, frameHeight: 72 });
-    this.load.spritesheet('estudianteprimero', estudianteprimero, { frameWidth: 64, frameHeight: 64 })
-    this.load.spritesheet('npc1', npc1, { frameWidth: 64, frameHeight: 64 })
-    this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 })
-    this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 })
-    this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 })
-    this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('estudianteprimero', estudianteprimero, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('npc1', npc1, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('lanchares',lanchares,{ frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('miniboss',miniboss,{ frameWidth: 68, frameHeight: 72 });
+    this.load.image('lancharesbatalla',lancharesbatalla);
+    this.load.image('minibossbatalla',minibossbatalla);
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
