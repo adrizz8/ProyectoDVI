@@ -42,6 +42,12 @@ export default class Level3 extends Phaser.Scene {
 
 
         const gm = GameManager.getInstance();
+        
+        // Si recibimos el nombre personalizado del jugador, usarlo
+        if (this.sys.settings.data && this.sys.settings.data.name) {
+            gm.setPlayerName(this.sys.settings.data.name);
+        }
+        
         gm.addNivel('level3');
 
         this.player = new Player(this, 100, 400);

@@ -35,7 +35,7 @@ export default class Hability {
         if (source.mp < this.cost) {
             return {
                 success: false,
-                message: `${source.name} no tiene suficiente MP para usar ${this.name}.`,
+                message: `${source.displayName || source.name} no tiene suficiente MP para usar ${this.name}.`,
                 reason: 'NO_MP'
             };
         }
@@ -79,7 +79,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
-                message: `${source.name} entrega la práctica en el último segundo. ¡${target.name} recibe un impacto crítico!`
+                message: `${source.displayName || source.name} entrega la práctica en el último segundo. ¡${target.displayName || target.name} recibe un impacto crítico!`
             };
         }
     }),
@@ -94,7 +94,7 @@ export const HABILITIES = {
             const healAmount = source.maxHp * 0.25;
             return {
                 heal: healAmount,
-                message: `${source.name} asiente con seguridad sin haber entendido nada. ¡Recupera confianza y vida!`
+                message: `${source.displayName || source.name} asiente con seguridad sin haber entendido nada. ¡Recupera confianza y vida!`
             };
         }
     }),
@@ -110,7 +110,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia) + 10;
             return {
                 damage,
-                message: `${source.name} exclama "¡En mi PC funciona!". La lógica de ${target.name} colapsa ante la excusa.`
+                message: `${source.displayName || source.name} exclama "¡En mi PC funciona!". La lógica de ${target.displayName || target.name} colapsa ante la excusa.`
             };
         }
     }),
@@ -126,7 +126,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
-                message: `${source.name} consulta rápidamente a la IA. ¡Lanza una ráfaga de respuestas contra ${target.name}!`
+                message: `${source.displayName || source.name} consulta rápidamente a la IA. ¡Lanza una ráfaga de respuestas contra ${target.displayName || target.name}!`
             };
         }
     }),
@@ -143,7 +143,7 @@ export const HABILITIES = {
             source.damage += buffAmount;
             return {
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} descarga los mejores apuntes de Wuolah. ¡Su capacidad ofensiva aumenta!`
+                message: `${source.displayName || source.name} descarga los mejores apuntes de Wuolah. ¡Su capacidad ofensiva aumenta!`
             };
         }
     }),
@@ -160,7 +160,7 @@ export const HABILITIES = {
             source.defense += buffAmount;
             return {
                 buff: { stat: 'defense', amount: buffAmount },
-                message: `${source.name} se camufla en la última fila. ¡Su defensa mejora al pasar desapercibido!`
+                message: `${source.displayName || source.name} se camufla en la última fila. ¡Su defensa mejora al pasar desapercibido!`
             };
         }
     }),
@@ -177,7 +177,7 @@ export const HABILITIES = {
             source.speed += buffAmount;
             return {
                 buff: { stat: 'speed', amount: buffAmount },
-                message: `${source.name} aplica principios de Clean Code. ¡Su velocidad de ejecución aumenta!`
+                message: `${source.displayName || source.name} aplica principios de Clean Code. ¡Su velocidad de ejecución aumenta!`
             };
         }
     }),
@@ -194,7 +194,7 @@ export const HABILITIES = {
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 nerf: { stat: 'damage', amount: nerfAmount },
-                message: `${source.name} envía un correo sin adjuntar el archivo. ${target.name} pierde el tiempo buscándolo y se debilita.`
+                message: `${source.displayName || source.name} envía un correo sin adjuntar el archivo. ${target.displayName || target.name} pierde el tiempo buscándolo y se debilita.`
             };
         }
     }),
@@ -216,7 +216,7 @@ export const HABILITIES = {
             return {
                 damage,
                 nerf: { stat: 'damage', amount: nerfAmount },
-                message: `${source.name} levanta la mano para preguntar una duda existencial. ${target.name} se confunde y pierde fuerza.`
+                message: `${source.displayName || source.name} levanta la mano para preguntar una duda existencial. ${target.displayName || target.name} se confunde y pierde fuerza.`
             };
         }
     }),
@@ -236,7 +236,7 @@ export const HABILITIES = {
             return {
                 damage,
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} ha ido a clases de refuerzo. ¡Golpea con sabiduría y mejora su propio ataque!`
+                message: `${source.displayName || source.name} ha ido a clases de refuerzo. ¡Golpea con sabiduría y mejora su propio ataque!`
             };
         }
     }),

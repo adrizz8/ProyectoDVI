@@ -117,7 +117,7 @@ export default class BattleManager {
         if (current.type === 'player') {
             this._isBusy = false;
             this._callbacks.onPlayerTurnStarted?.(current.index);
-            this._callbacks.onMessage?.(`Turno de ${current.data.name}`);
+            this._callbacks.onMessage?.(`Turno de ${current.data.displayName || current.data.name}`);
 
             if (this.Tutorial) {
                 if (this.roundCount == 1) {
@@ -191,7 +191,7 @@ export default class BattleManager {
             targetIndex: participant.index,
             targetType: 'player',
             mpGained: guardResult.mpGained,
-            message: `${player.name} se pone en posición de defensa.`
+            message: `${player.displayName || player.name} se pone en posición de defensa.`
         });
 
         this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
@@ -243,7 +243,7 @@ export default class BattleManager {
         if (this.enemies.every(e => e.isDead)) {
             this._handleAllEnemiesDeath();
         } else if (enemyResult.isDead) {
-            this._callbacks.onMessage?.(`¡${target.name} fue derrotado!`);
+            this._callbacks.onMessage?.(`¡${target.displayName || target.name} fue derrotado!`);
             this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
         } else {
             this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
@@ -266,8 +266,10 @@ export default class BattleManager {
         }
 
         const participant = this.getActiveParticipant().data;
+        const participantName = participant.displayName || participant.name;
+        const targetName = target.displayName || target.name;
 
-        let resultMessage = `${participant.name} usó ${item.name} en ${target.name}.`;
+        let resultMessage = `${participantName} usó ${item.name} en ${targetName}.`;
 
         if (item.heal) {
             target.hp = Math.min(target.maxHp, target.hp + item.heal);
@@ -381,7 +383,7 @@ export default class BattleManager {
                 this._callbacks.onEnemyActionResult?.({
                     actionName: result.actionName,
                     damage: damageTaken,
-                    targetName: finalTarget.name,
+                    targetName: finalTarget.displayName || finalTarget.name,
                     targetIndex: finalTargetIndex,
                     targetType: finalTargetType,
                     targetHP: finalTarget.hp,
@@ -406,7 +408,7 @@ export default class BattleManager {
             this._callbacks.onEnemyActionResult?.({
                 actionName: action.actionName,
                 damage: result.damageTaken,
-                targetName: target.name,
+                targetName: target.displayName || target.name,
                 targetIndex: targetIdx,
                 targetHP: target.hp,
                 targetDead: result.isDead,
@@ -431,7 +433,7 @@ export default class BattleManager {
         this._callbacks.onEnemyActionResult?.({
             actionName: `${currentEnemy.name} ataca`,
             damage: result.damageTaken,
-            targetName: target.name,
+            targetName: target.displayName || target.name,
             targetIndex: targetIdx,
             targetHP: target.hp,
             targetDead: result.isDead,
@@ -499,9 +501,10 @@ export default class BattleManager {
                     const leveledLogs = gm.gainExp(p.name, totalExp);
                     if (leveledLogs) {
                         leveledLogs.forEach(log => {
-                            this._callbacks.onMessage?.(`¡${p.name} subió al nivel ${log.level}!`);
+                            const playerName = p.displayName || p.name;
+                            this._callbacks.onMessage?.(`¡${playerName} subió al nivel ${log.level}!`);
                             if (log.learnedSkill) {
-                                this._callbacks.onMessage?.(`¡${p.name} aprendió ${log.learnedSkill}!`);
+                                this._callbacks.onMessage?.(`¡${playerName} aprendió ${log.learnedSkill}!`);
                             }
                         });
                     }

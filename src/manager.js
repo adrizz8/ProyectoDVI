@@ -397,4 +397,42 @@ export default class GameManager {
         }
 
     }
+
+    /**
+     * Cambia el nombre de Jugador1 por el nombre personalizado del usuario.
+     * @param {string} newName - El nuevo nombre del jugador
+     */
+    setPlayerName(newName) {
+        if (!newName || newName.trim() === '') {
+            return; // Si no hay nombre, mantener Jugador1
+        }
+
+        // Si el nombre ya existe en playerStats, no cambiar
+        if (newName !== 'Jugador1' && this.playerStats[newName]) {
+            return;
+        }
+
+        // Transferir los datos de Jugador1 al nuevo nombre
+        if (this.playerStats['Jugador1']) {
+            this.playerStats[newName] = this.playerStats['Jugador1'];
+            delete this.playerStats['Jugador1'];
+        }
+
+        // Actualizar displayName para que muestre el nombre ingresado
+        if (this.playerStats[newName]) {
+            this.playerStats[newName].displayName = newName;
+        }
+
+        // Actualizar la progresión
+        if (this.progression['Jugador1']) {
+            this.progression[newName] = this.progression['Jugador1'];
+            delete this.progression['Jugador1'];
+        }
+
+        // Actualizar ActualPlayers
+        const index = this.ActualPlayers.indexOf('Jugador1');
+        if (index !== -1) {
+            this.ActualPlayers[index] = newName;
+        }
+    }
 }

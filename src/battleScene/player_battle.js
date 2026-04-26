@@ -28,6 +28,7 @@ export default class PlayerBattle {
 
     constructor(stats) {
         this.name = stats.name;
+        this.displayName = stats.displayName || stats.name;
         this.hp = stats.hp;
         this.maxHp = stats.maxHp;
         this.mp = stats.mp;

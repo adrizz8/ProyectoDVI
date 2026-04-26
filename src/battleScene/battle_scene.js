@@ -598,9 +598,9 @@ export default class BattleScene extends Phaser.Scene {
         if (!msg) {
             const player = this.battle_manager.getActiveParticipant().data;
             if (result.targetType === 'player') {
-                msg = `¡${result.actionName} de ${player.name} sobre un aliado!\n${result.heal ? `Cura ${result.heal} HP.` : ''}`;
+                msg = `¡${result.actionName} de ${player.displayName || player.name} sobre un aliado!\n${result.heal ? `Cura ${result.heal} HP.` : ''}`;
             } else {
-                msg = `¡${result.actionName} de ${player.name}!\nCausa ${result.damage} de daño.`;
+                msg = `¡${result.actionName} de ${player.displayName || player.name}!\nCausa ${result.damage} de daño.`;
             }
         }
 

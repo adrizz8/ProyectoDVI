@@ -23,7 +23,7 @@ export default class prematricula_scene extends Phaser.Scene {
                 this.time.addEvent({
                     delay: 400, // ms
                     callback: () => {
-                        this.scene.start('level3')
+                        this.scene.start('IntroScene')
                     }
                 });
             }, '');

@@ -60,13 +60,20 @@ export default class EstrategiaScene extends Phaser.Scene {
     crearCardPersonaje(xIgnored, yIgnored, nombre, stats) {
         // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
 
+        const gm = GameManager.getInstance();
+        const playerIndex = gm.ActualPlayers.indexOf(nombre);
+        
+        // Mapeo de índice de jugador a tecla de coordenadas
+        const playerKeys = ['Jugador1', 'Jugador2', 'Jugador3', 'Jugador4'];
+        const playerKey = playerKeys[playerIndex] || 'Jugador1';
+
         const coordenadasNombres = {
             Jugador1: { x: 211, y: 15 },
             Jugador3: { x: 720, y: 112 },
             Jugador2: { x: 211, y: 250 },
             Jugador4: { x: 720, y: 442 }
         };
-        const posNombre = coordenadasNombres[nombre] || { x: 170, y: 112 };
+        const posNombre = coordenadasNombres[playerKey] || { x: 170, y: 112 };
 
         const displayName = stats.displayName || `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
         this.add.text(posNombre.x, posNombre.y, displayName, {
@@ -91,7 +98,7 @@ export default class EstrategiaScene extends Phaser.Scene {
             Jugador4: { x: 675, y: 558 }
         };
 
-        const baseBar = coordenadasBarra[nombre]
+        const baseBar = coordenadasBarra[playerKey] || { x: 117.50, y: 227 };
         const barraX = baseBar.x;
         const barraY = baseBar.y;
         const barraWidth = 190;
@@ -137,7 +144,7 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 };
 
-const pos = coordenadasStats[nombre];
+const pos = coordenadasStats[playerKey] || coordenadasStats['Jugador1'];
 
 const coordenadasNivel = {
     Jugador1: {
@@ -158,7 +165,7 @@ const coordenadasNivel = {
     }
 };
 
-const posNivel = coordenadasNivel[nombre];
+const posNivel = coordenadasNivel[playerKey] || coordenadasNivel['Jugador1'];
 
 const estiloNivel = {
     fontSize: '16px',
@@ -211,8 +218,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
             equipamiento: { x: 100, y: 225 }
         };
 
-        const gm = GameManager.getInstance();
-        const configBotones = coordenadasBotones[nombre] || defaultBotones;
+        const configBotones = coordenadasBotones[playerKey] || defaultBotones;
         const posHabilidades = configBotones.habilidades || defaultBotones.habilidades;
         const posEquipamiento = configBotones.equipamiento || defaultBotones.equipamiento;
 

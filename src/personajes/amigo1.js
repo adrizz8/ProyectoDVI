@@ -170,7 +170,7 @@ export default class amigo1 extends NPC {
             // Ya está en el grupo, pero puede hablar
             this.scene.showDialogue(
                 'Aguanta, novato. Cuando hayamos limpiado el Aula 1, descansamos.',
-                'P1'
+                'Fernando'
             );
             return;
         }
@@ -182,11 +182,11 @@ export default class amigo1 extends NPC {
             () => {
                 this.scene.showDialogue(
                     'Chill bro, cómo se nota que eres novato.',
-                    'P1',
+                    'Fernando',
                     () => {
                         this.scene.showDialogue(
                             'Me llamo Fernando, soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
-                            'P1',
+                            'Fernando',
                             () => {
                                 // Reclutamiento de P1
                                 this.unirse();
