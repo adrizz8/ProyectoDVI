@@ -36,20 +36,20 @@ export default class Pasillo extends Phaser.Scene {
             map.heightInPixels
         );
 
-        // Tileset utilizado en pasillo.json
-        const tilesinterior = map.addTilesetImage('tilesinterior', 'tilesinterior');
-        const allTilesets = [tilesinterior];
+        const tilesCafeteria = map.addTilesetImage('tilesetinteriordvifinal', 'tilesCafeteria');
 
-        // Capas del mapa (orden igual que en Tiled)
-        // Nota: 'colisones' es el nombre exacto tal como está en el JSON (sin segunda 'i')
-        const colisiones = map.createLayer('colisones', allTilesets, 0, 0);
-        const fondo = map.createLayer('fondo', allTilesets, 0, 0);
-        const pared = map.createLayer('pared', allTilesets, 0, 0);
-        const ventana = map.createLayer('ventana', allTilesets, 0, 0);
-        const puertasYBanco = map.createLayer('puertas y banco', allTilesets, 0, 0);
+        const suelo = map.createLayer('suelo', tilesCafeteria, 0, 0);
+        const pared = map.createLayer('paredes', tilesCafeteria, 0, 0);
+        const puertas = map.createLayer('puertas', tilesCafeteria, 0, 0);
+        const ventanas = map.createLayer('ventanas', tilesCafeteria, 0, 0);
+        const decoracion = map.createLayer('decoracion', tilesCafeteria, 0, 0);
+
+
+
+        const colisiones = map.createLayer('colisiones', tilesCafeteria, 0, 0);
 
         // Colisiones
-        colisiones.setCollisionByExclusion([-1]);
+        colisiones.setCollisionByProperty({ collides: true });
         colisiones.setVisible(false);
 
         // Spawn del jugador
