@@ -188,8 +188,8 @@ export default class MapaFuera extends Phaser.Scene {
                 this.player2 = new primerencuentro(this, this.player, spawnX2, spawnY2, 'estudianteprimero', 0, {
                     spriteKey: 'estudiantebattle',
                     name: 'Estudiante con prisa',
-                    hp: 2200,
-                    maxHp: 2200,
+                    hp: 22,
+                    maxHp: 22,
                     damage: 6,
                     speed: 3,
                     defense: 8,
@@ -197,7 +197,7 @@ export default class MapaFuera extends Phaser.Scene {
                     maxMp: 10,
                     expReward: 100,
                     habilidades: []
-                }, " ¿Quien eres tu?, te vas a enterar.", null, null,true);
+                }, " ¿Quien eres tu?, te vas a enterar.", null, null, true);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug, this.player, () => {
@@ -291,6 +291,13 @@ export default class MapaFuera extends Phaser.Scene {
     _mostrarDialogosProfs() {
         this.player.freeze();
 
+        // Los profesores te curan tras el primer combate
+        const gm = GameManager.getInstance();
+        gm.ActualPlayers.forEach(name => {
+            gm.healPlayer(name, 999);
+            gm.healMP(name, 999);
+        });
+
         // Placeholder visual: dos rectángulos con nombre encima
         // Carlos - rectángulo azul oscuro
         const carlosRect = this.add.rectangle(this.player.x - 120, this.player.y - 60, 48, 64, 0x2244aa)
@@ -324,8 +331,12 @@ export default class MapaFuera extends Phaser.Scene {
             'Ismael'
         );
         this.dialogueManager.showDialogue(
+            'Hemos visto tu pelea con ese chico, has luchado bien. Por cierto, te vamos a curar para que te recuperes y puedas realizar esta misión tan importante.',
+            'Carlos'
+        );
+        this.dialogueManager.showDialogue(
             '¡Y no olvides el Pincho de Tortilla! Es el combustible del héroe en este motor. ¡Suerte, Beta Tester!',
-            'Carlos',
+            'Ismael',
             limpiarProfs
         );
     }

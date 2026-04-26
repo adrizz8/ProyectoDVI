@@ -5,7 +5,7 @@ import npc from './personajes/npc.js'
 import NPCBattle from './personajes/npc_battle.js';
 import DialogueManager from './dialogueManager.js';
 import cafeteria_loco from './personajes/cafeteria_loco.js';
-import miron from './personajes/miron.js';
+
 import GameManager from './manager.js';
 import amigo1 from './personajes/amigo1.js';
 import conserje from './personajes/conserje.js'
@@ -103,6 +103,7 @@ export default class Cafeteria extends Phaser.Scene {
             this._generarCafeteriaLibeada();
         }
 
+
         // --- Lógica de Compañero (P1) ---
         // Se asegura de que P1 aparezca si ya está en el equipo, evitando duplicados
         if (this.gm.ActualPlayers.includes('Jugador2') && !this.amigo1) {
@@ -135,9 +136,9 @@ export default class Cafeteria extends Phaser.Scene {
                 if (this._transitioning || this._zonaDerMustExit) return;
 
                 // Bloqueo de progresión: requiere derrotar al boss y a los otros dos npcs
-                if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf') || !this.gm.isDefeated('npc_miron_caf')) {
+                if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf')) {
                     this._zonaDerMustExit = true;
-                    this.showDialogue("¡Espera! No puedes pasar al pasillo todavía. El conserje y esos dos tipos raros siguen dando problemas. ¡Encárgate de ellos primero!", "Veterano de Rugby");
+                    this.showDialogue("¡Espera! No puedes pasar al pasillo todavía. El conserje y ese tipo raro siguen dando problemas. ¡Encárgate de ellos primero!", "Veterano de Rugby");
                     return;
                 }
 
@@ -171,7 +172,7 @@ export default class Cafeteria extends Phaser.Scene {
             if (this._transitioning || this._zonaIzqMustExit) return;
 
             // Bloqueo de progresión: requiere derrotar al boss y a los otros dos npcs
-            if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf') || !this.gm.isDefeated('npc_miron_caf')) {
+            if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf')) {
                 // Crear al veterano solo si no existe ya
                 if (!this.veteranoRugby) {
                     this.veteranoRugby = new npc(this, this.player, 100, 100, 'npc2', 2, "¡Eh! Ni se te ocurra intentar pasar al pasillo. Aquí aplicamos la ley de la melé: nadie avanza hasta que el campo esté despejado. ¡Lárgate y derrota a esos tres!", null, null, "Veterano de Rugby");
@@ -283,15 +284,15 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
         this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {
             name: 'Conserje',
-            hp: 80,
-            maxHp: 80,
-            damage: 5,
-            speed: 4,
-            defense: 8,
-            mp: 50,
-            maxMp: 50,
-            expReward: 300,
-            habilidades: ['Ir a la Academia'],
+            hp: 40,
+            maxHp: 40,
+            damage: 11,
+            speed: 8,
+            defense: 16,
+            mp: 11,
+            maxMp: 11,
+            expReward: 60,
+            habilidades: ['Ir a la Academia', 'Código Fácil'],
             spriteKey: 'toy'
         }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
@@ -319,7 +320,6 @@ export default class Cafeteria extends Phaser.Scene {
             });
 
             this.gm.markDefeated('npc_loco_caf');
-            this.gm.markDefeated('npc_miron_caf');
         }
 
         // --- NPCs de fondo asustados (moviéndose nerviosos) ---
@@ -364,12 +364,12 @@ export default class Cafeteria extends Phaser.Scene {
             hp: 30,
             maxHp: 30,
             damage: 7,
-            speed: 14,
+            speed: 16,
             defense: 11,
             mp: 8,
             maxMp: 8,
             expReward: 50,
-            habilidades: ['Entrega Última Hora', 'Sentarse Atrás'],
+            habilidades: ['Entrega Última Hora'],
             spriteKey: 'npc1'
         }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 
@@ -388,34 +388,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         this.enemies.add(loco);
 
-        // --- NPC Mirón ---
-        const per_miron = new miron(this, this.player, 707, 340, null, 0, {
-            name: 'Mirón',
-            hp: 25,
-            maxHp: 25,
-            damage: 2,
-            speed: 3,
-            defense: 6,
-            mp: 20,
-            maxMp: 20,
-            expReward: 100,
-            habilidades: ['Correo Vacío'],
-            spriteKey: 'npc3'
-        }, 'Te pille', null, null, 'npc_miron_caf');
 
-        if (this.gm.isJustDefeated('npc_miron_caf')) {
-            const posi = this.getPosiPostComb(this.savedPos);
-            per_miron.x = posi.x;
-            per_miron.y = posi.y;
-            per_miron.setDirection(posi.direction);
-            per_miron.freeze();
-            this.gm.setJustDefeated('');
-        } else {
-            if (this.gm.isDefeated('npc_miron_caf')) {
-                per_miron.freeze();
-            }
-        }
-        this.enemies.add(per_miron);
 
         // --- Andrés en la barra (da el Pincho de Tortilla) ---
         this._spawnAndres(140);
@@ -487,6 +460,7 @@ export default class Cafeteria extends Phaser.Scene {
             });
         }, null, 'Andrés (Barra)');
     }
+
 
     /**
      * Genera el estado de la cafetería LIBERADA (boss ya derrotado antes).

@@ -79,7 +79,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
-                message: `${source.name} usa un Ataque Potente sobre ${target.name}!`
+                message: `${source.name} entrega la práctica en el último segundo. ¡${target.name} recibe un impacto crítico!`
             };
         }
     }),
@@ -94,7 +94,7 @@ export const HABILITIES = {
             const healAmount = source.maxHp * 0.25;
             return {
                 heal: healAmount,
-                message: `${source.name} lanza Cura sobre ${target.name}!`
+                message: `${source.name} asiente con seguridad sin haber entendido nada. ¡Recupera confianza y vida!`
             };
         }
     }),
@@ -110,7 +110,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia) + 10;
             return {
                 damage,
-                message: `${source.name} lanza una Bola de Fuego a ${target.name}!`
+                message: `${source.name} exclama "¡En mi PC funciona!". La lógica de ${target.name} colapsa ante la excusa.`
             };
         }
     }),
@@ -126,7 +126,7 @@ export const HABILITIES = {
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
-                message: `${source.name} asesta un Golpe Triple a ${target.name}!`
+                message: `${source.name} consulta rápidamente a la IA. ¡Lanza una ráfaga de respuestas contra ${target.name}!`
             };
         }
     }),
@@ -134,16 +134,16 @@ export const HABILITIES = {
     'Prácticas Wuolah': new Hability({
         id: 'attack_up',
         name: 'Prácticas Wuolah',
-        description: 'Sube tu propio ataque un 25% gracias a unos buenos apuntes.',
-        cost: 2,
+        description: 'Sube tu propio ataque un 20% gracias a unos buenos apuntes.',
+        cost: 3,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDamage * 0.25);
+            const buffAmount = Math.floor(source.baseDamage * 0.20);
             source.damage += buffAmount;
             return {
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} sube su propio ataque en ${buffAmount} puntos!`
+                message: `${source.name} descarga los mejores apuntes de Wuolah. ¡Su capacidad ofensiva aumenta!`
             };
         }
     }),
@@ -151,16 +151,16 @@ export const HABILITIES = {
     'Sentarse Atrás': new Hability({
         id: 'defense_up',
         name: 'Sentarse Atrás',
-        description: 'Sube tu propia defensa un 25% evitando que te vean.',
-        cost: 2,
+        description: 'Sube tu propia defensa un 20% evitando que te vean.',
+        cost: 3,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDefense * 0.25);
+            const buffAmount = Math.floor(source.baseDefense * 0.20);
             source.defense += buffAmount;
             return {
                 buff: { stat: 'defense', amount: buffAmount },
-                message: `${source.name} sube su propia defensa en ${buffAmount} puntos!`
+                message: `${source.name} se camufla en la última fila. ¡Su defensa mejora al pasar desapercibido!`
             };
         }
     }),
@@ -168,16 +168,16 @@ export const HABILITIES = {
     'Código Fácil': new Hability({
         id: 'speed_up',
         name: 'Código Fácil',
-        description: 'Sube tu propia velocidad un 25% simplificando el trabajo.',
+        description: 'Sube tu propia velocidad un 20% simplificando el trabajo.',
         cost: 2,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseSpeed * 0.25);
+            const buffAmount = Math.floor(source.baseSpeed * 0.20);
             source.speed += buffAmount;
             return {
                 buff: { stat: 'speed', amount: buffAmount },
-                message: `${source.name} sube su propia velocidad en ${buffAmount} puntos!`
+                message: `${source.name} aplica principios de Clean Code. ¡Su velocidad de ejecución aumenta!`
             };
         }
     }),
@@ -185,16 +185,16 @@ export const HABILITIES = {
     'Correo Vacío': new Hability({
         id: 'attack_nerf',
         name: 'Correo Vacío',
-        description: 'Baja el ataque del enemigo un 25% por el error cometido.',
+        description: 'Baja el ataque del enemigo un 20% por el error cometido.',
         cost: 2,
         type: 'nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const nerfAmount = Math.floor(target.baseDamage * 0.25);
+            const nerfAmount = Math.floor(target.baseDamage * 0.20);
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 nerf: { stat: 'damage', amount: nerfAmount },
-                message: `${source.name} debilita el ataque de ${target.name} en ${nerfAmount} puntos!`
+                message: `${source.name} envía un correo sin adjuntar el archivo. ${target.name} pierde el tiempo buscándolo y se debilita.`
             };
         }
     }),
@@ -204,19 +204,19 @@ export const HABILITIES = {
     'Preguntar Duda': new Hability({
         id: 'weakening_strike',
         name: 'Preguntar Duda',
-        description: 'Ataca al enemigo y reduce su ataque un 15% al distraerlo.',
+        description: 'Ataca al enemigo y reduce su ataque un 10% al distraerlo.',
         cost: 4,
         type: 'damage+nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const nerfAmount = Math.floor(target.baseDamage * 0.15);
+            const nerfAmount = Math.floor(target.baseDamage * 0.10);
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 damage,
                 nerf: { stat: 'damage', amount: nerfAmount },
-                message: `${source.name} asesta un Golpe Debilitador a ${target.name}!\n¡Su ataque baja ${nerfAmount} puntos!`
+                message: `${source.name} levanta la mano para preguntar una duda existencial. ${target.name} se confunde y pierde fuerza.`
             };
         }
     }),
@@ -224,19 +224,19 @@ export const HABILITIES = {
     'Ir a la Academia': new Hability({
         id: 'invigorating_strike',
         name: 'Ir a la Academia',
-        description: 'Ataca al objetivo y sube tu propio ataque un 15% por lo aprendido.',
+        description: 'Ataca al objetivo y sube tu propio ataque un 10% por lo aprendido.',
         cost: 4,
         type: 'damage+buff',
         targetType: 'selectable',
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const buffAmount = Math.floor(source.baseDamage * 0.15);
+            const buffAmount = Math.floor(source.baseDamage * 0.10);
             source.damage += buffAmount;
             return {
                 damage,
                 buff: { stat: 'damage', amount: buffAmount },
-                message: `${source.name} asesta un Golpe Vigorizante a ${target.name}!\n¡Su propio ataque sube ${buffAmount} puntos!`
+                message: `${source.name} ha ido a clases de refuerzo. ¡Golpea con sabiduría y mejora su propio ataque!`
             };
         }
     }),

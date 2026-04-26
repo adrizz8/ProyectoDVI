@@ -118,10 +118,10 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 });
     this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 });
-    this.load.spritesheet('lanchares',lanchares,{ frameWidth: 64, frameHeight: 64 });
-    this.load.spritesheet('miniboss',miniboss,{ frameWidth: 68, frameHeight: 72 });
-    this.load.image('lancharesbatalla',lancharesbatalla);
-    this.load.image('minibossbatalla',minibossbatalla);
+    this.load.spritesheet('lanchares', lanchares, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('miniboss', miniboss, { frameWidth: 68, frameHeight: 72 });
+    this.load.image('lancharesbatalla', lancharesbatalla);
+    this.load.image('minibossbatalla', minibossbatalla);
     this.load.image('toy', toy);
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);

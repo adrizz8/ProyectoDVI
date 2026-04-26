@@ -100,16 +100,16 @@ export default class EnemyBattle {
             };
         }
 
-        // 3. Si no usa habilidad y tiene poco MP, probabilidad de Guardia (40%)
-        if (this.mp < 15 && Math.random() < 0.70) {
+        if (this.habilidades.length > 0 && usableSkills.length == 0 && Math.random() < 0.75) {
             return { type: 'guard', actionName: 'Guardia' };
         }
-        if (this.mp < this.maxMp * 0.8 && Math.random() < 0.20) {
+        // 3. Si no usa habilidad y tiene poco MP, probabilidad de Guardia (25%)
+        if (this.mp < this.maxMp * 0.8 && Math.random() < 0.25) {
             return { type: 'guard', actionName: 'Guardia' };
         }
 
         // 4. Por defecto: Ataque Básico (Calculando daño y crítico aquí)
-        const potencia = 30;
+        const potencia = 20;
         const isCrit = Math.random() < (this.luck / 100);
         const rawDamage = Math.floor(this.damage * potencia);
         const finalDamage = isCrit ? Math.floor(rawDamage * 1.5) : rawDamage;
@@ -150,7 +150,7 @@ export default class EnemyBattle {
         const currentDefense = Math.max(1, this.defense);
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        let damageTaken = Math.floor(damage / (currentDefense * 0.2));
+        let damageTaken = Math.floor((damage / currentDefense) * 0.2);
         damageTaken = Math.max(1, damageTaken);
 
         // La guardia reduce el daño a la mitad

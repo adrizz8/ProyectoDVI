@@ -50,7 +50,7 @@ export default class GameManager {
                 habilidades: [
                     'Pregunta a ChatGPT'
                 ],
-                objeto: 'teclado_mecanico'
+                objeto: ''
             },
             'Jugador2': {
 
@@ -59,9 +59,9 @@ export default class GameManager {
                 maxHp: 30,
                 mp: 10,
                 maxMp: 10,
-                damage: 20,
-                speed: 8,
-                defense: 20,
+                damage: 17,
+                speed: 6,
+                defense: 17,
                 luck: 8,
                 level: 1,
                 exp: 0,
@@ -145,20 +145,20 @@ export default class GameManager {
         // Define el crecimiento por nivel y las habilidades que se aprenden.
         this.progression = {
             'Jugador1': {
-                hp: 3, mp: 2, damage: 2, speed: 2, defense: 2,
-                skills: { 2: 'Prácticas Wuolah', 4: 'Entrega Última Hora', 7: 'Ir a la Academia' }
+                hp: 3, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
+                skills: { 2: 'Prácticas Wuolah', 4: 'Entrega Última Hora', 7: 'Correo Vacio' }
             },
             'Jugador2': {
-                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
-                skills: { 2: 'Sentarse Atrás', 5: 'Preguntar Duda' }
+                hp: 2, mp: 1, damage: 1, speed: 1, defense: 1, luck: 0,
+                skills: { 2: 'Preguntar Duda' }
             },
             'Jugador3': {
-                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
-                skills: { 2: 'Asentir sin entender', 4: 'Código Fácil' }
+                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1, luck: 0,
+                skills: {}
             },
             'Jugador4': {
-                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1,
-                skills: { 2: 'Funciona en mi PC', 4: 'Pregunta a ChatGPT' }
+                hp: 1, mp: 1, damage: 1, speed: 1, defense: 1, luck: 0,
+                skills: {}
             }
         };
 
@@ -288,6 +288,13 @@ export default class GameManager {
         const p = this.playerStats[playerName];
         if (p) {
             p.hp = Math.min(p.maxHp, p.hp + amount);
+        }
+    }
+
+    healMP(playerName, amount) {
+        const p = this.playerStats[playerName];
+        if (p) {
+            p.mp = Math.min(p.maxMp, p.mp + amount);
         }
     }
 

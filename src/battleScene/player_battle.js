@@ -90,7 +90,7 @@ export default class PlayerBattle {
      * @returns {{ damage: number, actionName: string }}
      */
     attack() {
-        const potencia = 30;
+        const potencia = 20;
         const isCrit = Math.random() < (this.luck / 100);
 
         // (Ataque * Potencia)
@@ -147,7 +147,7 @@ export default class PlayerBattle {
         const currentDefense = Math.max(1, this.defense); // Prevent division by zero
 
         // Nueva Fórmula: Resultado = (Ataque + Potencia) / Defensa
-        const damageAfterDefense = Math.max(1, Math.floor(rawDamage / currentDefense));
+        const damageAfterDefense = Math.max(1, Math.floor((rawDamage / currentDefense) * 0.2));
 
         let damageTaken = guarded ? Math.floor(damageAfterDefense / 2) : damageAfterDefense;
         damageTaken = Math.max(1, damageTaken); // Al menos 1 de daño garantizado

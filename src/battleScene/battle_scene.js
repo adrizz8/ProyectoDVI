@@ -6,6 +6,7 @@ import { ITEM_TYPES } from '../item/item_types.js';
 import SkillMenu from './skill_menu.js';
 import BagMenu from './bag_menu.js';
 import ActionMenu from './action_menu.js';
+import CombatGenerator from '../encounters/combat_generator.js';
 
 /**
  * BattleScene
@@ -54,92 +55,10 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     generarGrupoEnemigos(gm) {
-        // 1. Determinar cuántos enemigos habrá (1 a 4)
-        const cantidad = this.getCanitdadEnemigosAleatoria();
-        const grupo = [];
-
-        // 2. Generar cada enemigo individualmente
-        for (let i = 0; i < cantidad; i++) {
-            grupo.push(this.generarEnemigoAleatorio(gm, cantidad));
-        }
-
-        return grupo;
+        return CombatGenerator.generateEncounter(gm);
     }
 
-    getCanitdadEnemigosAleatoria() {
-        const n = Math.random();
 
-        if (n < 0.40) return 1;
-        if (n < 0.70) return 1;
-        if (n < 0.90) return 1;
-        return 1;
-    }
-
-    generarEnemigoAleatorio(gm, cantidad) {
-        const nombresEquipo = Object.keys(gm.playerStats);
-        const nombreAzar = nombresEquipo[Math.floor(Math.random() * nombresEquipo.length)];
-        const ref = gm.playerStats[nombreAzar];
-
-        const variacion = () => Math.floor(Math.random() * 0.2) + 0.9;
-
-        const calculadoMaxHp = Math.max(1, ref.maxHp * variacion());
-        const calculadoMaxMp = Math.max(1, ref.maxMp * variacion());
-        const calculadoBaseDamage = Math.max(1, ref.damage * variacion());
-        const calculadoBaseSpeed = Math.max(1, ref.speed * variacion());
-        const calculadoBaseDefense = Math.max(1, ref.defense * variacion());
-
-        return {
-            name: `Toy Salvaje`,
-            maxHp: calculadoMaxHp,
-            hp: calculadoMaxHp,
-            baseDamage: calculadoBaseDamage,
-            damage: calculadoBaseDamage,
-            baseSpeed: calculadoBaseSpeed,
-            speed: calculadoBaseSpeed,
-            baseDefense: calculadoBaseDefense,
-            defense: calculadoBaseDefense,
-            baseLuck: ref.luck,
-            maxMp: calculadoMaxMp,
-            mp: calculadoMaxMp,
-            luck: ref.luck,
-            spriteKey: 'toy',
-            expReward: Math.floor(50 / cantidad),
-            moneyReward: Math.floor((20 + Math.random() * 20) / cantidad),
-            // Llamamos a la nueva función para obtener 2 habilidades aleatorias
-            habilidades: this.obtenerHabilidadesAleatorias(2),
-            objeto: this.obtenerObjetoAleatorio()
-        };
-    }
-
-    /**
- * Selecciona un objeto de tipo 'equipment' aleatoriamente del diccionario ITEM_TYPES.
- * @param {number} probabilidad - Valor entre 0 y 1 (ej: 0.3 para un 30% de éxito).
- * @returns {Object|null} El objeto de equipo o null si no hubo suerte.
- */
-    obtenerObjetoAleatorio(probabilidad) {
-        if (Math.random() > probabilidad) {
-            return '';
-        }
-        const equiposDisponibles = Object.values(ITEM_TYPES).filter(item => {
-            return item.type === 'equipment';
-        });
-
-        if (equiposDisponibles.length === 0) {
-            console.warn("No se encontraron objetos de tipo 'equipment' en ITEM_TYPES.");
-            return '';
-        }
-
-        const indiceAzar = Math.floor(Math.random() * equiposDisponibles.length);
-        const itemElegido = equiposDisponibles[indiceAzar];
-
-        return { ...itemElegido };
-    }
-
-    obtenerHabilidadesAleatorias(num) {
-        const todasLasKeys = Object.keys(HABILITIES);
-        const mezcladas = todasLasKeys.sort(() => 0.5 - Math.random());
-        return mezcladas.slice(0, num);
-    }
 
     create() {
         const W = this.scale.width;
@@ -674,6 +593,7 @@ export default class BattleScene extends Phaser.Scene {
     _onPlayerActionResult(result) {
         this.actionMenu.setVisibility(false);
 
+        const hadMessage = !!result.message;
         let msg = result.message;
         if (!msg) {
             const player = this.battle_manager.getActiveParticipant().data;
@@ -684,8 +604,12 @@ export default class BattleScene extends Phaser.Scene {
             }
         }
 
+        if (result.damage > 0 && hadMessage) {
+            msg += `\n¡Causa ${result.damage} de daño!`;
+        }
+
         if (result.isCrit) {
-            msg += '\n¡GOLPE CRÍTICO!';
+            msg += `\n¡GOLPE CRÍTICO!`;
         }
 
         if (result.targetType === 'enemy' && this._enemySprites[result.targetIndex]) {
@@ -824,10 +748,17 @@ export default class BattleScene extends Phaser.Scene {
         this._updateEnemiesHP();
 
         // Usar el mensaje de la habilidad si existe, o construir uno genérico
+        const hadMessage = !!result.message;
         let msg = result.message
             || `${result.actionName} contra ${result.targetName}.\n¡Causa ${result.damage} de daño!`;
 
-        if (result.isCrit) msg += '\n¡GOLPE CRÍTICO!';
+        if (result.damage > 0 && hadMessage) {
+            msg += `\n¡Causa ${result.damage} de daño!`;
+        }
+
+        if (result.isCrit) {
+            msg += `\n¡GOLPE CRÍTICO!`;
+        }
 
         this._setMessage(msg);
     }

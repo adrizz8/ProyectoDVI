@@ -92,6 +92,9 @@ export default class Pasillo extends Phaser.Scene {
             this.physics.add.collider(this.amigo1, this.colisiones);
         }
 
+        // --- NPC que cura ---
+        this._spawnHealer(30, 300);
+
         // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
         const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
         this.physics.world.enable(salidaCafeteriaDer, Phaser.Physics.Arcade.STATIC_BODY);
@@ -322,6 +325,20 @@ export default class Pasillo extends Phaser.Scene {
             null, null,
             'Dueño de Tostadora'
         );
+    }
+
+    _spawnHealer(x, y) {
+        new npc(this, this.player, x, y, 'npc4', 4, " ", () => {
+            this.showDialogue('¿Te encuentras bien? Deja que te cure un poco, que se te ve mala cara...', 'Enfermera', () => {
+                this.gm.ActualPlayers.forEach(name => {
+                    this.gm.healPlayer(name, 999);
+                    this.gm.healMP(name, 999);
+                });
+                this.time.delayedCall(500, () => {
+                    this.showDialogue('¡Listo! ¡Como nuevo! Ten más cuidado la próxima vez.', 'Enfermera');
+                });
+            });
+        }, null, 'Enfermera');
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

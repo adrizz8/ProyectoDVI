@@ -33,7 +33,9 @@ export default class NPCBattle extends NPC {
             mp: stats.mp,
             maxMp: stats.maxMp,
             habilidades: stats.habilidades,
-            objeto: stats.objeto
+            objeto: stats.objeto,
+            expReward: stats.expReward,
+            moneyReward: stats.moneyReward
         };
     }
     

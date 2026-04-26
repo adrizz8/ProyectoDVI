@@ -27,9 +27,9 @@ export default class conserje extends NPCBattle {
             return;
         }
 
-        // Bloqueo de progresión: hay que derrotar al loco y al mirón primero, y reclutar a P1
+        // Bloqueo de progresión: hay que derrotar al loco primero, y reclutar a P1
         const locoDerrotado = gm.isDefeated('npc_loco_caf');
-        const mironDerrotado = gm.isDefeated('npc_miron_caf');
+
         const p1Unido = gm.ActualPlayers.includes('Jugador2');
 
         if (!p1Unido) {
@@ -37,8 +37,8 @@ export default class conserje extends NPCBattle {
             return;
         }
 
-        if (!locoDerrotado || !mironDerrotado) {
-            this.say("¡Eh, tú! No pienses que vas a pasar tan fácilmente. Primero demuéstrame que puedes con esos dos alborotadores de ahí fuera. ¡Vuelve cuando los hayas 'debugeado'!");
+        if (!locoDerrotado) {
+            this.say("¡Eh, tú! No pienses que vas a pasar tan fácilmente. Primero demuéstrame que puedes con ese alborotador de ahí fuera. ¡Vuelve cuando lo hayas 'debugeado'!");
             return;
         }
 
