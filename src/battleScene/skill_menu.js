@@ -20,8 +20,8 @@ export default class SkillMenu {
         this.container.add(bg);
 
         // Title
-        const title = this.scene.add.text(0, -170, 'TÉCNICAS', {
-            fontFamily: 'SFDistantGalaxy', fontSize: '32px', fill: '#ffffff'
+        const title = this.scene.add.text(0, -170, 'HABILIDADES', {
+            fontFamily: 'DistantGalaxy', fontSize: '32px', fill: '#ffffff'
         }).setOrigin(0.5);
         this.container.add(title);
 

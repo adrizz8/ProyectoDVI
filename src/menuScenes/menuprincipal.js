@@ -30,7 +30,7 @@ class MenuPrincipal extends Phaser.Scene {
         this.horasText = this.add.text(305, 150, `Tiempo: ${this.formatearHoras(horasJuego)}`, {
             fontSize: '24px', 
             fill: '#ffffff', 
-            fontFamily: '"Pixelify Sans"', 
+            fontFamily: '"DistantGalaxy"', 
             stroke: '#000000', 
             strokeThickness: 4,
             shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
@@ -41,7 +41,7 @@ class MenuPrincipal extends Phaser.Scene {
         this.add.text(305, 210, `Dinero: ${dinero.toLocaleString()}€`, {
             fontSize: '24px', 
             fill: '#ffffff', 
-            fontFamily: '"Pixelify Sans"', 
+            fontFamily: '"DistantGalaxy"', 
             stroke: '#000000', 
             strokeThickness: 4,
             shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 2, stroke: true, fill: true }
@@ -59,7 +59,7 @@ class MenuPrincipal extends Phaser.Scene {
             const btn = this.add.text(x, y, text, {
                 fontSize: '34px',
                 fill: '#ffffff',
-                fontFamily: '"Pixelify Sans"',
+                fontFamily: '"DistantGalaxy"',
                 align: 'center',
                 stroke: '#000000',
                 strokeThickness: 5,

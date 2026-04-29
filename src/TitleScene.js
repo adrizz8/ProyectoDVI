@@ -36,7 +36,7 @@ export default class TitleScene extends Phaser.Scene {
             fontWeight: 'bold',
             stroke: '#000000',
             strokeThickness: 6,
-            fontFamily: '"Pixelify Sans"',
+            fontFamily: '"DistantGalaxy"',
             shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5);
 
@@ -50,7 +50,7 @@ export default class TitleScene extends Phaser.Scene {
             fontWeight: 'bold',
             stroke: '#000000',
             strokeThickness: 6,
-            fontFamily: '"Pixelify Sans"',
+            fontFamily: '"DistantGalaxy"',
             shadow: { offsetX: 3, offsetY: 3, color: '#000000', blur: 4, stroke: true, fill: true }
         }).setOrigin(0.5);
 
