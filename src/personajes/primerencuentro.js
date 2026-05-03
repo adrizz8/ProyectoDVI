@@ -10,8 +10,8 @@ import NPCBattle from './npc_battle';
 
 export default class primerencuentro extends NPCBattle {
 
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,Tutorial) {
-        super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,null,null,Tutorial);
+    constructor(scene, player, x, y, texture, frame, stats = {}, message = null, onFinish = null, itemId = null, NpcId = 'primerencuentro', Tutorial = false) {
+        super(scene, player, x, y, texture, frame, stats, message, onFinish, itemId, NpcId, null, Tutorial);
 
         
         this.lastDirection='';
@@ -21,7 +21,6 @@ export default class primerencuentro extends NPCBattle {
         this.frozen = true;
         // 1. Ajustar el tamaño (Ancho, Alto)
 
-        this.body.setSize(this.width, this.height);
         
 
         this.body.moves = true;

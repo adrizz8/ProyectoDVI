@@ -18,14 +18,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
      * @param {number} y Coordenada Y
      */
     constructor(scene, x, y, direccion = 'down', encounter = false) {
-        super(scene, x, y);
+        super(scene, x, y, 'player');
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.frozen = false;
         // 1. Ajustar el tamaño (Ancho, Alto)
-
-        this.body.setSize(this.width, this.height);
+        this.body.setSize(this.width * 0.5, this.height * 0.3);
 
         // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
         this.body.setOffset(this.width * 0.25, this.height * 0.7);
@@ -90,6 +89,19 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
+
+        // Control estricto de JustDown para el ratón
+        if (this.scene.input.activePointer.leftButtonDown()) {
+            if (!this._wasMouseDown) {
+                this.mouseJustDown = true;
+                this._wasMouseDown = true;
+            } else {
+                this.mouseJustDown = false;
+            }
+        } else {
+            this._wasMouseDown = false;
+            this.mouseJustDown = false;
+        }
 
         if (this.frozen) {
             this.body.setVelocity(0, 0);
@@ -167,22 +179,28 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     isinteractuable(object) {
+        if (object.baseScaleX === undefined) {
+            object.baseScaleX = object.scaleX;
+            object.baseScaleY = object.scaleY;
+        }
+
         const distance = Phaser.Math.Distance.Between(this.x, this.y, object.x, object.y);
         const threshold = 80;
         if (distance < threshold) {
             if (this.iamlookingat(object)) {
-                object.setScale(1.1);
+                object.setScale(object.baseScaleX * 1.1, object.baseScaleY * 1.1);
 
-                // Si pulsa la tecla de interacción (E)
                 // Solo si el jugador NO está congelado (para no re-interactuar al cerrar diálogos)
-                if (Phaser.Input.Keyboard.JustDown(this.interactKey) && !this.frozen) {
+                if ((Phaser.Input.Keyboard.JustDown(this.interactKey) || this.mouseJustDown) && !this.frozen) {
                     object.interact();
+                    // Consumimos el click para no interactuar con varias cosas a la vez
+                    this.mouseJustDown = false;
                 }
             } else {
-                object.setScale(1);
+                object.setScale(object.baseScaleX, object.baseScaleY);
             }
         } else {
-            object.setScale(1);
+            object.setScale(object.baseScaleX, object.baseScaleY);
         }
     }
 

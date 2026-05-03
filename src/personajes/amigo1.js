@@ -13,11 +13,11 @@ export default class amigo1 extends NPC {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.frozen = false;
-        // 1. Ajustar el tamaño (Ancho, Alto)
-
-        // Ajustar la caja de colisión para que sea solo en los pies y no se atasque
-        this.body.setSize(20, 16);
-        this.body.setOffset(6, 32);
+        
+        // Hacemos que su hitbox sea MÁS PEQUEÑA que la del jugador.
+        // Así nos aseguramos de que si el jugador cabe por un hueco, el amigo no se enganchará en las esquinas.
+        this.body.setSize(this.width * 0.4, this.height * 0.2);
+        this.body.setOffset(this.width * 0.3, this.height * 0.8);
 
         this.gm = GameManager.getInstance();
 

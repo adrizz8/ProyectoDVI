@@ -110,8 +110,8 @@ export default class DialogueManager {
         this.fullTextToType = text;
         this.dialogueText.setText("");
 
-        const gm= GameManager.getInstance();
-        
+        const gm = GameManager.getInstance();
+
         let charIndex = 0;
         if (this.typewriterTimer) this.typewriterTimer.remove();
 
@@ -180,6 +180,10 @@ export default class DialogueManager {
             this.dialogueBox.setVisible(true);
             this.dialogueBox.setAlpha(1);
 
+            // Evitamos que se pueda saltar el diálogo en los primeros 150ms
+            // (esto previene que el mismo click que abrió el diálogo lo cierre de golpe)
+            this._lastOpenedTime = this.scene.time.now;
+
             // Congela al jugador mientras el diálogo está activo
             if (this.scene && this.scene.player && this.scene.player.freeze) {
                 this.scene.player.freeze();
@@ -233,7 +237,7 @@ export default class DialogueManager {
         this.nameBg.fillRoundedRect(-(this._bgWidth / 2) + 10, -this._bgHeight / 2 - 45, nameWidth, 40, 10);
         this.nameBg.lineStyle(2, 0xffffff, 1);
         this.nameBg.strokeRoundedRect(-(this._bgWidth / 2) + 10, -this._bgHeight / 2 - 45, nameWidth, 40, 10);
-        
+
         // Reposicionar el texto del nombre para que esté centrado en su caja
         this.nameText.setX(-(this._bgWidth / 2) + 10 + nameWidth / 2);
 
@@ -271,6 +275,9 @@ export default class DialogueManager {
         // Solo procesamos si el cuadro está visible, no está cerrándose y hay mensajes en cola
         if (!this.dialogueBox.visible || this.dialogueBox.alpha < 0.8 || this.ini >= this.fin) return;
 
+        // Evitar que avance si se acaba de abrir (cooldown de 150ms)
+        if (this.scene.time.now - this._lastOpenedTime < 250) return;
+
         // Si el texto se está escribiendo, lo mostramos entero instantáneamente
         if (this.isTyping) {
             this.completeTypewriter();
@@ -290,10 +297,14 @@ export default class DialogueManager {
                 this.fin = 0;
                 this.hideDialogue();
 
-                // Descongela al jugador si existe
-                if (this.scene && this.scene.player && this.scene.player.unfreeze) {
-                    this.scene.player.unfreeze();
-                }
+                // Descongela al jugador si existe con un pequeño retraso
+                // para evitar doble-inputs. PERO verificamos que this.fin === 0,
+                // ya que onFinish() justo debajo puede haber iniciado otro diálogo!
+                this.scene.time.delayedCall(50, () => {
+                    if (this.fin === 0 && this.scene && this.scene.player && this.scene.player.unfreeze) {
+                        this.scene.player.unfreeze();
+                    }
+                });
 
                 if (onFinish && typeof onFinish === 'function') {
                     onFinish();

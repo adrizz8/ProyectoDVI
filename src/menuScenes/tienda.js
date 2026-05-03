@@ -94,12 +94,14 @@ export default class TiendaUI {
 
         this.container.add([btnSalir]);
 
-        // Tecla escape o espacio para salir
+        // Tecla escape, espacio o CLICK DERECHO para salir
         this.spaceListener = () => { if(this.container.active) this.cerrar(); };
         this.escListener = () => { if(this.container.active) this.cerrar(); };
+        this.rightClickListener = (pointer) => { if(pointer.rightButtonDown() && this.container.active) this.cerrar(); };
         
         this.scene.input.keyboard.on('keydown-SPACE', this.spaceListener);
         this.scene.input.keyboard.on('keydown-ESC', this.escListener);
+        this.scene.input.on('pointerdown', this.rightClickListener);
     }
 
     pedirConfirmacion(art, itemData) {
@@ -182,6 +184,7 @@ export default class TiendaUI {
 
         this.scene.input.keyboard.off('keydown-SPACE', this.spaceListener);
         this.scene.input.keyboard.off('keydown-ESC', this.escListener);
+        this.scene.input.off('pointerdown', this.rightClickListener);
         this.container.destroy();
         if (this.onCerrar) this.onCerrar();
     }

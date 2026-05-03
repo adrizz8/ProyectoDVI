@@ -66,10 +66,16 @@ export default class SalaLancharesScene extends Phaser.Scene {
         
 
         // Menu con espacio
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
+        const launchMenu = () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.pause();
+        };
+
+        this.input.keyboard.on('keydown-SPACE', launchMenu);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) launchMenu();
         });
 
         // Música de mazmorra

@@ -9,7 +9,6 @@ export default class conserje extends NPCBattle {
     constructor(scene, player, x, y, texture, frame, stats = {}, message = null, onFinish = null, itemId = null, NpcId) {
         super(scene, player, x, y, texture, frame, stats, message, onFinish, itemId, NpcId);
 
-        this.body.setSize(this.width, this.height);
         this.body.moves = true;
         this.speed = 200;
     }

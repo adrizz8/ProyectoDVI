@@ -30,8 +30,13 @@ export default class NPC extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this); // Estático por defecto
         this.body.setImmovable(true);
         this.body.moves = false;
+
+        // Ajustamos la hitbox (por ejemplo, al 60% de ancho y 50% de alto, centrado en los pies)
+        this.body.setSize(this.width * 0.6, this.height * 0.4);
+        this.body.setOffset(this.width * 0.2, this.height * 0.6);
+
         if (this.player) {
-            this.collider=this.scene.physics.add.collider(this, this.player);
+            this.collider = this.scene.physics.add.collider(this, this.player);
         }
     }
 

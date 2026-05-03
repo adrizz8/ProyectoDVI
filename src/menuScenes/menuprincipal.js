@@ -86,7 +86,8 @@ class MenuPrincipal extends Phaser.Scene {
         // Guardamos el nombre de la escena que abrió el menú (se recibe en data al lanzarlo)
         const previousScene = data?.from || this.scene.settings.data?.from;
 
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // ── Cerrar con ESPACIO o CLICK DERECHO ─────────────────────────
+        const closeMenu = () => {
             if (!this.canClose) return;
 
             // Ocultamos la imagen con un tween y solo entonces cerramos la escena
@@ -100,10 +101,15 @@ class MenuPrincipal extends Phaser.Scene {
                     this.scene.stop();
                     if (previousScene) {
                         this.scene.resume(previousScene);
-                        this.scene.bringToTop(previousScene); // Por si acaso
+                        this.scene.bringToTop(previousScene);
                     }
                 }
             });
+        };
+
+        this.input.keyboard.on('keydown-SPACE', closeMenu);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) closeMenu();
         });
     }
 

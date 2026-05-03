@@ -1,8 +1,6 @@
 import Boot from './boot.js';
 import End from './end.js';
-import Level from './level.js';
-import Level2 from './level2.js';
-import Level3 from './level3.js';
+import level3 from './level3.js'
 import Phaser from 'phaser';
 import TitleScene from './TitleScene.js';
 import IntroScene from './IntroScene.js';
@@ -44,12 +42,12 @@ let config = {
     },
     pixelArt: true,
 
-    scene: [Boot, TitleScene, Prematricula, IntroScene, Level, Level2, Level3, MenuPrincipal, EstrategiaScene, MochilaScene,Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
+    scene: [Boot, TitleScene, Prematricula, IntroScene, level3, MenuPrincipal, EstrategiaScene, MochilaScene, Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
 
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false
+            debug: true
         }
 
     }

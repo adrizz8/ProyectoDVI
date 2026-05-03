@@ -16,16 +16,9 @@ export default class cafeteria_loco extends NPCBattle {
         this.lastDirection='';
         
         this.frozen = false;
-        // 1. Ajustar el tamaño (Ancho, Alto)
-
-        this.body.setSize(this.width, this.height);
         
         this.body.moves = true;
         this.speed = 200;
-
-        
-        // 2. Ajustar el desplazamiento (Offset) para centrar la caja en los pies
-        this.body.setOffset(this.width * 0.25, this.height * 0.7);
 
         this.move_x=0;
         this.move_y=0;

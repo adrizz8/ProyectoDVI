@@ -208,12 +208,15 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
+    // Deshabilitar el menú contextual del ratón (click derecho) para usarlo en el juego
+    this.input.mouse.disableContextMenu();
+
     // Inicializamos el contador de horas si todavía no existe
     if (this.registry.get('horasJuego') === undefined) {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('TitleScene');
+    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
 
   }
 }

@@ -197,7 +197,7 @@ export default class MapaFuera extends Phaser.Scene {
                     maxMp: 10,
                     expReward: 100,
                     habilidades: []
-                }, " ¿Quien eres tu?, te vas a enterar.", null, null, true);
+                }, " ¿Quien eres tu?, te vas a enterar.", null, null, 'primerencuentro', true);
                 this.player2.setVisible(false);
 
                 this.physics.add.overlap(this.parar_jug, this.player, () => {
@@ -217,7 +217,6 @@ export default class MapaFuera extends Phaser.Scene {
                     this.player2.recolocar();
                 });
 
-                this.player2.collider.destroy();
                 this.physics.add.collider(this.player, this.player2, () => {
                     this.player2.freeze();
                     this.player2.interact();
@@ -249,12 +248,17 @@ export default class MapaFuera extends Phaser.Scene {
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
 
-        // Tecla de menú (Espacio)
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
+        const launchMenu = () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
+        };
+
+        this.input.keyboard.on('keydown-SPACE', launchMenu);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) launchMenu();
         });
     }
 

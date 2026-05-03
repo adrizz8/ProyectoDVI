@@ -23,8 +23,6 @@ export default class NPC_en_camino extends NPC {
         if (this.body) {
             this.body.moves = true;
             this.body.setImmovable(true);
-            this.body.setSize(30, 30);
-            this.body.setOffset(17, 30);
         }
 
         // Definir animaciones si no existen

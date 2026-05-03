@@ -206,12 +206,17 @@ export default class Cafeteria extends Phaser.Scene {
             });
         });
 
-        // Tecla de menú (Espacio)
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
+        const launchMenu = () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
+        };
+
+        this.input.keyboard.on('keydown-SPACE', launchMenu);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) launchMenu();
         });
 
         // Fade-in al entrar en la escena
@@ -360,6 +365,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- NPC Loco (cafeteria_loco) --- 
         const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, {
+            spriteKey: 'estudiantebattle',
             name: 'Marcos',
             hp: 30,
             maxHp: 30,
@@ -370,7 +376,6 @@ export default class Cafeteria extends Phaser.Scene {
             maxMp: 8,
             expReward: 50,
             habilidades: ['Entrega Última Hora'],
-            spriteKey: 'npc1'
         }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 
         if (this.gm.isJustDefeated('npc_loco_caf')) {
@@ -432,7 +437,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         // RECREAR COMPAÑERO (si está en el grupo)
         if (this.gm.ActualPlayers.includes('Jugador2')) {
-            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.amigo1 = new amigo1(this, this.player, this.player.x, this.player.y, 'amigo1', 0, null, null, null, 'P1');
             this.physics.add.collider(this.amigo1, this.colisiones);
         }
     }

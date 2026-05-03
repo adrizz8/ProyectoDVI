@@ -316,6 +316,13 @@ export default class BattleManager {
     onFlee() {
         if (this._isBusy) return;
         this._isBusy = true;
+
+        if (this.npcid) {
+            this._callbacks.onMessage?.("¡No puedes huir de un combate importante!");
+            this._isBusy = false;
+            return;
+        }
+
         this._callbacks.onMessage?.("Intentas huir...");
         this._scene.time.delayedCall(1000, () => this._endBattle('fled'));
     }

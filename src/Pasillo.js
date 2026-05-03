@@ -109,12 +109,17 @@ export default class Pasillo extends Phaser.Scene {
             this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
         });
 
-        // Tecla de menú (Espacio)
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
+        const launchMenu = () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
             this.scene.launch('MenuPrincipal', { from: this.scene.key });
             this.scene.bringToTop('MenuPrincipal');
             this.scene.pause();
+        };
+
+        this.input.keyboard.on('keydown-SPACE', launchMenu);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) launchMenu();
         });
 
         this.music = this.sound.add('music_ambiente', { loop: true, volume: 0.4 });

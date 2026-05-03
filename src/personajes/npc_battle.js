@@ -14,13 +14,13 @@ export default class NPCBattle extends NPC {
      * @param {string} texture Clave de la textura (podría ser 'toy' o el que asignes)
      * @param {object} stats Estadísticas del enemigo para el combate
      */
-    constructor(scene, player, x, y, texture,frame, stats = {}, message = "", onFinish = null, itemId = null, NpcId='', Nivel=null,Tutorial=false) {
+    constructor(scene, player, x, y, texture, frame, stats = {}, message = "", onFinish = null, itemId = null, NpcId = '', Nivel = null, Tutorial = false) {
         const name = stats.name ?? 'Enemigo';
-        super(scene, player, x, y, texture,frame, message, onFinish, itemId, name);
+        super(scene, player, x, y, texture, frame, message, onFinish, itemId, name);
 
-        this.id=NpcId;
-        this.nivel=Nivel;
-        this.Tutorial=Tutorial;
+        this.id = NpcId;
+        this.nivel = Nivel;
+        this.Tutorial = Tutorial;
 
         this.stats = {
             name: name,
@@ -38,20 +38,20 @@ export default class NPCBattle extends NPC {
             moneyReward: stats.moneyReward
         };
     }
-    
+
     /**
      * Reacción al interactuar: muestra diálogo si existe y luego inicia combate
      */
     interact() {
         const gm = GameManager.getInstance();
-        
-        if(this.id==''||!gm.isDefeated(this.id)){
+
+        if (this.id == '' || !gm.isDefeated(this.id)) {
             if (this.message) {
                 this.say(this.message, () => this.startBattle());
             } else {
                 this.startBattle();
             }
-        }else{
+        } else {
             if (this.message) {
                 this.say(this.message);
             }
@@ -63,7 +63,7 @@ export default class NPCBattle extends NPC {
      */
     startBattle() {
         console.log(`Iniciando combate contra ${this.stats.name}`);
-        
+
         // Guardamos la posición y dirección antes de ir a batalla
         GameManager.getInstance().setPlayerPosition(this.player.x, this.player.y, this.player.lastDirection);
 
@@ -83,8 +83,8 @@ export default class NPCBattle extends NPC {
             enemyMoneyReward: this.stats.moneyReward,
             originScene: this.scene.scene.key, // Para saber a dónde volver tras el combate
             npcid: this.id,
-            nivel:this.nivel,
-            Tutorial:this.Tutorial
+            nivel: this.nivel,
+            Tutorial: this.Tutorial
         });
     }
 }
