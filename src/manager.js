@@ -298,6 +298,17 @@ export default class GameManager {
         }
     }
 
+    /** Cura a todo el equipo (HP y MP al máximo) */
+    healAllTeam() {
+        this.ActualPlayers.forEach(playerName => {
+            const p = this.playerStats[playerName];
+            if (p) {
+                p.hp = p.maxHp;
+                p.mp = p.maxMp;
+            }
+        });
+    }
+
     /** Sube la experiencia de un jugador */
     gainExp(playerName, amount) {
         const p = this.playerStats[playerName];

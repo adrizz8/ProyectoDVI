@@ -44,6 +44,7 @@ import carre_join from '../assets/music/carre_join.wav'
 import pasillo from '../assets/images/pasillo.json'
 
 import music_battle from '../assets/music/vespidaze-upbeat-rpg-battle-460971.mp3'
+import music_battle2 from '../assets/music/psychronic-fight-for-the-future-336841.mp3'
 import music_boss from '../assets/music/batalla_boss_music.mp3'
 import music_exterior from '../assets/music/exterior_music.mp3'
 import music_interior from '../assets/music/interior_music_acreditar.mp3'
@@ -56,7 +57,9 @@ import npc1 from '../assets/sprites/npc1.png';
 import npc2 from '../assets/sprites/npc2.png';
 import npc3 from '../assets/sprites/npc3.png';
 import npc4 from '../assets/sprites/npc4.png';
+import enfermera_joy from '../assets/sprites/enfermera_joy.png';
 import estudiantebattle from '../assets/sprites/estudianteconprisa.png';
+import estudianteconplaca from '../assets/sprites/estudianteconplaca.png';
 import lanchares from '../assets/sprites/lancharesow.png';
 import lancharesbatalla from '../assets/sprites/lancharesbatalla.png';
 import miniboss from '../assets/sprites/minibossOW.png';
@@ -117,6 +120,7 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('npc2', npc2, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('npc3', npc3, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('npc4', npc4, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('enfermera_joy', enfermera_joy, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('amigo1', amigo1, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('lanchares', lanchares, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('miniboss', miniboss, { frameWidth: 68, frameHeight: 72 });
@@ -167,6 +171,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player3_battle', player3_battle);
     this.load.image('player4_battle', player4_battle);
     this.load.image('estudiantebattle', estudiantebattle);
+    this.load.image('estudianteconplaca', estudianteconplaca);
 
     this.load.image('menuPrincipal', menuPrincipal);
     this.load.image('estrategiaUI1', estrategiaUI1);
@@ -180,6 +185,7 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('carre_join', carre_join);
 
     this.load.audio('music_battle', music_battle);
+    this.load.audio('music_battle2', music_battle2);
     this.load.audio('music_boss', music_boss);
     this.load.audio('music_exterior', music_exterior);
     this.load.audio('music_interior', music_interior);
@@ -216,7 +222,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+    this.scene.start('p1LeftMazmorra', { entrada: 'puerta_izq' });
 
   }
 }

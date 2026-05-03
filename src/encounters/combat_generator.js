@@ -70,7 +70,7 @@ export default class CombatGenerator {
         const nombres = ['Sergio', 'Samuel', 'Carlos', 'Fernando', 'Santiago', 'Gaspar', 'Marcos', 'Daniel', 'Pedro', 'Pablo'];
         const nombreAzar = nombres[Math.floor(Math.random() * nombres.length)];
 
-        const sprites = ['estudianteconprisa', 'estudianteconplaca'];
+        const sprites = ['estudiantebattle', 'estudianteconplaca'];
         const spriteAzar = sprites[Math.floor(Math.random() * sprites.length)];
 
         return {

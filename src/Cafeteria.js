@@ -398,6 +398,15 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Andrés en la barra (da el Pincho de Tortilla) ---
         this._spawnAndres(140);
 
+        // --- Enfermera Joy (cura al equipo) ---
+        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, "¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, ¡puedo curarte igual!", () => {
+            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon, pero veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
+                // Curar a todo el equipo
+                this.gm.healAllTeam();
+                this.showDialogue("¡Listo! Todo tu equipo está completamente curado. ¡Hasta la próxima!", "Enfermera Joy");
+            });
+        }, null, 'Enfermera Joy');
+
         // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
         // P1 es amigo1 pero con los diálogos del lore del GDD
         this.amigo1 = new amigo1(this, this.player, 1040, 470, 'amigo1', 0, null, null, null, 'P1');
@@ -523,6 +532,15 @@ export default class Cafeteria extends Phaser.Scene {
 
 
         this._spawnAndres(120);
+
+        // --- Enfermera Joy (cura al equipo) ---
+        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, "¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, ¡puedo curarte igual!", () => {
+            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon, pero veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
+                // Curar a todo el equipo
+                this.gm.healAllTeam();
+                this.showDialogue("¡Listo! Todo tu equipo está completamente curado. ¡Hasta la próxima!", "Enfermera Joy");
+            });
+        }, null, 'Enfermera Joy');
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

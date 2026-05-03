@@ -119,7 +119,15 @@ export default class BattleScene extends Phaser.Scene {
         // Iniciar combate
         this.battle_manager.startBattle();
 
-        this.music_battle = this.sound.add('music_battle');
+        // Seleccionar música según la escena de origen
+        let musicKey = 'music_battle'; // Música por defecto
+        
+        // Si vienes de una escena de mazmorra, usa la música de mazmorra
+        if (this._originScene && this._originScene.includes('Mazmorr')) {
+            musicKey = 'music_battle2';
+        }
+
+        this.music_battle = this.sound.add(musicKey);
         this.music_battle.play();
 
     }
