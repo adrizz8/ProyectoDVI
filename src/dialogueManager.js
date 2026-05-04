@@ -298,10 +298,10 @@ export default class DialogueManager {
                 this.hideDialogue();
 
                 // Descongela al jugador si existe con un pequeño retraso
-                // para evitar doble-inputs. PERO verificamos que this.fin === 0,
-                // ya que onFinish() justo debajo puede haber iniciado otro diálogo!
+                // para evitar doble-inputs. PERO verificamos que this.fin === 0
+                // y que NO haya una tienda abierta (this.scene._shopOpen).
                 this.scene.time.delayedCall(50, () => {
-                    if (this.fin === 0 && this.scene && this.scene.player && this.scene.player.unfreeze) {
+                    if (this.fin === 0 && this.scene && this.scene.player && !this.scene._shopOpen) {
                         this.scene.player.unfreeze();
                     }
                 });

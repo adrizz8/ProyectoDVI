@@ -90,6 +90,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
 
+        // Y-sorting: Ajustar la profundidad visual según su posición Y
+        // Los objetos más abajo en la pantalla (mayor Y) se pintarán por delante
+        if (this.scene) {
+            this.setDepth(this.body ? this.body.bottom : this.y);
+        }
+
         // Control estricto de JustDown para el ratón
         if (this.scene.input.activePointer.leftButtonDown()) {
             if (!this._wasMouseDown) {
@@ -179,6 +185,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     isinteractuable(object) {
+        if (this.frozen) {
+            // Si el jugador está congelado, nos aseguramos de que los objetos cercanos 
+            // vuelvan a su escala original y no se puedan activar.
+            if (object.baseScaleX !== undefined) {
+                object.setScale(object.baseScaleX, object.baseScaleY);
+            }
+            return;
+        }
+
         if (object.baseScaleX === undefined) {
             object.baseScaleX = object.scaleX;
             object.baseScaleY = object.scaleY;
@@ -226,7 +241,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.frozen = true;
     }
     unfreeze() {
-        this.frozen = false;
+        // Pequeña demora para evitar que el click de cerrar una interfaz 
+        // se use inmediatamente para volver a interactuar con un NPC.
+        this.scene.time.delayedCall(150, () => {
+            this.frozen = false;
+        });
     }
 
 

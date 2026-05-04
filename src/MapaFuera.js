@@ -217,7 +217,8 @@ export default class MapaFuera extends Phaser.Scene {
                     this.player2.recolocar();
                 });
 
-                this.physics.add.collider(this.player, this.player2, () => {
+                const encuentroTrig = this.physics.add.overlap(this.player, this.player2, () => {
+                    encuentroTrig.destroy(); // Consumir el trigger para no spammear el combate
                     this.player2.freeze();
                     this.player2.interact();
                 });

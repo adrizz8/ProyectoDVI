@@ -84,98 +84,170 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.player.setDepth(1);
         this.dialogueManager = new DialogueManager(this);
 
-        // 1. Entradas (Botones)
-        this.boton1 = new Boton(this, this.player, 810, 450);
-        this.boton1.setDepth(1);
-        this.boton2 = new Boton(this, this.player, 870, 450);
-        this.boton2.setDepth(1);
-        this.boton3 = new Boton(this, this.player, 930, 450);
-        this.boton3.setDepth(1);
-        this.boton4 = new Boton(this, this.player, 990, 450);
-        this.boton4.setDepth(1);
+        // ── Helpers ───────────────────────────────────────────────────────────────
+        const tc = obj => {
+            const hw = obj.width / 2;
+            const hh = obj.height / 2;
+            if (!obj.rotation) return { x: obj.x + hw, y: obj.y - hh };
+            const rad = (obj.rotation * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+            return {
+                x: obj.x + cos * hw + sin * hh,
+                y: obj.y + sin * hw - cos * hh
+            };
+        };
 
-        // 2. Puertas Lógicas 
-        this.and_gate1 = new AndGate(this, 840, 300, this.player);
-        this.and_gate1.setDepth(1);
-        this.and_gate2 = new AndGate(this, 960, 300, this.player);
-        this.and_gate2.setDepth(1);
-        this.not_gate1 = new NotGate(this, 810, 400, this.player);
-        this.not_gate1.setDepth(1);
-        this.and_gate3 = new AndGate(this, 900, 104, this.player);
-        this.and_gate3.setDepth(1);
+        const byName = (layer, name) => layer.find(o => o.name === name);
 
-        // 3. Cables (Aquí corregimos los nombres de las propiedades de destino)
-        this.cable1 = new Cable(this, 810, 425);
-        this.cable1.setDisplaySize(50, 10);
-        this.cable1.connectInput(this.boton1);
-        this.cable1.connectOutput(this.not_gate1, 'signalIn'); // CAMBIADO: de 'input' a 'signalIn'
+        // ── Capas de objetos ──────────────────────────────────────────────────────
+        const botonLayer = map.getObjectLayer('boton').objects;
+        const andLayer = map.getObjectLayer('and').objects;
+        const notLayer = map.getObjectLayer('not').objects;
+        const cableLayer = map.getObjectLayer('cable').objects;
 
-        this.cable2 = new Cable(this, 810, 375);
-        this.cable2.setDisplaySize(50, 10);
-        this.cable2.connectInput(this.not_gate1);
-        this.cable2.connectOutput(this.and_gate1, 'inputA');
+        // ── 1. Botones ────────────────────────────────────────────────────────────
+        const mkBoton = name => {
+            const obj = byName(botonLayer, name);
+            const p = tc(obj);
+            const b = new Boton(this, this.player, p.x, p.y);
+            b.setDisplaySize(obj.width, obj.height);
+            if (b.body && b.body.updateFromGameObject) b.body.updateFromGameObject();
+            b.setDepth(1);
+            return b;
+        };
+        this.boton1 = mkBoton('boton1');
+        this.boton2 = mkBoton('boton2');
+        this.boton3 = mkBoton('boton3');
+        this.boton4 = mkBoton('boton4');
 
-        this.cable3 = new Cable(this, 870, 400);
-        this.cable3.connectInput(this.boton2);
-        this.cable3.connectOutput(this.and_gate1, 'inputB');
+        // ── 2. Puertas NOT ────────────────────────────────────────────────────────
+        const mkNot = name => {
+            const obj = byName(notLayer, name);
+            const p = tc(obj);
+            const g = new NotGate(this, p.x, p.y, this.player);
+            g.setDisplaySize(obj.width, obj.height);
+            if (g.body && g.body.updateFromGameObject) g.body.updateFromGameObject();
+            g.setDepth(1);
+            return g;
+        };
+        this.not_gate1 = mkNot('not_gate1');
 
-        this.cable4 = new Cable(this, 930, 400);
-        this.cable4.connectInput(this.boton3);
-        this.cable4.connectOutput(this.and_gate2, 'inputA');
+        // ── 3. Puertas AND ────────────────────────────────────────────────────────
+        const mkAnd = name => {
+            const obj = byName(andLayer, name);
+            const p = tc(obj);
+            const g = new AndGate(this, p.x, p.y, this.player);
+            g.setDisplaySize(obj.width, obj.height);
+            if (g.body && g.body.updateFromGameObject) g.body.updateFromGameObject();
+            g.setDepth(1);
+            return g;
+        };
+        this.and_gate1 = mkAnd('and_gate1');
+        this.and_gate2 = mkAnd('and_gate2');
+        this.and_gate3 = mkAnd('and_gate3');
 
-        this.cable5 = new Cable(this, 990, 400);
-        this.cable5.connectInput(this.boton4);
-        this.cable5.connectOutput(this.and_gate2, 'inputB');
+        // ── 4. Cables desde el JSON ───────────────────────────────────────────────
+        const F_H = 0x80000000;
+        const F_V = 0x40000000;
+        const F_D = 0x20000000;
 
-        this.cable6 = new Cable(this, 840, 250);
-        this.cable6.connectInput(this.and_gate1);
-        this.cable6.connectOutput(this.and_gate3, 'inputA');
+        const gidToKey = gid => {
+            const base = gid & ~(F_H | F_V | F_D);
+            return base === 1642 ? 'cable_right_off' : 'cable_off';
+        };
 
-        this.cable_right6 = new Cable(this, 848, 190, 'cable_right_off');
-        this.cable_right6.angle = 180;
-        this.cable_right6.connectInput(this.and_gate1);
+        this.cables = {};
+        cableLayer.forEach(obj => {
+            const p = tc(obj);                      // centro corregido con rotación
+            const key = gidToKey(obj.gid);          // tipo de cable
+            const cab = new Cable(this, p.x, p.y, key);
 
-        this.cable_left6 = new Cable(this, 870, 174, 'cable_right_off');
-        this.cable_left6.angle = 0;
-        this.cable_left6.connectInput(this.and_gate1);
+            const flipX = (obj.gid & F_H) !== 0;
+            const flipY = (obj.gid & F_V) !== 0;
+            const flipD = (obj.gid & F_D) !== 0;
 
-        this.cable7 = new Cable(this, 960, 250);
-        this.cable7.connectInput(this.and_gate2);
-        this.cable7.connectOutput(this.and_gate3, 'inputB');
+            let angle = obj.rotation || 0;
+            let fX = flipX;
+            let fY = flipY;
 
-        this.cable_left7 = new Cable(this, 952, 190, 'cable_right_off');
-        this.cable_left7.angle = 270;
-        this.cable_left7.connectInput(this.and_gate2);
+            // En Tiled el flip diagonal equivale a intercambiar X e Y
+            if (flipD) {
+                angle += 90;
+                fX = !flipX;
+            }
 
-        this.cable_right7 = new Cable(this, 930, 174, 'cable_right_off');
-        this.cable_right7.angle = 90;
-        this.cable_right7.connectInput(this.and_gate2);
+            cab.angle = angle;
+            cab.setFlip(fX, fY);
+            cab.setDisplaySize(obj.width, obj.height);
+            cab.setDepth(0.5);
+            this.cables[obj.name] = cab;
+        });
 
+        const c = name => this.cables[name];
 
+        // ── 5. Conexiones lógicas del circuito ───────────────────────────────────
 
+        // cable1
+        if (c('cable1')) {
+            c('cable1').connectInput(this.boton1);
+            c('cable1').connectOutput(this.not_gate1, 'signalIn');
+        }
 
+        // cable2 (ini, der_g, der_up)
+        ['cable2_ini', 'cable2_der_g', 'cable2_der_up'].forEach(n => {
+            if (c(n)) c(n).connectInput(this.not_gate1);
+        });
+        if (c('cable2_der_up')) c('cable2_der_up').connectOutput(this.and_gate1, 'inputA');
+
+        // cable3
+        if (c('cable3')) {
+            c('cable3').connectInput(this.boton2);
+            c('cable3').connectOutput(this.and_gate1, 'inputB');
+        }
+
+        // cable4
+        if (c('cable4')) {
+            c('cable4').connectInput(this.boton3);
+            c('cable4').connectOutput(this.and_gate2, 'inputA');
+        }
+
+        // cable5 (5, 5_g1, 5_g2)
+        ['cable5', 'cable5_g1', 'cable5_g2'].forEach(n => {
+            if (c(n)) c(n).connectInput(this.boton4);
+        });
+        if (c('cable5_g2')) c('cable5_g2').connectOutput(this.and_gate2, 'inputB');
+
+        // cable6 (ini, der, der_g) -> a and_gate3 inputA
+        ['cable6_ini', 'cable6_der', 'cable6_der_g'].forEach(n => {
+            if (c(n)) c(n).connectInput(this.and_gate1);
+        });
+        if (c('cable6_der_g')) c('cable6_der_g').connectOutput(this.and_gate3, 'inputA');
+
+        // cable7 (ini, izq, izq_g) -> a and_gate3 inputB
+        ['cable7_ini', 'cable7_izq', 'cable7_izq_g'].forEach(n => {
+            if (c(n)) c(n).connectInput(this.and_gate2);
+        });
+        if (c('cable7_izq_g')) c('cable7_izq_g').connectOutput(this.and_gate3, 'inputB');
+
+        // Cables de salida fijos (al no estar en el JSON los mantenemos instanciados manualmente)
         this.cableSalida_right = new Cable(this, 908, 40, 'cable_right_off');
         this.cableSalida_right.angle = 180;
         this.cableSalida_right.connectInput(this.and_gate3);
 
         this.cableSalida = new Cable(this, 1000, 32);
-        this.cableSalida.setDisplaySize(182, 10)
+        this.cableSalida.setDisplaySize(182, 10);
         this.cableSalida.angle = 0;
         this.cableSalida.connectInput(this.and_gate3);
         this.cableSalida.setCompleted('puzleIzquierdaCompletado');
 
         this.circuitComponents = [
-            this.cable1, this.cable2, this.cable3, this.cable4, this.cable5,
-            this.cable6, this.cable7, this.cable_left6, this.cable_right6,
-            this.cable_left7, this.cable_right7, this.and_gate1, this.and_gate2,
-            this.and_gate3, this.not_gate1, this.boton1, this.boton2,
-            this.boton3, this.boton4, this.cableSalida_right, this.cableSalida
+            ...Object.values(this.cables),
+            this.and_gate1, this.and_gate2, this.and_gate3,
+            this.not_gate1,
+            this.boton1, this.boton2, this.boton3, this.boton4,
+            this.cableSalida_right, this.cableSalida
         ];
-
-        // Ajustes de profundidad y tamaño masivos (opcional, simplificado)
-        this.circuitComponents.forEach(c => {
-            if (c.body && c.body.updateFromGameObject) c.body.updateFromGameObject();
-        });
 
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
         const launchMenu = () => {

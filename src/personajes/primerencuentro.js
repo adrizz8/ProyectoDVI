@@ -13,18 +13,21 @@ export default class primerencuentro extends NPCBattle {
     constructor(scene, player, x, y, texture, frame, stats = {}, message = null, onFinish = null, itemId = null, NpcId = 'primerencuentro', Tutorial = false) {
         super(scene, player, x, y, texture, frame, stats, message, onFinish, itemId, NpcId, null, Tutorial);
 
-        
-        this.lastDirection='';
-        this.recolocando=false;
 
-       
+        this.lastDirection = '';
+        this.recolocando = false;
+
+
         this.frozen = true;
-        // 1. Ajustar el tamaño (Ancho, Alto)
 
-        
 
         this.body.moves = true;
         this.speed = 300;
+
+        // Quitamos la colisión sólida de la clase padre NPC para que no empuje al jugador al embestir
+        if (this.collider) {
+            this.collider.destroy();
+        }
 
         // Definición de animaciones direccionales
         const animsConfig = [
@@ -80,33 +83,33 @@ export default class primerencuentro extends NPCBattle {
 
             let moving = false;
 
-            if (this.lastDirection=='up') {
+            if (this.lastDirection == 'up') {
                 this.body.setVelocityY(-this.speed);
                 this.body.setVelocityX(0);
                 moving = true;
             }
-            else if (this.lastDirection=='left') {
+            else if (this.lastDirection == 'left') {
                 this.body.setVelocityX(-this.speed);
                 this.body.setVelocityY(0);
                 moving = true;
             }
-            else if (this.lastDirection=='right') {
-                
+            else if (this.lastDirection == 'right') {
+
                 this.body.setVelocityX(this.speed);
                 this.body.setVelocityY(0);
-                if(this.recolocando){
-                    if(this.x>=this.player.x){
-                        this.lastDirection='down';
-                        this.recolocando=false;
+                if (this.recolocando) {
+                    if (this.x >= this.player.x) {
+                        this.lastDirection = 'down';
+                        this.recolocando = false;
                     }
                 }
                 moving = true;
             }
-            else if (this.lastDirection=='down') {
-               
+            else if (this.lastDirection == 'down') {
+
                 this.body.setVelocityY(this.speed);
                 this.body.setVelocityX(0);
-                
+
                 moving = true;
             } else {
                 this.body.setVelocityX(0);
@@ -118,18 +121,18 @@ export default class primerencuentro extends NPCBattle {
             this.play(`${animState}-${this.lastDirection}`, true);
         }
     }
-    freeze(){
-        this.play('idle2-'+this.lastDirection,true);
-        this.frozen=true;
+    freeze() {
+        this.play('idle2-' + this.lastDirection, true);
+        this.frozen = true;
     }
     unfreeze() {
         this.frozen = false;
     }
 
-    recolocar(){
-        this.recolocando=true;
-        this.lastDirection='right'
+    recolocar() {
+        this.recolocando = true;
+        this.lastDirection = 'right'
     }
-    
+
 
 }

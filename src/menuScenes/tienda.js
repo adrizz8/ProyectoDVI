@@ -6,6 +6,13 @@ export default class TiendaUI {
         this.scene = scene;
         this.gm = GameManager.getInstance();
         this.onCerrar = onCerrar;
+
+        // Congelamos al jugador al abrir la tienda
+        if (this.scene.player && this.scene.player.freeze) {
+            this.scene.player.freeze();
+            this.scene._shopOpen = true; // Marcamos que la tienda está abierta
+        }
+
         this.container = this.scene.add.container(0, 0).setDepth(1000);
 
         // Dimensiones del panel a la derecha
@@ -186,6 +193,7 @@ export default class TiendaUI {
         this.scene.input.keyboard.off('keydown-ESC', this.escListener);
         this.scene.input.off('pointerdown', this.rightClickListener);
         this.container.destroy();
+        this.scene._shopOpen = false; // Marcamos que la tienda se ha cerrado
         if (this.onCerrar) this.onCerrar();
     }
 }

@@ -45,6 +45,12 @@ export default class NPC extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
+
+        // Y-sorting para todos los NPCs
+        if (this.scene) {
+            this.setDepth(this.body ? this.body.bottom : this.y);
+        }
+
         if (this.player) {
             this.player.isinteractuable(this);
         }
