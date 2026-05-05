@@ -240,4 +240,20 @@ export const HABILITIES = {
             };
         }
     }),
+
+    '¡A pelar cables!': new Hability({
+        id: 'electric_shock',
+        name: '¡A pelar cables!',
+        description: 'Lanza un ataque eléctrico con un cable pelado de la placa base.',
+        cost: 3,
+        type: 'damage',
+        effectFn: (source, target) => {
+            const potencia = 30;
+            const damage = Math.floor(source.damage * potencia);
+            return {
+                damage,
+                message: `${source.displayName || source.name} saca un cable pelado. ¡Un chispazo eléctrico alcanza a ${target.displayName || target.name}!`
+            };
+        }
+    }),
 };

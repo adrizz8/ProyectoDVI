@@ -64,6 +64,11 @@ import lanchares from '../assets/sprites/lancharesow.png';
 import lancharesbatalla from '../assets/sprites/lancharesbatalla.png';
 import miniboss from '../assets/sprites/minibossOW.png';
 import minibossbatalla from '../assets/sprites/miniboss.png';
+import carlos from '../assets/sprites/carlos.png';
+import ismael from '../assets/sprites/ismael.png';
+import tiendacafe from '../assets/sprites/tiendacafe.png';
+import conserjebatalla from '../assets/sprites/conserjebatalla.png';
+import conserje from '../assets/sprites/conserje.png';
 
 import or_gate from '../assets/images/or.png';
 import and_gate from '../assets/images/and.png';
@@ -127,6 +132,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('lancharesbatalla', lancharesbatalla);
     this.load.image('minibossbatalla', minibossbatalla);
     this.load.image('toy', toy);
+    this.load.spritesheet('carlos', carlos, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('ismael', ismael, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('tiendacafe', tiendacafe, { frameWidth: 64, frameHeight: 64 });
+    this.load.image('conserjebatalla', conserjebatalla);
+    this.load.spritesheet('conserje', conserje, { frameWidth: 64, frameHeight: 64 });
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
     this.load.image('or_gate', or_gate);
@@ -222,7 +232,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('cafeteria', { entrada: 'salida_autobus' });
+    this.scene.start('TitleScene');
 
   }
 }

@@ -16,7 +16,7 @@ export default class SalaLancharesScene extends Phaser.Scene {
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
 
-        const gm=GameManager.getInstance();
+        const gm = GameManager.getInstance();
         gm.addNivel("salaLanchares");
 
         // Capas
@@ -39,9 +39,9 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.physics.add.collider(this.player, decoracion);
 
 
-        const savedPos=gm.getPlayerPosition();
+        const savedPos = gm.getPlayerPosition();
 
-         // Si hay posición guardada, es que venimos de la batalla
+        // Si hay posición guardada, es que venimos de la batalla
         if (savedPos) {
             gm.clearPlayerPosition();
             this.player.setDirection(savedPos.direction);
@@ -54,16 +54,16 @@ export default class SalaLancharesScene extends Phaser.Scene {
 
         this.dialogueManager = new DialogueManager(this);
 
-        
+
         this.lobby = map.createFromObjects('triggers', {
             name: 'lobby',
             classType: trigger
         });
 
-        this.physics.add.overlap(this.player,this.lobby,()=>{
-            this.scene.start('entradaMazmorra',{entrada:'jefe'});
+        this.physics.add.overlap(this.player, this.lobby, () => {
+            this.scene.start('entradaMazmorra', { entrada: 'jefe' });
         });
-        
+
 
         // Menu con espacio
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
@@ -83,22 +83,23 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
-        if(!gm.estadoNivel("salaLanchares")){
+        if (!gm.estadoNivel("salaLanchares")) {
 
-            this.lanchares= new npcBattle(this,this.player,650,150,'lanchares',0,{
-                    spriteKey: 'lancharesbatalla',
-                    name: 'Lanchares',
-                    hp: 120,
-                    maxHp: 120,
-                    damage: 15,
-                    speed: 8,
-                    defense: 5,
-                    mp: 40,
-                    maxMp: 40,
-                    habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante']
-                },null, null,null,'lanchares_',"salaLanchares");
-        }else{
-            this.lanchares= new npc(this,this.player,650,150,'lanchares',0,"b",null,'lanchares_','Lanchares');
+            this.lanchares = new npcBattle(this, this.player, 650, 150, 'lanchares', 0, {
+                spriteKey: 'lancharesbatalla',
+                scale: 0.45,
+                name: 'Lanchares',
+                hp: 90,
+                maxHp: 90,
+                damage: 21,
+                speed: 8,
+                defense: 22,
+                mp: 20,
+                maxMp: 20,
+                habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante', 'Entrega Última Hora', '¡A pelar cables!']
+            }, null, null, null, 'lanchares_', "salaLanchares");
+        } else {
+            this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "b", null, 'lanchares_', 'Lanchares');
         }
 
 

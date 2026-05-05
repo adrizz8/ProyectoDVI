@@ -36,6 +36,7 @@ export default class BattleScene extends Phaser.Scene {
                 maxHp: data.enemyMaxHp,
                 damage: data.enemyDamage,
                 spriteKey: data.enemySpriteKey ?? 'toybatalla',
+                scale: data.enemyScale,
                 speed: data.enemySpeed,
                 defense: data.enemyDefense,
                 mp: data.enemyMp,
@@ -193,7 +194,7 @@ export default class BattleScene extends Phaser.Scene {
             const y = 170;
 
             const sprite = this.add.image(x, y, enemy.spriteKey)
-                .setScale(1) // el originial era 4
+                .setScale(enemy.scale || 1) // el originial era 4
                 .setDepth(2)
                 .setInteractive({ useHandCursor: true });
 

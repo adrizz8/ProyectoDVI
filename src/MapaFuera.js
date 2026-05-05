@@ -220,7 +220,7 @@ export default class MapaFuera extends Phaser.Scene {
                 const encuentroTrig = this.physics.add.overlap(this.player, this.player2, () => {
                     encuentroTrig.destroy(); // Consumir el trigger para no spammear el combate
                     this.player2.freeze();
-                    this.player2.interact();
+                    this.player2.interact(); // Iniciar el combate real
                 });
             }
         }
@@ -303,30 +303,25 @@ export default class MapaFuera extends Phaser.Scene {
             gm.healMP(name, 999);
         });
 
-        // Placeholder visual: dos rectángulos con nombre encima
-        // Carlos - rectángulo azul oscuro
-        const carlosRect = this.add.rectangle(this.player.x - 120, this.player.y - 60, 48, 64, 0x2244aa)
-            .setStrokeStyle(2, 0xffffff).setDepth(50);
-        const carlosLabel = this.add.text(this.player.x - 120, this.player.y - 100, 'Carlos', {
-            fontSize: '12px', fill: '#ffffff', backgroundColor: '#2244aa', padding: { x: 4, y: 2 }
-        }).setOrigin(0.5).setDepth(51);
-
-        // Ismael - rectángulo verde oscuro
-        const ismaelRect = this.add.rectangle(this.player.x + 120, this.player.y - 60, 48, 64, 0x224422)
-            .setStrokeStyle(2, 0xffffff).setDepth(50);
-        const ismaelLabel = this.add.text(this.player.x + 120, this.player.y - 100, 'Ismael', {
-            fontSize: '12px', fill: '#ffffff', backgroundColor: '#224422', padding: { x: 4, y: 2 }
-        }).setOrigin(0.5).setDepth(51);
+        // Aparecen los profesores tiesos directamente en su posición final
+        const ismaelSprite = this.add.sprite(this.player.x + 40, this.player.y - 60, 'ismael', 0).setDepth(50);
+        const carlosSprite = this.add.sprite(this.player.x - 40, this.player.y - 60, 'carlos', 0).setDepth(50);
 
         const limpiarProfs = () => {
-            carlosRect.destroy(); carlosLabel.destroy();
-            ismaelRect.destroy(); ismaelLabel.destroy();
-            this.player.unfreeze();
+            // Se marchan deslizando tiesos hacia arriba
+            this.tweens.add({
+                targets: [carlosSprite, ismaelSprite],
+                y: this.player.y - 400,
+                duration: 2500,
+                onComplete: () => {
+                    carlosSprite.destroy();
+                    ismaelSprite.destroy();
+                    this.player.unfreeze();
+                }
+            });
         };
 
         // Encolamos TODOS los diálogos de golpe.
-        // El DialogueManager los irá mostrando uno a uno al pulsar cualquier tecla.
-        // El onFinish solo se asigna al último mensaje de la cadena.
         this.dialogueManager.showDialogue(
             '¡Eh, tú! La facultad ha sido infectada por una IA y los profes se han vuelto locos. Menos mal que encontramos a alguien sano.',
             'Carlos'

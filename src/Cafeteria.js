@@ -286,8 +286,8 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarCafeteriaConCaos() {
 
-        // --- Conserje BOSS en la salida (parte superior derecha, bloqueando el pasillo) ---
-        this.conserj = new conserje(this, this.player, 1150, 155, 'toy', null, {
+        // --- Conserje BOSS en la salida ---
+        this.conserj = new conserje(this, this.player, 1125, 140, 'conserje', null, {
             name: 'Conserje',
             hp: 40,
             maxHp: 40,
@@ -298,7 +298,8 @@ export default class Cafeteria extends Phaser.Scene {
             maxMp: 11,
             expReward: 60,
             habilidades: ['Ir a la Academia', 'Código Fácil'],
-            spriteKey: 'toy'
+            spriteKey: 'conserjebatalla',
+            scale: 0.45
         }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
@@ -399,8 +400,8 @@ export default class Cafeteria extends Phaser.Scene {
         this._spawnAndres(140);
 
         // --- Enfermera Joy (cura al equipo) ---
-        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, "¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, ¡puedo curarte igual!", () => {
-            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon, pero veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
+        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, null, () => {
+            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
                 // Curar a todo el equipo
                 this.gm.healAllTeam();
                 this.showDialogue("¡Listo! Todo tu equipo está completamente curado. ¡Hasta la próxima!", "Enfermera Joy");
@@ -451,8 +452,9 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-    _spawnAndres(y = 140) {
-        this.andres = new npc(this, this.player, 310, y, 'npc2', 8, " ", () => {
+    _spawnAndres(y) {
+        y = 130;
+        this.andres = new npc(this, this.player, 600, y, 'tiendacafe', 0, " ", () => {
             const msg = this.gm.isDefeated('andres_dio_pincho')
                 ? '¿Qué te pongo chaval?.'
                 : '¡Qué pasa niño! Primer día, ¿eh? Toma, un Pincho de Tortilla para que cojas energías.';
@@ -464,15 +466,22 @@ export default class Cafeteria extends Phaser.Scene {
                     this.time.delayedCall(300, () => {
                         this.showDialogue('Has recibido: [Pincho de Tortilla]', 'Andrés (Barra)', () => {
                             this.player.freeze();
-                            new TiendaUI(this, () => this.player.unfreeze());
+                            new TiendaUI(this, () => {
+                                this.player.unfreeze();
+                            });
                         });
                     });
                 } else {
                     this.player.freeze();
-                    new TiendaUI(this, () => this.player.unfreeze());
+                    new TiendaUI(this, () => {
+                        this.player.unfreeze();
+                    });
                 }
             });
         }, null, 'Andrés (Barra)');
+
+        this.andres.interactionThreshold = 140; // Rango más grande
+        this.andres.interactionMargin = 100;    // Ángulo de visión más amplio
     }
 
 
@@ -534,13 +543,19 @@ export default class Cafeteria extends Phaser.Scene {
         this._spawnAndres(120);
 
         // --- Enfermera Joy (cura al equipo) ---
-        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, "¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, ¡puedo curarte igual!", () => {
-            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon, pero veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
+        this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, null, () => {
+            this.showDialogue("¿Qué hago aquí? Esto no es un Centro Pokémon... Pero bueno, veo que necesitas ayuda. ¡Déjame curar a todo tu equipo!", "Enfermera Joy", () => {
                 // Curar a todo el equipo
                 this.gm.healAllTeam();
                 this.showDialogue("¡Listo! Todo tu equipo está completamente curado. ¡Hasta la próxima!", "Enfermera Joy");
             });
         }, null, 'Enfermera Joy');
+
+        // RECREAR COMPAÑERO (si está en el grupo)
+        if (this.gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, this.colisiones);
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

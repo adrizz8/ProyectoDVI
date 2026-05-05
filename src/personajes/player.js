@@ -200,7 +200,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         }
 
         const distance = Phaser.Math.Distance.Between(this.x, this.y, object.x, object.y);
-        const threshold = 80;
+        const threshold = object.interactionThreshold || 80;
         if (distance < threshold) {
             if (this.iamlookingat(object)) {
                 object.setScale(object.baseScaleX * 1.1, object.baseScaleY * 1.1);
@@ -225,7 +225,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         const dir = this.lastDirection;
 
         // Margen de alineación para considerar que está "mirando" (no tiene que ser perfecto)
-        const margin = 50;
+        const margin = object.interactionMargin || 50;
 
         if (dir === 'right' && dx > 0 && Math.abs(dy) < margin) return true;
         if (dir === 'left' && dx < 0 && Math.abs(dy) < margin) return true;

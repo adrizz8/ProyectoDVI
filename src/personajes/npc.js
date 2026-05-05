@@ -66,6 +66,9 @@ export default class NPC extends Phaser.GameObjects.Sprite {
                 this.receiveItem();
                 if (this.onFinish) this.onFinish();
             });
+        } else {
+            this.receiveItem();
+            if (this.onFinish) this.onFinish();
         }
     }
 
