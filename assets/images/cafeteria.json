@@ -187,9 +187,42 @@
          "width":38,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":23,
+         "name":"triggers",
+         "objects":[
+                {
+                 "height":4,
+                 "id":15,
+                 "name":"pasillo_der",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":57.3333333333333,
+                 "x":1092,
+                 "y":159.333333333333
+                }, 
+                {
+                 "height":6.66666666666666,
+                 "id":17,
+                 "name":"pasillo_izq",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50.6666666666667,
+                 "x":73.3333333333333,
+                 "y":132
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":23,
- "nextobjectid":3,
+ "nextlayerid":24,
+ "nextobjectid":29,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

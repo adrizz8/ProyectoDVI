@@ -22,7 +22,7 @@ export default class Cafeteria extends Phaser.Scene {
 
     create(data = {}) {
         // Carga del mapa y tilesets
-        const map = this.make.tilemap({ key: 'cafeteria' });
+        this.map = this.make.tilemap({ key: 'cafeteria' });
 
         var entradas = new Map();
         entradas.set('salida_autobus', { x: 820, y: 980, direccion: 'up' });
@@ -36,25 +36,25 @@ export default class Cafeteria extends Phaser.Scene {
         this.physics.world.setBounds(
             0,
             0,
-            map.widthInPixels,
-            map.heightInPixels
+            this.map.widthInPixels,
+            this.map.heightInPixels
         );
 
 
         // Tilesets 
 
-        const tilesCafeteria = map.addTilesetImage('tilesetinteriordvifinal', 'tilesCafeteria');
+        const tilesCafeteria = this.map.addTilesetImage('tilesetinteriordvifinal', 'tilesCafeteria');
 
-        const suelo = map.createLayer('suelo', tilesCafeteria, 0, 0);
-        const pared = map.createLayer('pared', tilesCafeteria, 0, 0);
-        const puertas = map.createLayer('puertas', tilesCafeteria, 0, 0);
-        const decoracion = map.createLayer('decoracion', tilesCafeteria, 0, 0);
-        const decoracion2 = map.createLayer('decoracion2', tilesCafeteria, 0, 0);
-
-
+        const suelo = this.map.createLayer('suelo', tilesCafeteria, 0, 0);
+        const pared = this.map.createLayer('pared', tilesCafeteria, 0, 0);
+        const puertas = this.map.createLayer('puertas', tilesCafeteria, 0, 0);
+        const decoracion = this.map.createLayer('decoracion', tilesCafeteria, 0, 0);
+        const decoracion2 = this.map.createLayer('decoracion2', tilesCafeteria, 0, 0);
 
 
-        const colisiones = map.createLayer('colisiones', tilesCafeteria, 0, 0);
+
+
+        const colisiones = this.map.createLayer('colisiones', tilesCafeteria, 0, 0);
 
         // Colisiones
         colisiones.setCollisionByProperty({ collides: true });
@@ -74,7 +74,7 @@ export default class Cafeteria extends Phaser.Scene {
         this.player.setDirection(direccion);
 
         // Cámara
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         this.gm = GameManager.getInstance();
@@ -150,8 +150,9 @@ export default class Cafeteria extends Phaser.Scene {
             });
         }
 
+
         // puerta_izq → pasillo
-        const zonaIzq = this.add.zone(80, 160, 100, 60);
+        const zonaIzq = this.add.zone(95, 160, 100, 20);
         this._zonaIzq = zonaIzq;
         this.physics.world.enable(zonaIzq, Phaser.Physics.Arcade.STATIC_BODY);
 
@@ -175,7 +176,7 @@ export default class Cafeteria extends Phaser.Scene {
             if (!this.gm.isDefeated('conserje_caf') || !this.gm.isDefeated('npc_loco_caf')) {
                 // Crear al veterano solo si no existe ya
                 if (!this.veteranoRugby) {
-                    this.veteranoRugby = new npc(this, this.player, 100, 100, 'npc2', 2, "¡Eh! Ni se te ocurra intentar pasar al pasillo. Aquí aplicamos la ley de la melé: nadie avanza hasta que el campo esté despejado. ¡Lárgate y derrota a esos tres!", null, null, "Veterano de Rugby");
+                    this.veteranoRugby = new npc(this, this.player, 100, 100, 'npc2', 2, "¡Eh! Ni se te ocurra intentar pasar al pasillo. Aquí aplicamos la ley de la melé: nadie avanza hasta que el campo esté despejado. ¡Lárgate y derrota a esos dos!", null, null, "Veterano de Rugby");
                 }
 
                 this._zonaIzqMustExit = true; // Forzamos a que el jugador salga de la zona antes de volver a activar el diálogo
@@ -194,7 +195,7 @@ export default class Cafeteria extends Phaser.Scene {
             this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('outdoorMap', { entrada: 'entrada_der' });
+                this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
             });
         });
         this.physics.add.overlap(zonaExitIzq, this.player, () => {
@@ -202,7 +203,7 @@ export default class Cafeteria extends Phaser.Scene {
             this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
+                this.scene.start('outdoorMap', { entrada: 'entrada_der' });
             });
         });
 
@@ -330,17 +331,17 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- NPCs de fondo asustados (moviéndose nerviosos) ---
         const npcData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 8, message: '¡El de la puerta esta loco, dice que nadie sale de aqui con comida o bebida para ir a los laboratorios!' },
-            { x: 200, y: 320, texture: 'npc2', frame: 4, message: 'No puedo salir para ir a clase, pero tampoco tenia pensado hacerlo' },
-            { x: 450, y: 320, texture: 'npc3', frame: 8, message: 'Cómo no puedo salir me voy a tomar un café y lo que surja' },
-            { x: 550, y: 550, texture: 'npc1', frame: 4, message: 'Nos falta uno para un mus, ¿te vienes?.' },
+            { x: 1180, y: 410, texture: 'npc1', frame: 12, message: '¡El de la puerta esta loco, dice que nadie sale de aqui con comida o bebida para ir a los laboratorios!' },
+            { x: 250, y: 180, texture: 'npc2', frame: 4, message: 'No puedo salir para ir a clase, pero tampoco tenia pensado hacerlo' },
+            { x: 450, y: 325, texture: 'npc3', frame: 4, message: 'Cómo no puedo salir me voy a tomar un café y lo que surja' },
+            { x: 170, y: 360, texture: 'npc1', frame: 0, message: 'Nos falta uno para un mus, ¿te vienes?.' },
             { x: 100, y: 580, texture: 'npc4', frame: 8, message: 'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.' },
-            { x: 780, y: 580, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
-            { x: 860, y: 200, texture: 'npc4', frame: 8, message: 'Mírale que conento  en su primer día de carrera, me recuerda a mi cuando la empecé hace ocho años' },
-            { x: 850, y: 270, texture: 'npc3', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
+            { x: 800, y: 300, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
+            { x: 560, y: 560, texture: 'npc4', frame: 4, message: 'Mírale que conento  en su primer día de carrera, me recuerda a mi cuando la empecé hace ocho años' },
+            { x: 850, y: 300, texture: 'npc3', frame: 4, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //  { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //{ x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
-            { x: 970, y: 280, texture: 'npc4', frame: 8, message: '¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Ingeniería del Software!' },
+            { x: 940, y: 220, texture: 'npc4', frame: 8, message: '¡Quiero salir de aquí! ¡Incluso prefiero ir a clase de Ingeniería del Software!' },
             { x: 1050, y: 320, texture: 'npc2', frame: 12, message: '¿Y los profesores? ¡Han perdido la cabeza! ¡Creen que somos bugs que hay que debugear con fuego!' },
         ];
 
@@ -355,7 +356,7 @@ export default class Cafeteria extends Phaser.Scene {
                 data.message,
                 null,
                 null,
-                'Estudiante Asustado'
+                'Estudiante Agobiado'
             )
         );
 
@@ -365,7 +366,7 @@ export default class Cafeteria extends Phaser.Scene {
         this.npcArray.forEach(npc => this.enemies.add(npc));
 
         // --- NPC Loco (cafeteria_loco) --- 
-        const loco = new cafeteria_loco(this, this.player, 450, 320, null, null, {
+        const loco = new cafeteria_loco(this, this.player, 550, 310, null, null, {
             spriteKey: 'estudiantebattle',
             name: 'Marcos',
             hp: 30,
@@ -397,7 +398,7 @@ export default class Cafeteria extends Phaser.Scene {
 
 
         // --- Andrés en la barra (da el Pincho de Tortilla) ---
-        this._spawnAndres(140);
+        this._spawnAndres(133);
 
         // --- Enfermera Joy (cura al equipo) ---
         this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, null, () => {
@@ -410,7 +411,7 @@ export default class Cafeteria extends Phaser.Scene {
 
         // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
         // P1 es amigo1 pero con los diálogos del lore del GDD
-        this.amigo1 = new amigo1(this, this.player, 1040, 470, 'amigo1', 0, null, null, null, 'P1');
+        this.amigo1 = new amigo1(this, this.player, 1040, 450, 'amigo1', 0, null, null, null, 'P1');
 
     }
 
@@ -418,6 +419,19 @@ export default class Cafeteria extends Phaser.Scene {
      * Genera NPCs normales en la cafetería después de derrotar al boss (post-victoria inmediata).
      */
     _generarNPCsPostVictoria() {
+
+        this.pasillo_der = this.map.createFromObjects('triggers', {
+            name: 'pasillo_der',
+            classType: trigger
+        });
+
+
+        this.physics.add.overlap(this.pasillo_der, this.player, () => {
+
+            this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+        });
+
+
         // Limpiamos los NPCs del estado de caos para que no se solapen con los nuevos
         if (this.enemies) {
             this.enemies.clear(true, true);
@@ -443,7 +457,7 @@ export default class Cafeteria extends Phaser.Scene {
         });
 
         // RECREAR ANDRÉS (vendedor)
-        this._spawnAndres(120);
+        this._spawnAndres(133);
 
         // RECREAR COMPAÑERO (si está en el grupo)
         if (this.gm.ActualPlayers.includes('Jugador2')) {
@@ -452,9 +466,8 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-    _spawnAndres(y) {
-        y = 130;
-        this.andres = new npc(this, this.player, 600, y, 'tiendacafe', 0, " ", () => {
+    _spawnAndres(y = 140) {
+        this.andres = new npc(this, this.player, 310, y, 'npc2', 8, " ", () => {
             const msg = this.gm.isDefeated('andres_dio_pincho')
                 ? '¿Qué te pongo chaval?.'
                 : '¡Qué pasa niño! Primer día, ¿eh? Toma, un Pincho de Tortilla para que cojas energías.';
@@ -490,6 +503,18 @@ export default class Cafeteria extends Phaser.Scene {
      * Menos NPCs, andando normalmente, más tranquilos.
      */
     _generarCafeteriaLibeada() {
+
+        this.pasillo_der = this.map.createFromObjects('triggers', {
+            name: 'pasillo_der',
+            classType: trigger
+        });
+
+
+        this.physics.add.overlap(this.pasillo_der, this.player, () => {
+
+            this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+        });
+
         const npcPostData = [
             { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Secretaría es el Boss final secreto. Tiene una habilidad pasiva que hace que siempre te falte un papel, no importa cuántos lleves.' },
             { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues en el parcial saqué un 1.' },
@@ -540,7 +565,7 @@ export default class Cafeteria extends Phaser.Scene {
         });
 
 
-        this._spawnAndres(120);
+        this._spawnAndres(133);
 
         // --- Enfermera Joy (cura al equipo) ---
         this.enfermeraJoy = new npc(this, this.player, 976, 144, 'enfermera_joy', 0, null, () => {
@@ -550,12 +575,6 @@ export default class Cafeteria extends Phaser.Scene {
                 this.showDialogue("¡Listo! Todo tu equipo está completamente curado. ¡Hasta la próxima!", "Enfermera Joy");
             });
         }, null, 'Enfermera Joy');
-
-        // RECREAR COMPAÑERO (si está en el grupo)
-        if (this.gm.ActualPlayers.includes('Jugador2')) {
-            this.amigo1 = new amigo1(this, this.player, this.player.x, this.player.y, 'amigo1', 0, null, null, null, 'P1');
-            this.physics.add.collider(this.amigo1, this.colisiones);
-        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

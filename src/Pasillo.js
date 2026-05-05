@@ -5,6 +5,7 @@ import npc from './personajes/npc.js';
 import DialogueManager from './dialogueManager.js';
 import GameManager from './manager.js';
 import amigo1 from './personajes/amigo1.js';
+import pasillo_loco from './personajes/pasillo_loco.js';
 
 /**
  * Escena del Pasillo (Planta 1).
@@ -93,7 +94,7 @@ export default class Pasillo extends Phaser.Scene {
         }
 
         // --- NPC que cura ---
-        this._spawnHealer(30, 300);
+        //this._spawnHealer(30, 300);
 
         // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
         const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
@@ -137,8 +138,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC1 - general sobre Lanchares
         new npc(
             this, this.player,
-            200, 200,
-            'npc1', 8,
+            624, 344,
+            'npc1', 12,
             'Lanchares era nuestro mejor capitán. Ahora intenta hacernos placajes binarios cada vez que pasamos por su pasillo. ¡Dice que nuestra formación es un error de sintaxis!',
             null, null,
             'Estudiante de Rugby'
@@ -147,8 +148,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC2 - Cálculo, da Regla de L'Hôpital
         new npc(
             this, this.player,
-            400, 150,
-            'npc2', 4,
+            890, 260,
+            'npc2', 8,
             'He intentado calcular el límite de mi paciencia cuando tiende a infinito, pero me sale una indeterminación. Toma esto, lo necesitarás para derivar la atención del enemigo.',
             () => {
                 if (!this.gm.isDefeated('npc_calculo_dio_item')) {
@@ -170,9 +171,9 @@ export default class Pasillo extends Phaser.Scene {
         );
 
         // NPC3 - MDL2, frases sobre lógica
-        new npc(
+        new pasillo_loco(
             this, this.player,
-            600, 250,
+            820, 440,
             'npc3', 0,
             'P implica Q... pero la IA dice que P es falso. Si la premisa es falsa, ¡todo este pasillo es una mentira lógica! ¡Socorro!',
             null, null,
@@ -182,9 +183,9 @@ export default class Pasillo extends Phaser.Scene {
         // NPC4 - FP1, da Compilador Amigable
         new npc(
             this, this.player,
-            800, 180,
-            'npc4', 8,
-            '¡Un punto y coma! ¡He perdido toda mi energía mental por un punto y coma! No entres ahí fuera, está lleno de errores de sintaxis salvajes.',
+            678, 220,
+            'npc4', 0,
+            '¡Un punto y coma! ¡He perdido toda mi energía mental por un punto y coma! Ten cuidado si entras aqui, está lleno de errores de sintaxis salvajes.',
             () => {
                 if (!this.gm.isDefeated('npc_fp1_dio_item')) {
                     this.gm.addItem({
@@ -207,7 +208,7 @@ export default class Pasillo extends Phaser.Scene {
         // NPC5 - FP2, da Puntero a NULL
         new npc(
             this, this.player,
-            500, 350,
+            940, 260,
             'npc1', 4,
             'La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Toma este Puntero a NULL, si se lo lanzas a alguien, dejará de existir un rato.',
             () => {
@@ -232,7 +233,7 @@ export default class Pasillo extends Phaser.Scene {
         // NPC Veterano - da Apuntes de ansiedad
         new npc(
             this, this.player,
-            300, 400,
+            300, 270,
             'npc2', 12,
             "Ten estos Apuntes. No se entiende la letra porque los escribí durante un ataque de ansiedad, pero la intención es lo que cuenta.",
             () => {
@@ -256,8 +257,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC Borracho - da Tinto
         new npc(
             this, this.player,
-            150, 450,
-            'npc4', 4,
+            150, 440,
+            'npc4', 12,
             "Toma este Tinto. Si el código no compila estando sobrio, quizá borracho le veas la lógica.",
             () => {
                 if (!this.gm.isDefeated('npc_tinto_dio_item')) {
@@ -281,8 +282,8 @@ export default class Pasillo extends Phaser.Scene {
         // Estudiante cansado/bucle
         new npc(
             this, this.player,
-            900, 500,
-            'npc2', 8,
+            480, 428,
+            'npc2', 4,
             "He intentado hacer un 'undo' en mi vida después de elegir esta carrera, pero el Ctrl+Z no funciona en la realidad.",
             null, null,
             'Estudiante en Bucle'
@@ -291,8 +292,8 @@ export default class Pasillo extends Phaser.Scene {
         // Estudiante estresado
         new npc(
             this, this.player,
-            1100, 300,
-            'npc1', 0,
+            200, 440,
+            'npc1', 12,
             "Toma este Cigarro. Es para cuando el merge conflict en Git sea tan grande que prefieras borrar la carpeta y mudarte a otro país.",
             () => {
                 if (!this.gm.isDefeated('npc_git_dio_item')) {
@@ -314,8 +315,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC Claude
         new npc(
             this, this.player,
-            500, 550,
-            'npc3', 4,
+            405, 428,
+            'npc3', 8,
             "Claude me ha salvado la vida tantas veces que estoy pensando en ponerles en mi testamento.",
             null, null,
             'Fan de la IA'
@@ -324,8 +325,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC Boeing
         new npc(
             this, this.player,
-            200, 580,
-            'npc4', 8,
+            443, 390,
+            'npc4', 0,
             "Mi PC suena como una turbina de un Boeing 747. Creo que está intentando abrir el Chrome o viajar en el tiempo.",
             null, null,
             'Dueño de Tostadora'

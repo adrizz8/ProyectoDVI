@@ -70,7 +70,7 @@ export default class MapaFuera extends Phaser.Scene {
 
 
         gm.addNivel('outdoorMap');
-        //gm.CompleteNivel('outdoorMap');
+        gm.addNivel('entroCaf')
 
         this.salida_bus = map.createFromObjects('triggers', {
             name: 'salida_autobus',
@@ -90,12 +90,36 @@ export default class MapaFuera extends Phaser.Scene {
             this.scene.start('level3');
         });
         this.physics.add.overlap(this.entrada_der, this.player, () => {
+
+            gm.CompleteNivel('entroCaf')
             this.scene.start('cafeteria', { entrada: 'puerta_izq' });
         });
         this.physics.add.overlap(this.entrada_izq, this.player, () => {
-            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+            this.scene.start('cafeteria', { entrada: 'puerta_der' });
         });
 
+        if(!gm.estadoNivel('entroCaf')){
+            const npcData = [
+            { x: 130, y: 254, texture: 'npc2', frame: 8, message: 'Ya te he dicho que no puedes dormir solo 3 horas al dia' },
+            { x: 200, y: 254, texture: 'npc1', frame: 4, message: 'He visto como el profe se transformaba!!! QUE MIEDO' },
+            ];
+
+            this.npcArray = npcData.map(data =>
+                new npc(
+                    this,
+                    this.player,
+                    data.x,
+                    data.y,
+                    data.texture,
+                    data.frame,
+                    data.message,
+                    null,
+                    null,
+                    'Estudiante'
+                )
+            );
+
+        }
 
         // Colisiones del jugador con la capa dedicada
         this.colisiones = colisiones;
