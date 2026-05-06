@@ -98,7 +98,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Preguntar duda', 'Funciona en mi PC'],
+                habilidades: ['Preguntar Duda', 'Entrega Última Hora'],
                 objeto: ''
             },
         };
@@ -115,12 +115,10 @@ export default class GameManager {
             { id: 'tinto_verano', name: 'Tinto de Verano', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (Efecto euforia).' },
             { id: 'palmera_chocolate', name: 'Palmera de Chocolate', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (Capa de grasa protectora).' },
             { id: 'cafe', name: 'Café', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (Cafeína directa).' },
-            { id: 'amuleto_delegacion', name: 'Amuleto de Delegación', quantity: 2, type: 'consumable', buffLck: 5, description: 'Aumenta la suerte en 5 (El carisma del delegado).' },
             { id: 'cigarro', name: 'Cigarro', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo (Reduce el estrés).' },
             { id: 'convalidacion_directa', name: 'Convalidación Directa', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje (Saltarse una asignatura).' },
             { id: 'teclado_mecanico', name: 'Teclado Mecánico', quantity: 1, type: 'equipment', description: 'Arma periférica +5 daño (Switches Blue para más ruido).' },
             { id: 'sudadera_facu', name: 'Sudadera de la Facu', quantity: 1, type: 'equipment', description: 'Prenda reglamentaria que ofrece +5 defensa.' },
-            { id: 'llave_lab', name: 'Llave del Lab 1.4', quantity: 1, type: 'key', description: 'Abre la puerta del laboratorio de sistemas.' }
         ];
 
         // ── Posición del jugador ──────────────────────────────────────────────
@@ -146,7 +144,7 @@ export default class GameManager {
         this.progression = {
             'Jugador1': {
                 hp: 3, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
-                skills: { 2: 'Prácticas Wuolah', 4: 'Entrega Última Hora', 7: 'Correo Vacio' }
+                skills: { 2: 'Prácticas Wuolah' }
             },
             'Jugador2': {
                 hp: 2, mp: 1, damage: 1, speed: 1, defense: 1, luck: 0,

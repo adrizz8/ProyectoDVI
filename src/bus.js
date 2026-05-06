@@ -59,6 +59,8 @@ export default class bus extends Phaser.GameObjects.Sprite {
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
 
+        this.setDepth(this.y);
+
 
         let factor = this.speed / 100;
         this.anims.timeScale = Phaser.Math.Clamp(factor, 0.0, 3);

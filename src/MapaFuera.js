@@ -91,7 +91,7 @@ export default class MapaFuera extends Phaser.Scene {
         });
         this.physics.add.overlap(this.entrada_der, this.player, () => {
 
-            
+
             this.scene.start('cafeteria', { entrada: 'puerta_der' });
         });
         this.physics.add.overlap(this.entrada_izq, this.player, () => {
@@ -99,10 +99,10 @@ export default class MapaFuera extends Phaser.Scene {
             gm.CompleteNivel('entroCaf')
         });
 
-        if(!gm.estadoNivel('entroCaf')){
+        if (!gm.estadoNivel('entroCaf')) {
             const npcData = [
-            { x: 875, y: 254, texture: 'npc2', frame: 8, message: 'Creo que visto como el profe se transformaba!!! QUE MIEDO' },
-            { x: 920, y: 254, texture: 'npc1', frame: 4, message: 'Ya te decia que dormir 3 horas al dia te pasaria factura' },
+                { x: 875, y: 254, texture: 'npc2', frame: 8, message: 'Creo que visto como el profe se transformaba!!! QUE MIEDO' },
+                { x: 920, y: 254, texture: 'npc1', frame: 4, message: 'Ya te decia que dormir 3 horas al dia te pasaria factura' },
             ];
 
             this.npcArray = npcData.map(data =>
@@ -329,21 +329,14 @@ export default class MapaFuera extends Phaser.Scene {
         });
 
         // Aparecen los profesores tiesos directamente en su posición final
-        const ismaelSprite = this.add.sprite(this.player.x + 40, this.player.y - 60, 'ismael', 0).setDepth(50);
-        const carlosSprite = this.add.sprite(this.player.x - 40, this.player.y - 60, 'carlos', 0).setDepth(50);
+        const ismaelSprite = this.add.sprite(this.player.x + 60, this.player.y, 'ismael', 4).setDepth(50);
+        const carlosSprite = this.add.sprite(this.player.x - 60, this.player.y, 'carlos', 8).setDepth(50);
 
         const limpiarProfs = () => {
-            // Se marchan deslizando tiesos hacia arriba
-            this.tweens.add({
-                targets: [carlosSprite, ismaelSprite],
-                y: this.player.y - 400,
-                duration: 2500,
-                onComplete: () => {
-                    carlosSprite.destroy();
-                    ismaelSprite.destroy();
-                    this.player.unfreeze();
-                }
-            });
+            carlosSprite.destroy();
+            ismaelSprite.destroy();
+            this.player.unfreeze();
+
         };
 
         // Encolamos TODOS los diálogos de golpe.

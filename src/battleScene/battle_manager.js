@@ -106,6 +106,10 @@ export default class BattleManager {
 
         const current = this.turnQueue[this.currentTurnIndex];
 
+        if (current.data) {
+            current.data._guardActive = false;
+        }
+
         // Si el participante actual murió debido a contadores o daño previo, saltar turno
         if (current.data.isDead) {
             this.nextTurn();
@@ -201,7 +205,53 @@ export default class BattleManager {
         if (this._isBusy) return;
 
         const player = this.getActiveParticipant().data;
+        const skill = HABILITIES[skillName];
 
+        // Lógica para habilidades de daño múltiple
+        if (skill && skill.type === 'all-damage') {
+            if (player.mp < skill.cost) {
+                this._callbacks.onMessage?.(`${player.displayName || player.name} no tiene suficiente MP.`);
+                return;
+            }
+
+            this._isBusy = true;
+            player.mp -= skill.cost;
+
+            const enemies = this.getEnemies().filter(e => !e.isDead);
+            const multiResults = [];
+
+            enemies.forEach(targetEnemy => {
+                const result = player.useSkill(skillName, targetEnemy);
+                if (result.success) {
+                    const enemyResult = targetEnemy.receiveDamage(result.damage);
+                    multiResults.push({
+                        targetName: targetEnemy.displayName || targetEnemy.name,
+                        targetIndex: this.enemies.indexOf(targetEnemy),
+                        damage: enemyResult.damageTaken,
+                        targetHP: targetEnemy.hp,
+                        targetDead: enemyResult.isDead,
+                        isCrit: result.isCrit || false
+                    });
+                }
+            });
+
+            this._callbacks.onPlayerActionResult?.({
+                actionName: skill.name,
+                isMulti: true,
+                multiResults: multiResults,
+                attackerIndex: this.getActiveParticipant().index,
+                message: skill.effectFn(player, { displayName: 'todos los enemigos', name: 'todos' }).message
+            });
+
+            if (this.enemies.every(e => e.isDead)) {
+                this._handleAllEnemiesDeath();
+            } else {
+                this._callbacks.onReadyForNextTurn?.(() => this.nextTurn());
+            }
+            return;
+        }
+
+        // Lógica original para habilidades de un solo objetivo
         let target;
         if (targetType === 'player') target = this.players[targetIndex];
         else target = this.enemies[targetIndex];
@@ -347,8 +397,46 @@ export default class BattleManager {
             let finalTargetType = 'player';
             let finalTarget = target;
 
+            if (skill && skill.type === 'all-damage') {
+                // Consumir el coste una sola vez para ataques múltiples
+                currentEnemy.mp -= skill.cost;
+
+                const alivePlayers = this.players.filter(p => !p.isDead);
+                const multiResults = [];
+
+                alivePlayers.forEach(p => {
+                    const res = currentEnemy.useSkill(action.skillName, p);
+                    if (res.success) {
+                        let damageTaken = 0;
+                        if (res.damage) {
+                            const dmgRes = p.receiveDamage(res.damage);
+                            damageTaken = dmgRes.damageTaken;
+                        }
+                        multiResults.push({
+                            targetName: p.displayName || p.name,
+                            targetIndex: this.players.indexOf(p),
+                            damage: damageTaken,
+                            targetHP: p.hp,
+                            targetDead: p.isDead,
+                            isCrit: res.isCrit || false
+                        });
+                    }
+                });
+
+                // Notificar a la escena de una acción múltiple
+                this._callbacks.onEnemyActionResult?.({
+                    actionName: skill.name,
+                    isMulti: true,
+                    multiResults: multiResults,
+                    attackerIndex: currentEnemyData.index,
+                    message: HABILITIES[action.skillName].effectFn(currentEnemy, { displayName: 'todos', name: 'todos' }).message.replace('¡todos recibe', '¡Todos reciben')
+                });
+
+                this._callbacks.onReadyForNextTurn?.(() => this._checkPostTurn());
+                return;
+            }
             // Lógica especial de selección de objetivo para habilidades de curación
-            if (skill && skill.type === 'heal') {
+            else if (skill && skill.type === 'heal') {
                 const enemies = this.getEnemies();
                 const needsHeal = enemies.filter(e => !e.isDead && e.hp < e.maxHp * 0.8);
 

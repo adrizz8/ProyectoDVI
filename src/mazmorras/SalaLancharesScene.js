@@ -83,20 +83,24 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
+        gm.AddCompañero('Jugador2');
+        gm.AddCompañero('Jugador3');
+        gm.AddCompañero('Jugador4');
+
         if (!gm.estadoNivel("salaLanchares")) {
 
             this.lanchares = new npcBattle(this, this.player, 650, 150, 'lanchares', 0, {
                 spriteKey: 'lancharesbatalla',
-                scale: 0.45,
+                scale: 0.85,
                 name: 'Lanchares',
-                hp: 90,
-                maxHp: 90,
-                damage: 21,
+                hp: 88,
+                maxHp: 88,
+                damage: 19,
                 speed: 8,
-                defense: 22,
-                mp: 20,
-                maxMp: 20,
-                habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante', 'Entrega Última Hora', '¡A pelar cables!']
+                defense: 20,
+                mp: 40,
+                maxMp: 40,
+                habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la academia']
             }, null, null, null, 'lanchares_', "salaLanchares");
         } else {
             this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "b", null, 'lanchares_', 'Lanchares');

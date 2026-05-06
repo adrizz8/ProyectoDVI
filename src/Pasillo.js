@@ -205,31 +205,6 @@ export default class Pasillo extends Phaser.Scene {
             'Estudiante de FP'
         );
 
-        // NPC5 - FP2, da Puntero a NULL
-        new npc(
-            this, this.player,
-            940, 260,
-            'npc1', 4,
-            'La IA ha convertido a los profesores en punteros que apuntan a nuestra destrucción. Toma este Puntero a NULL, si se lo lanzas a alguien, dejará de existir un rato.',
-            () => {
-                if (!this.gm.isDefeated('npc_fp2_dio_item')) {
-                    this.gm.addItem({
-                        id: 'puntero_null',
-                        name: 'Puntero a NULL',
-                        type: 'consumable',
-                        disable_enemy: true,
-                        description: 'Arma arrojadiza: desactiva las habilidades del enemigo un turno.'
-                    }, 1);
-                    this.gm.markDefeated('npc_fp2_dio_item');
-                    this.time.delayedCall(300, () => {
-                        this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Puntero a NULL]', 'Estudiante de FP (2)');
-                    });
-                }
-            },
-            null,
-            'Estudiante de FP (2)'
-        );
-
         // NPC Veterano - da Apuntes de ansiedad
         new npc(
             this, this.player,
@@ -257,8 +232,8 @@ export default class Pasillo extends Phaser.Scene {
         // NPC Borracho - da Tinto
         new npc(
             this, this.player,
-            150, 440,
-            'npc4', 12,
+            940, 260,
+            'npc4', 4,
             "Toma este Tinto. Si el código no compila estando sobrio, quizá borracho le veas la lógica.",
             () => {
                 if (!this.gm.isDefeated('npc_tinto_dio_item')) {

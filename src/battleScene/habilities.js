@@ -31,17 +31,17 @@ export default class Hability {
      * @returns {Object} Resultado de la acción (damage, heal, message, etc.)
      */
     execute(source, target) {
-        // Comprobar si hay suficiente MP
-        if (source.mp < this.cost) {
-            return {
-                success: false,
-                message: `${source.displayName || source.name} no tiene suficiente MP para usar ${this.name}.`,
-                reason: 'NO_MP'
-            };
+        // Consumir el coste y comprobar MP (solo si no es de daño múltiple, que se gestiona externamente para cobrar solo una vez)
+        if (this.type !== 'all-damage') {
+            if (source.mp < this.cost) {
+                return {
+                    success: false,
+                    message: `${source.displayName || source.name} no tiene suficiente MP para usar ${this.name}.`,
+                    reason: 'NO_MP'
+                };
+            }
+            source.mp -= this.cost;
         }
-
-        // Consumir el coste
-        source.mp -= this.cost;
 
         // Ejecutar el efecto
         const result = this.effectFn(source, target);
@@ -91,7 +91,7 @@ export const HABILITIES = {
         cost: 5,
         type: 'heal',
         effectFn: (source, target) => {
-            const healAmount = source.maxHp * 0.25;
+            const healAmount = Math.floor(source.maxHp * 0.25);
             return {
                 heal: healAmount,
                 message: `${source.displayName || source.name} asiente con seguridad sin haber entendido nada. ¡Recupera confianza y vida!`
@@ -212,7 +212,7 @@ export const HABILITIES = {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
             const nerfAmount = Math.floor(target.baseDamage * 0.10);
-            target.damage = Math.max(1, target.damage - nerfAmount);
+            target.damage = Math.max(1, Math.floor(target.damage - nerfAmount));
             return {
                 damage,
                 nerf: { stat: 'damage', amount: nerfAmount },
@@ -244,15 +244,15 @@ export const HABILITIES = {
     '¡A pelar cables!': new Hability({
         id: 'electric_shock',
         name: '¡A pelar cables!',
-        description: 'Lanza un ataque eléctrico con un cable pelado de la placa base.',
+        description: 'Manda a todos los usuarios a pelar cables (Ataque múltiple)',
         cost: 3,
-        type: 'damage',
+        type: 'all-damage',
         effectFn: (source, target) => {
-            const potencia = 30;
+            const potencia = 12;
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,
-                message: `${source.displayName || source.name} saca un cable pelado. ¡Un chispazo eléctrico alcanza a ${target.displayName || target.name}!`
+                message: `${source.displayName || source.name} obliga a todos a pelar cables. ¡${target.displayName || target.name} recibe una descarga!`
             };
         }
     }),

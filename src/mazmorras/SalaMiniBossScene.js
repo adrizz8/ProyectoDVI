@@ -21,10 +21,10 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         const pared = map.createLayer('Pared', tileset, 0, 0);
         const maquinas = map.createLayer('Maquinas', tileset, 0, 0);
 
-        const gm=GameManager.getInstance();
+        const gm = GameManager.getInstance();
 
         gm.addNivel("salaMiniBoss");
-        
+
 
         // Colisiones
         colisiones.setCollisionByExclusion([-1]);
@@ -32,15 +32,15 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         pared.setCollisionByProperty({ collides: true });
 
         // Jugador
-        this.player = new Player(this, 625, 425); 
+        this.player = new Player(this, 625, 425);
         this.player.setDirection('up');
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, pared);
         this.physics.add.collider(this.player, maquinas);
 
-        const savedPos=gm.getPlayerPosition();
+        const savedPos = gm.getPlayerPosition();
 
-         // Si hay posición guardada, es que venimos de la batalla
+        // Si hay posición guardada, es que venimos de la batalla
         if (savedPos) {
             gm.clearPlayerPosition();
             this.player.setDirection(savedPos.direction);
@@ -57,8 +57,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             name: 'salida',
             classType: trigger
         });
-        this.physics.add.overlap(this.player,this.salida,()=>{
-            this.scene.start('p1LeftMazmorra',{entrada:'salida_miniboss'});
+        this.physics.add.overlap(this.player, this.salida, () => {
+            this.scene.start('p1LeftMazmorra', { entrada: 'salida_miniboss' });
         });
 
         // Menu con espacio
@@ -74,23 +74,23 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             if (pointer.rightButtonDown()) launchMenu();
         });
 
-        
-        if(!gm.estadoNivel("salaMiniBoss")){
 
-            this.miniboss= new npcBattle(this,this.player,625,250,'miniboss',0,{
-                    spriteKey: 'minibossbatalla',
-                    name: 'Miniboss',
-                    hp: 120,
-                    maxHp: 120,
-                    damage: 15,
-                    speed: 8,
-                    defense: 5,
-                    mp: 40,
-                    maxMp: 40,
-                    habilidades: ['Cura', 'Ataque Potente', 'Golpe Vigorizante']
-                },null, null,null,'miniboss_',"salaMiniBoss");
-        }else{
-            this.miniboss= new npc(this,this.player,625,250,'miniboss',0,"b",null,'miniboss_',"Miniboss");
+        if (!gm.estadoNivel("salaMiniBoss")) {
+
+            this.miniboss = new npcBattle(this, this.player, 625, 250, 'miniboss', 0, {
+                spriteKey: 'minibossbatalla',
+                name: 'Miniboss',
+                hp: 70,
+                maxHp: 70,
+                damage: 14,
+                speed: 16,
+                defense: 18,
+                mp: 15,
+                maxMp: 15,
+                habilidades: ['Funciona en mi PC', 'Ir a la academia']
+            }, null, null, null, 'miniboss_', "salaMiniBoss");
+        } else {
+            this.miniboss = new npc(this, this.player, 625, 250, 'miniboss', 0, "b", null, 'miniboss_', "Miniboss");
         }
 
         // Música de mazmorra

@@ -90,8 +90,8 @@ export default class EnemyBattle {
             return skill && this.mp >= skill.cost;
         });
 
-        // 2. Probabilidad de usar habilidad (60%)
-        if (usableSkills.length > 0 && Math.random() < 0.60) {
+        // 2. Probabilidad de usar habilidad (80%)
+        if (usableSkills.length > 0 && Math.random() < 0.80) {
             const skillName = usableSkills[Math.floor(Math.random() * usableSkills.length)];
             const skill = HABILITIES[skillName];
             return {

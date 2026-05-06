@@ -456,7 +456,7 @@ export default class Cafeteria extends Phaser.Scene {
         });
 
         // RECREAR ANDRÉS (vendedor)
-        this._spawnAndres(133);
+        this._spawnAndres();
 
         // RECREAR COMPAÑERO (si está en el grupo)
         if (this.gm.ActualPlayers.includes('Jugador2')) {
@@ -465,8 +465,8 @@ export default class Cafeteria extends Phaser.Scene {
         }
     }
 
-    _spawnAndres(y = 140) {
-        this.andres = new npc(this, this.player, 310, y, 'npc2', 8, " ", () => {
+    _spawnAndres() {
+        this.andres = new npc(this, this.player, 710, 133, 'tiendacafe', 0, " ", () => {
             const msg = this.gm.isDefeated('andres_dio_pincho')
                 ? '¿Qué te pongo chaval?.'
                 : '¡Qué pasa niño! Primer día, ¿eh? Toma, un Pincho de Tortilla para que cojas energías.';

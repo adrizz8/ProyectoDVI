@@ -99,7 +99,8 @@ export default class CombatGenerator {
      * Selecciona habilidades aleatorias del catálogo.
      */
     static _getRandomSkills(num) {
-        const keys = Object.keys(HABILITIES);
+        // Filtramos para que NO puedan coger habilidades de daño a todos (exclusivas del boss)
+        const keys = Object.keys(HABILITIES).filter(key => HABILITIES[key].type !== 'all-damage');
         const shuffled = keys.sort(() => 0.5 - Math.random());
         return shuffled.slice(0, num);
     }

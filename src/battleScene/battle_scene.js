@@ -615,6 +615,23 @@ export default class BattleScene extends Phaser.Scene {
     _onPlayerActionResult(result) {
         this.actionMenu.setVisibility(false);
 
+        // Acción múltiple (ej: ¡A pelar cables!)
+        if (result.isMulti && result.multiResults) {
+            result.multiResults.forEach(res => {
+                const targetSpr = this._enemySprites[res.targetIndex];
+                if (targetSpr) {
+                    if (res.damage > 0) {
+                        this._shakeSprite(targetSpr);
+                        this._showFloatingText(targetSpr, `-${res.damage}`, '#ff4444');
+                    }
+                }
+            });
+            this._updatePlayerHUDs();
+            this._updateEnemiesHP();
+            this._setMessage(result.message || `¡${result.actionName} golpea a todos!`);
+            return;
+        }
+
         const hadMessage = !!result.message;
         let msg = result.message;
         if (!msg) {
@@ -709,6 +726,23 @@ export default class BattleScene extends Phaser.Scene {
     }
 
     _onEnemyActionResult(result) {
+        // Acción múltiple (ej: ¡A pelar cables!)
+        if (result.isMulti && result.multiResults) {
+            result.multiResults.forEach(res => {
+                const targetSpr = this._playerSprites[res.targetIndex];
+                if (targetSpr) {
+                    if (res.damage > 0) {
+                        this._shakeSprite(targetSpr);
+                        this._showFloatingText(targetSpr, `-${res.damage}`, '#ff4444');
+                    }
+                }
+            });
+            this._updatePlayerHUDs();
+            this._updateEnemiesHP();
+            this._setMessage(result.message || `¡${result.actionName} golpea a todos!`);
+            return;
+        }
+
         // Guardia del enemigo: animación de escudo sobre su propio sprite
         if (result.isGuard) {
             const enemySpr = this._enemySprites[result.guardEnemyIndex];
