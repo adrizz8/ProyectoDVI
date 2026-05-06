@@ -70,7 +70,7 @@ export default class MapaFuera extends Phaser.Scene {
 
 
         gm.addNivel('outdoorMap');
-        gm.addNivel('entroCaf')
+        gm.addNivel('entroCaf');
 
         this.salida_bus = map.createFromObjects('triggers', {
             name: 'salida_autobus',
@@ -91,17 +91,18 @@ export default class MapaFuera extends Phaser.Scene {
         });
         this.physics.add.overlap(this.entrada_der, this.player, () => {
 
-            gm.CompleteNivel('entroCaf')
-            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+            
+            this.scene.start('cafeteria', { entrada: 'puerta_der' });
         });
         this.physics.add.overlap(this.entrada_izq, this.player, () => {
-            this.scene.start('cafeteria', { entrada: 'puerta_der' });
+            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+            gm.CompleteNivel('entroCaf')
         });
 
         if(!gm.estadoNivel('entroCaf')){
             const npcData = [
-            { x: 130, y: 254, texture: 'npc2', frame: 8, message: 'Ya te he dicho que no puedes dormir solo 3 horas al dia' },
-            { x: 200, y: 254, texture: 'npc1', frame: 4, message: 'He visto como el profe se transformaba!!! QUE MIEDO' },
+            { x: 875, y: 254, texture: 'npc2', frame: 8, message: 'Creo que visto como el profe se transformaba!!! QUE MIEDO' },
+            { x: 920, y: 254, texture: 'npc1', frame: 4, message: 'Ya te decia que dormir 3 horas al dia te pasaria factura' },
             ];
 
             this.npcArray = npcData.map(data =>
@@ -370,12 +371,12 @@ export default class MapaFuera extends Phaser.Scene {
      */
     _spawnNPCsPostBoss() {
         const npcData = [
-            { x: 250, y: 400, texture: 'npc2', frame: 4, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!.' },
-            { x: 500, y: 350, texture: 'npc3', frame: 8, message: 'Si vas para dentro, pídeme otro cubo de tercios.' },
-            { x: 700, y: 500, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar.' },
-            { x: 400, y: 550, texture: 'npc4', frame: 0, message: 'La IA controla las aulas. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
-            { x: 200, y: 600, texture: 'npc2', frame: 12, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en seguir pidiendo botellines.' },
-            { x: 600, y: 650, texture: 'npc3', frame: 4, message: 'Esta tarde, sangriada.' },
+            { x: 780, y: 500, texture: 'npc2', frame: 12, message: '¡Por fin se puede respirar sin que el conserje te persiga por el pasillo!.' },
+            { x: 210, y: 600, texture: 'npc3', frame: 4, message: 'Si vas para dentro, pídeme otro cubo de tercios.' },
+            { x: 780, y: 450, texture: 'npc1', frame: 0, message: 'Esto sigue siendo una locura, pero al menos puedo salir a fumar.' },
+            { x: 105, y: 290, texture: 'npc4', frame: 8, message: 'La IA controla las aulas. He oído que si entras sin el carnet de la Complu, te formatea la RAM directamente.' },
+            { x: 129, y: 550, texture: 'npc2', frame: 0, message: 'Llevo 4 horas intentando salir del campus, pero parece que hay un bucle infinito en seguir pidiendo botellines.' },
+            { x: 129, y: 635, texture: 'npc3', frame: 12, message: 'Esta tarde, sangriada.' },
         ];
 
         this._outdoorNpcs = npcData.map(data =>

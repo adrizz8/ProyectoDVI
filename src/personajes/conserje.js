@@ -37,7 +37,7 @@ export default class conserje extends NPCBattle {
         }
 
         if (!locoDerrotado) {
-            this.say("¡Eh, tú! No pienses que vas a pasar tan fácilmente. Primero demuéstrame que puedes con ese alborotador de ahí fuera. ¡Vuelve cuando lo hayas 'debugeado'!");
+            this.say("¡Eh, tú! No pienses que vas a pasar tan fácilmente. Primero demuéstrame que puedes con ese alborotador de ahí. ¡Vuelve cuando lo hayas 'debugeado'!");
             return;
         }
 

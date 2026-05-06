@@ -3,6 +3,7 @@ import DialogueManager from '../dialogueManager.js';
 import Phaser from 'phaser';
 import GameManager from '../manager.js';
 import trigger from '../trigger.js';
+import EventManager from '../eventManager.js';
 
 export default class EntradaMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -13,14 +14,20 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
 
         var entradas = new Map();
         entradas.set('pasillo', { x: 595, y: 580, direccion: 'up' });
-        entradas.set('izq', { x: 180, y: 300, direccion: 'right' });
-        entradas.set('der', { x: 1020, y: 300, direccion: 'left' });
+        entradas.set('izq', { x: 50, y: 320, direccion: 'right' });
+        entradas.set('der', { x: 1150, y: 320, direccion: 'left' });
         entradas.set('jefe', { x: 595, y: 325, direccion: 'down' });
 
 
         const map = this.make.tilemap({ key: 'entradaMazmorra' });
         const tileset = map.addTilesetImage('tilesetmazmorra', 'tilesMazmorra');
 
+        this.physics.world.setBounds(
+            0,
+            0,
+            map.widthInPixels,
+            map.heightInPixels
+        );
   
 
         // Capas
@@ -35,6 +42,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         colisiones.setCollisionByExclusion([-1]);
         colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
+       
 
         // Spawn del jugador
         const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
@@ -44,6 +52,8 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
 
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
+
+        const ev= EventManager.getInstance();
 
         this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
@@ -91,9 +101,23 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.entrada_izq, () => {
             this.scene.start('p1LeftMazmorra', { entrada: 'lobby' });
         });
-        this.physics.add.overlap(this.player, this.entrada_jefe, () => {
+
+         this.over=this.physics.add.overlap(this.player, this.entrada_jefe, () => {
             this.scene.start('salaLanchares');
+            
         });
+        /*
+        this.over=this.physics.add.overlap(this.player, this.entrada_jefe, () => {
+
+            if(ev.puzleDerechaCompletado&&ev.puzleIzquierdaCompletado){
+                this.scene.start('salaLanchares');
+            }else{
+                this.dialogueManager.showDialogue('Parece que la puerta esta bloqueada',this.player.name);
+                this.over.destroy();
+            }
+        });*/
+
+        
 
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
         const launchMenu = () => {
@@ -115,6 +139,11 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
 
     }
 
+    showDialogue(message, nombre = '', onFinish = null) {
+        if (this.dialogueManager) {
+            this.dialogueManager.showDialogue(message, nombre, onFinish);
+        }
+    }
     update(t, dt) {
         if (this.player && this.player.update) {
             this.player.update(t, dt);

@@ -32,7 +32,7 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         pared.setCollisionByProperty({ collides: true });
 
         // Jugador
-        this.player = new Player(this, 617, 440); 
+        this.player = new Player(this, 625, 425); 
         this.player.setDirection('up');
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, pared);

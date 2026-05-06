@@ -39,15 +39,15 @@
          "name":"triggers",
          "objects":[
                 {
-                 "height":2.66666666666663,
+                 "height":7.66666666666663,
                  "id":2,
                  "name":"salida",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":24,
-                 "x":610.666666666667,
-                 "y":472
+                 "x":613.666666666667,
+                 "y":475
                 }],
          "opacity":1,
          "type":"objectgroup",

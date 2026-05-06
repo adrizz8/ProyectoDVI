@@ -92,7 +92,6 @@ export default class Cafeteria extends Phaser.Scene {
         // Colisiones del jugador con la capa dedicada
         this.colisiones = colisiones;
         this.physics.add.collider(this.player, this.colisiones);
-
         // Comprobamos si la cafetería ya ha sido completada (boss derrotado)
         const cafeteriaCompletada = this.gm.estadoNivel('cafeteria');
 
@@ -195,7 +194,7 @@ export default class Cafeteria extends Phaser.Scene {
             this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
+                this.scene.start('outdoorMap', { entrada: 'entrada_der' });
             });
         });
         this.physics.add.overlap(zonaExitIzq, this.player, () => {
@@ -203,7 +202,7 @@ export default class Cafeteria extends Phaser.Scene {
             this._transitioning = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('outdoorMap', { entrada: 'entrada_der' });
+                this.scene.start('outdoorMap', { entrada: 'entrada_izq' });
             });
         });
 
@@ -516,13 +515,13 @@ export default class Cafeteria extends Phaser.Scene {
         });
 
         const npcPostData = [
-            { x: 150, y: 220, texture: 'npc1', frame: 0, message: 'Secretaría es el Boss final secreto. Tiene una habilidad pasiva que hace que siempre te falte un papel, no importa cuántos lleves.' },
-            { x: 550, y: 350, texture: 'npc2', frame: 4, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues en el parcial saqué un 1.' },
-            { x: 750, y: 200, texture: 'npc4', frame: 8, message: 'La cafetería es segura gracias a vosotros. Pero tened cuidado, los camaradas de Lanchares siguen por ahí' },
-            { x: 900, y: 450, texture: 'npc3', frame: 0, message: 'Pues ahora que estamos aqui a salvo habrá que echarse una cerveza.' },
-            { x: 500, y: 580, texture: 'npc1', frame: 8, message: 'A mi me da igual que haya enemigo o no, no iba a salir de la cafetería de todas formas.' },
-            { x: 1000, y: 200, texture: 'npc2', frame: 0, message: '¿Borracha? No, no... es que tengo el horario tan partido que me esta volviendo loca.' },
-            { x: 200, y: 400, texture: 'npc4', frame: 4, message: 'Relajate un poco, ¿quieres un piti?.' },
+            { x: 600, y: 350, texture: 'npc1', frame: 4, message: 'Secretaría es el Boss final secreto. Tiene una habilidad pasiva que hace que siempre te falte un papel, no importa cuántos lleves.' },
+            { x: 550, y: 350, texture: 'npc2', frame: 8, message: '¿Has oído? Lanchares dice que ganar contra nosotros es "trivial". Pues en el parcial saqué un 1.' },
+            { x: 1036, y: 337, texture: 'npc4', frame: 4, message: 'La cafetería es segura gracias a vosotros. Pero tened cuidado, los camaradas de Lanchares siguen por ahí' },
+            { x: 225, y: 545, texture: 'npc3', frame: 12, message: 'Pues ahora que estamos aqui a salvo habrá que echarse una cerveza.' },
+            { x: 846, y: 522, texture: 'npc1', frame: 8, message: 'A mi me da igual que haya enemigo o no, no iba a salir de la cafetería de todas formas.' },
+            { x: 178, y: 495, texture: 'npc2', frame: 8, message: '¿Borracha? No, no... es que tengo el horario tan partido que me esta volviendo loca.' },
+            { x: 215, y: 136, texture: 'npc4', frame: 0, message: 'Relajate un poco, ¿quieres un piti?.' },
         ];
 
         this._wanderingNpcs = [];
@@ -532,7 +531,7 @@ export default class Cafeteria extends Phaser.Scene {
             let name = 'Estudiante';
 
             // NPC de la Cerveza
-            if (data.x === 1000 && data.y === 200) {
+            if (data.x === 178 && data.y === 495) {
                 onInteract = () => {
                     if (!this.gm.isDefeated('npc_cerveza_caf_dio')) {
                         this.gm.addItem({ id: 'cerveza', name: 'Cerveza', type: 'consumable', heal: 20, recMp: 10, description: 'Una Mahou bien fría. Recupera 20 HP y 10 MP.' }, 1);
@@ -546,7 +545,7 @@ export default class Cafeteria extends Phaser.Scene {
             }
 
             // NPC del Cigarro
-            if (data.x === 200 && data.y === 400) {
+            if (data.x === 215 && data.y === 136) {
                 onInteract = () => {
                     if (!this.gm.isDefeated('npc_cigarro_caf_dio')) {
                         this.gm.addItem({ id: 'cigarro', name: 'Cigarro', type: 'consumable', description: 'Reduce el estrés.' }, 1);

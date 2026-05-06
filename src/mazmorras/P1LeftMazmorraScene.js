@@ -16,7 +16,7 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
     create(data) {
 
         var entradas = new Map();
-        entradas.set('lobby', { x: 290, y: 560, direccion: 'left' });
+        entradas.set('lobby', { x: 1160, y: 570, direccion: 'left' });
         entradas.set('salida_miniboss', { x: 375, y: 255, direccion: 'down' });
 
         const map = this.make.tilemap({ key: 'p1LeftMazmorra' });
@@ -37,6 +37,8 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         // Recuperar posición guardada o usar la de defecto
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
+
+        gm.addNivel('p1LeftMazmorra');
 
         // Spawn del jugador
         const posi = entradas.get(data.entrada) || entradas.get('lobby');

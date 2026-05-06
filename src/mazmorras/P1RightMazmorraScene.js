@@ -31,11 +31,13 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
 
         // Spawn
         const entradas = new Map();
-        entradas.set('lobby', { x: 970, y: 810, direccion: 'right' });
+        entradas.set('lobby', { x: 50, y: 1015, direccion: 'right' });
 
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
         const posi = entradas.get(data.entrada) || entradas.get('lobby');
+
+        gm.addNivel('p1RightMazmorra');
 
         this.player = new Player(this, posi.x, posi.y, posi.direccion, true);
         this.player.setDirection(posi.direccion);
