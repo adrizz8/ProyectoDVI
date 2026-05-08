@@ -82,6 +82,7 @@ import cable_right_off from '../assets/images/cable_right_off.png';
 import cable_right_on from '../assets/images/cable_right_on.png';
 import boton from '../assets/images/boton.png';
 
+import completed from '../assets/music/completed.mp3'
 import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
 import p1RightMazmorra from '../assets/images/p1derechadungeon.json';
 import p1LeftMazmorra from '../assets/images/p1izquierdadungeon.json';
@@ -202,6 +203,7 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
     this.load.audio('music_ambiente', music_ambiente);
+    this.load.audio('completed', completed);
 
     this.load.tilemapTiledJSON('pasillo', pasillo);
 
@@ -232,7 +234,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('salaMiniBoss');
+    this.scene.start('p1RightMazmorra');
 
   }
 }

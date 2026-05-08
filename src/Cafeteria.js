@@ -294,10 +294,10 @@ export default class Cafeteria extends Phaser.Scene {
             damage: 11,
             speed: 8,
             defense: 16,
-            mp: 11,
-            maxMp: 11,
+            mp: 16,
+            maxMp: 16,
             expReward: 60,
-            habilidades: ['Ir a la Academia', 'Código Fácil'],
+            habilidades: ['Preguntar a ChatGPT', 'Código Fácil'],
             spriteKey: 'conserjebatalla',
             scale: 0.45
         }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');

@@ -83,10 +83,6 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
-        gm.AddCompañero('Jugador2');
-        gm.AddCompañero('Jugador3');
-        gm.AddCompañero('Jugador4');
-
         if (!gm.estadoNivel("salaLanchares")) {
 
             this.lanchares = new npcBattle(this, this.player, 650, 150, 'lanchares', 0, {
@@ -98,8 +94,8 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 damage: 19,
                 speed: 8,
                 defense: 20,
-                mp: 40,
-                maxMp: 40,
+                mp: 52,
+                maxMp: 52,
                 habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la academia']
             }, null, null, null, 'lanchares_', "salaLanchares");
         } else {

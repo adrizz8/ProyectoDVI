@@ -75,7 +75,7 @@ export default class GameManager {
                 maxHp: 27,
                 mp: 25,
                 maxMp: 25,
-                damage: 15,
+                damage: 13,
                 speed: 25,
                 defense: 12,
                 luck: 15,
@@ -91,9 +91,9 @@ export default class GameManager {
                 maxHp: 20,
                 mp: 12,
                 maxMp: 12,
-                damage: 20,
+                damage: 16,
                 speed: 20,
-                defense: 17,
+                defense: 16,
                 luck: 8,
                 level: 1,
                 exp: 0,
@@ -159,6 +159,8 @@ export default class GameManager {
                 skills: {}
             }
         };
+        
+        this.puzzleButtonStates = {};
 
     }
 
@@ -443,5 +445,21 @@ export default class GameManager {
         if (index !== -1) {
             this.ActualPlayers[index] = newName;
         }
+    }
+
+    // ── Persistence for Puzzles ──────────────────────────────────────────────
+    
+    setButtonState(sceneKey, buttonName, state) {
+        if (!this.puzzleButtonStates[sceneKey]) {
+            this.puzzleButtonStates[sceneKey] = {};
+        }
+        this.puzzleButtonStates[sceneKey][buttonName] = state;
+    }
+
+    getButtonState(sceneKey, buttonName) {
+        if (this.puzzleButtonStates[sceneKey] && this.puzzleButtonStates[sceneKey].hasOwnProperty(buttonName)) {
+            return this.puzzleButtonStates[sceneKey][buttonName];
+        }
+        return false; // Default state
     }
 }

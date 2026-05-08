@@ -139,7 +139,7 @@ export const HABILITIES = {
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDamage * 0.20);
+            const buffAmount = Math.max(1, Math.floor(source.baseDamage * 0.20));
             source.damage += buffAmount;
             return {
                 buff: { stat: 'damage', amount: buffAmount },
@@ -156,7 +156,7 @@ export const HABILITIES = {
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDefense * 0.20);
+            const buffAmount = Math.max(1, Math.floor(source.baseDefense * 0.20));
             source.defense += buffAmount;
             return {
                 buff: { stat: 'defense', amount: buffAmount },
@@ -173,7 +173,7 @@ export const HABILITIES = {
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseSpeed * 0.20);
+            const buffAmount = Math.max(1, Math.floor(source.baseSpeed * 0.20));
             source.speed += buffAmount;
             return {
                 buff: { stat: 'speed', amount: buffAmount },
@@ -190,7 +190,7 @@ export const HABILITIES = {
         type: 'nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const nerfAmount = Math.floor(target.baseDamage * 0.20);
+            const nerfAmount = Math.max(1, Math.floor(target.baseDamage * 0.20));
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 nerf: { stat: 'damage', amount: nerfAmount },
@@ -211,7 +211,7 @@ export const HABILITIES = {
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const nerfAmount = Math.floor(target.baseDamage * 0.10);
+            const nerfAmount = Math.max(1, Math.floor(target.baseDamage * 0.10));
             target.damage = Math.max(1, Math.floor(target.damage - nerfAmount));
             return {
                 damage,
@@ -231,7 +231,7 @@ export const HABILITIES = {
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const buffAmount = Math.floor(source.baseDamage * 0.10);
+            const buffAmount = Math.max(1, Math.floor(source.baseDamage * 0.10));
             source.damage += buffAmount;
             return {
                 damage,
