@@ -99,7 +99,7 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 name: 'Lanchares',
                 hp: getScaledStat(88, 1.5),
                 maxHp: getScaledStat(88, 1.5),
-                damage: getScaledStat(19, 1.5),
+                damage: getScaledStat(21, 1.5),
                 speed: getScaledStat(8, 1.5),
                 defense: getScaledStat(20, 1.5),
                 mp: getScaledStat(52, 1),

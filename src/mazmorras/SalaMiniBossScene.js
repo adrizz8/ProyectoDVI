@@ -89,7 +89,7 @@ export default class SalaMiniBossScene extends Phaser.Scene {
                 name: 'Miniboss',
                 hp: getScaledStat(70, 1.5),
                 maxHp: getScaledStat(70, 1.5),
-                damage: getScaledStat(14, 1.5),
+                damage: getScaledStat(16, 1.5),
                 speed: getScaledStat(16, 1.5),
                 defense: getScaledStat(18, 1.5),
                 mp: getScaledStat(15, 1),

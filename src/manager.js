@@ -36,8 +36,8 @@ export default class GameManager {
         this.playerStats = {
             'Jugador1': {
                 displayName: 'J1',
-                hp: 20,
-                maxHp: 20,
+                hp: 22,
+                maxHp: 22,
                 mp: 10,
                 maxMp: 10,
                 damage: 10,
@@ -73,8 +73,8 @@ export default class GameManager {
                 displayName: 'Angela',
                 hp: 27,
                 maxHp: 27,
-                mp: 25,
-                maxMp: 25,
+                mp: 14,
+                maxMp: 14,
                 damage: 13,
                 speed: 25,
                 defense: 12,
@@ -98,7 +98,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Preguntar Duda', 'Entrega Última Hora'],
+                habilidades: ['Pregunta a ChatGPT', 'Entrega Última Hora'],
                 objeto: ''
             },
         };
@@ -143,7 +143,7 @@ export default class GameManager {
         // Define el crecimiento por nivel y las habilidades que se aprenden.
         this.progression = {
             'Jugador1': {
-                hp: 3, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
+                hp: 4, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
                 skills: { 2: 'Prácticas Wuolah' }
             },
             'Jugador2': {

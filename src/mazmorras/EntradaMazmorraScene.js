@@ -110,7 +110,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
                 const now = this.time.now;
                 if (!this.dialogueManager.dialogueBox.visible && (now - this.lastBlockMessageTime > 2000)) {
                     this.lastBlockMessageTime = now;
-                    this.dialogueManager.showDialogue('La puerta está bloqueada. Debo resolver los puzzles laterales.', this.player.displayName || this.player.name);
+                    this.dialogueManager.showDialogue('La puerta está bloqueada.', this.player.displayName || this.player.name);
                 }
             }
         });
