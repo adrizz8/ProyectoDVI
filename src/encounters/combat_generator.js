@@ -89,7 +89,7 @@ export default class CombatGenerator {
             luck: base.luck,
             // Recompensas escaladas (Total combate entre 25 y 40)
             expReward: Math.floor(40 / groupSize),
-            moneyReward: Math.floor((25 + Math.random() * 16) / groupSize),
+            moneyReward: Math.floor((50 + Math.random() * 32) / groupSize),
             habilidades: this._getRandomSkills(2),
             objeto: this._getRandomItem(0.15) // 15% de probabilidad de soltar equipo
         };

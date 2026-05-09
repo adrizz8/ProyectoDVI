@@ -586,10 +586,9 @@ export default class BattleManager {
             const totalMoney = this.enemies.reduce((acc, e) => acc + (e.moneyReward || 0), 0);
 
             let winMessage = `¡Victoria! +${totalExp} EXP`;
-            if (totalMoney > 0) winMessage += ` y +${totalMoney}€`;
-            this._callbacks.onMessage?.(winMessage);
-
             const gm = GameManager.getInstance();
+            if (totalMoney > 0) winMessage += ` y +${gm.formatDinero(totalMoney)}`;
+            this._callbacks.onMessage?.(winMessage);
             if (totalMoney >= 0) gm.addDinero(totalMoney);
             this.players.forEach(p => {
                 if (!p.isDead) {

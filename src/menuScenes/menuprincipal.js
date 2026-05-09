@@ -38,7 +38,7 @@ class MenuPrincipal extends Phaser.Scene {
 
         this.horasJuego = horasJuego;
 
-        this.add.text(305, 210, `Dinero: ${dinero.toLocaleString()}€`, {
+        this.add.text(305, 210, `Dinero: ${gm.formatDinero(dinero)}`, {
             fontSize: '24px', 
             fill: '#ffffff', 
             fontFamily: '"DistantGalaxy"', 

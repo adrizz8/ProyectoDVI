@@ -304,7 +304,7 @@ export default class Cafeteria extends Phaser.Scene {
             mp: 16,
             maxMp: 16,
             expReward: 60,
-            moneyReward: 30,
+            moneyReward: 60,
             habilidades: ['Preguntar a ChatGPT', 'Código Fácil'],
             spriteKey: 'conserjebatalla',
             scale: 0.45
@@ -384,7 +384,7 @@ export default class Cafeteria extends Phaser.Scene {
             mp: 8,
             maxMp: 8,
             expReward: 50,
-            moneyReward: 25,
+            moneyReward: 50,
             habilidades: ['Entrega Última Hora'],
         }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
 

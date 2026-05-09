@@ -33,7 +33,7 @@ export default class TiendaUI {
             fontSize: '28px', fill: '#f5d442', fontFamily: 'Orbitron', stroke: '#000', strokeThickness: 3
         }).setOrigin(0.5);
 
-        this.dineroText = this.scene.add.text(panelX + panelW / 2, 75, `${this.gm.getDinero()}€`, {
+        this.dineroText = this.scene.add.text(panelX + panelW / 2, 75, this.gm.formatDinero(this.gm.getDinero()), {
             fontSize: '24px', fill: '#44ff44', fontFamily: 'Courier', fontStyle: 'bold'
         }).setOrigin(0.5);
 
@@ -41,14 +41,14 @@ export default class TiendaUI {
 
         // Artículos a vender
         this.articulos = [
-            { id: 'pincho_tortilla_viejo', precio: 25 },
-            { id: 'cafe', precio: 50 },
-            { id: 'monster', precio: 60 },
-            { id: 'pincho_tortilla', precio: 80 },
-            { id: 'tinto_verano', precio: 100 },
-            { id: 'palmera_chocolate', precio: 100 },
-            { id: 'cerveza', precio: 140 },
-            { id: 'menu_dia', precio: 400 }
+            { id: 'pincho_tortilla_viejo', precio: 50 },
+            { id: 'cafe', precio: 100 },
+            { id: 'monster', precio: 120 },
+            { id: 'pincho_tortilla', precio: 160 },
+            { id: 'tinto_verano', precio: 200 },
+            { id: 'palmera_chocolate', precio: 200 },
+            { id: 'cerveza', precio: 280 },
+            { id: 'menu_dia', precio: 800 }
         ];
 
         let startY = 115;
@@ -76,7 +76,7 @@ export default class TiendaUI {
             }).setOrigin(0, 0.5);
 
             // Precio
-            const btnComprar = this.scene.add.text(panelX + panelW - 25, boxY, `${art.precio}€`, {
+            const btnComprar = this.scene.add.text(panelX + panelW - 25, boxY, this.gm.formatDinero(art.precio), {
                 fontSize: '18px', fill: '#ffffff', fontStyle: 'bold', fontFamily: 'Orbitron'
             }).setOrigin(1, 0.5);
 
@@ -173,7 +173,7 @@ export default class TiendaUI {
     procesarCompra(art, itemData) {
         if (this.gm.gastarDinero(art.precio)) {
             this.gm.addItem(itemData, 1);
-            this.dineroText.setText(`Dinero: ${this.gm.getDinero()}€`);
+            this.dineroText.setText(`Dinero: ${this.gm.formatDinero(this.gm.getDinero())}`);
 
             this.showFeedback(`¡Compraste ${itemData.name}!`, '#44ff44');
         } else {

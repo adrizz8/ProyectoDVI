@@ -187,6 +187,16 @@ export default class GameManager {
         return this.dinero;
     }
 
+    /**
+     * Formatea una cantidad de dinero (entero) a un string con formato "0,00€"
+     * @param {number} amount 
+     * @returns {string}
+     */
+    formatDinero(amount) {
+        // Dividimos por 100 para tratar los enteros como céntimos
+        return (amount / 100).toFixed(2).replace('.', ',') + '€';
+    }
+
     addDinero(amount) {
         this.dinero += amount;
     }
