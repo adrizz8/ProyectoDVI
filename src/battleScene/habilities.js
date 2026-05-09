@@ -248,7 +248,7 @@ export const HABILITIES = {
         cost: 3,
         type: 'all-damage',
         effectFn: (source, target) => {
-            const potencia = 12;
+            const potencia = 20;
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,

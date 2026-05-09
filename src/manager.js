@@ -59,7 +59,7 @@ export default class GameManager {
                 maxHp: 30,
                 mp: 10,
                 maxMp: 10,
-                damage: 17,
+                damage: 15,
                 speed: 6,
                 defense: 17,
                 luck: 8,
@@ -159,7 +159,7 @@ export default class GameManager {
                 skills: {}
             }
         };
-        
+
         this.puzzleButtonStates = {};
 
     }
@@ -448,7 +448,7 @@ export default class GameManager {
     }
 
     // ── Persistence for Puzzles ──────────────────────────────────────────────
-    
+
     setButtonState(sceneKey, buttonName, state) {
         if (!this.puzzleButtonStates[sceneKey]) {
             this.puzzleButtonStates[sceneKey] = {};

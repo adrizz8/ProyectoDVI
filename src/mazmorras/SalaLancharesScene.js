@@ -65,6 +65,9 @@ export default class SalaLancharesScene extends Phaser.Scene {
         });
 
 
+        gm.AddCompañero('Jugador4');
+
+
         // Menu con espacio
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
         const launchMenu = () => {
@@ -84,18 +87,25 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
         if (!gm.estadoNivel("salaLanchares")) {
+            const p1Name = gm.ActualPlayers[0];
+            const p1Level = gm.playerStats[p1Name].level;
+
+            // Stats escalan con el nivel de P1 (base + (nivel-1)*crecimiento)
+            const getScaledStat = (base, growth) => Math.floor(base + (p1Level - 1) * growth);
 
             this.lanchares = new npcBattle(this, this.player, 650, 150, 'lanchares', 0, {
                 spriteKey: 'lancharesbatalla',
                 scale: 0.85,
                 name: 'Lanchares',
-                hp: 88,
-                maxHp: 88,
-                damage: 19,
-                speed: 8,
-                defense: 20,
-                mp: 52,
-                maxMp: 52,
+                hp: getScaledStat(88, 1.5),
+                maxHp: getScaledStat(88, 1.5),
+                damage: getScaledStat(19, 1.5),
+                speed: getScaledStat(8, 1.5),
+                defense: getScaledStat(20, 1.5),
+                mp: getScaledStat(52, 1),
+                maxMp: getScaledStat(52, 1),
+                expReward: 100,
+                moneyReward: 50,
                 habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la academia']
             }, null, null, null, 'lanchares_', "salaLanchares");
         } else {

@@ -25,6 +25,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
 
         gm.addNivel("salaMiniBoss");
 
+        gm.AddCompañero('Jugador3');
+
 
         // Colisiones
         colisiones.setCollisionByExclusion([-1]);
@@ -76,17 +78,24 @@ export default class SalaMiniBossScene extends Phaser.Scene {
 
 
         if (!gm.estadoNivel("salaMiniBoss")) {
+            const p1Name = gm.ActualPlayers[0];
+            const p1Level = gm.playerStats[p1Name].level;
+
+            // Stats escalan con el nivel de P1 (base + (nivel-1)*crecimiento)
+            const getScaledStat = (base, growth) => Math.floor(base + (p1Level - 1) * growth);
 
             this.miniboss = new npcBattle(this, this.player, 625, 250, 'miniboss', 0, {
                 spriteKey: 'minibossbatalla',
                 name: 'Miniboss',
-                hp: 70,
-                maxHp: 70,
-                damage: 14,
-                speed: 16,
-                defense: 18,
-                mp: 15,
-                maxMp: 15,
+                hp: getScaledStat(70, 1.5),
+                maxHp: getScaledStat(70, 1.5),
+                damage: getScaledStat(14, 1.5),
+                speed: getScaledStat(16, 1.5),
+                defense: getScaledStat(18, 1.5),
+                mp: getScaledStat(15, 1),
+                maxMp: getScaledStat(15, 1),
+                expReward: 50,
+                moneyReward: 50,
                 habilidades: ['Funciona en mi PC', 'Ir a la academia']
             }, null, null, null, 'miniboss_', "salaMiniBoss");
         } else {

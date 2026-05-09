@@ -298,7 +298,7 @@ export default class Cafeteria extends Phaser.Scene {
             name: 'Conserje',
             hp: 40,
             maxHp: 40,
-            damage: 11,
+            damage: 13,
             speed: 8,
             defense: 16,
             mp: 16,
