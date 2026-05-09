@@ -95,6 +95,11 @@ export default class Cafeteria extends Phaser.Scene {
         // Comprobamos si la cafetería ya ha sido completada (boss derrotado)
         const cafeteriaCompletada = this.gm.estadoNivel('cafeteria');
 
+        this.pasillo_der = this.map.createFromObjects('triggers', {
+            name: 'pasillo_der',
+            classType: trigger
+        });
+
         if (!cafeteriaCompletada) {
             this.enemies = this.add.group();
             this._generarCafeteriaConCaos();
@@ -148,6 +153,8 @@ export default class Cafeteria extends Phaser.Scene {
                 });
             });
         }
+
+
 
 
         // puerta_izq → pasillo
@@ -419,15 +426,15 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarNPCsPostVictoria() {
 
-        this.pasillo_der = this.map.createFromObjects('triggers', {
-            name: 'pasillo_der',
-            classType: trigger
-        });
+   
 
 
         this.physics.add.overlap(this.pasillo_der, this.player, () => {
 
-            this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+            });
         });
 
 
@@ -503,15 +510,13 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarCafeteriaLibeada() {
 
-        this.pasillo_der = this.map.createFromObjects('triggers', {
-            name: 'pasillo_der',
-            classType: trigger
-        });
-
 
         this.physics.add.overlap(this.pasillo_der, this.player, () => {
 
-            this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('pasillo', { entrada: 'desde_cafeteria_der' });
+            });
         });
 
         const npcPostData = [

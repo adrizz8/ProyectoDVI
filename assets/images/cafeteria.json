@@ -3,6 +3,39 @@
  "infinite":false,
  "layers":[
         {
+         "draworder":"topdown",
+         "id":23,
+         "name":"triggers",
+         "objects":[
+                {
+                 "height":4,
+                 "id":15,
+                 "name":"pasillo_der",
+                 "rotation":0,
+                 "type":"",
+                 "visible":false,
+                 "width":57.3333333333333,
+                 "x":1092,
+                 "y":159.333333333333
+                }, 
+                {
+                 "height":6.66666666666666,
+                 "id":17,
+                 "name":"pasillo_izq",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50.6666666666667,
+                 "x":73.3333333333333,
+                 "y":132
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -28,7 +61,7 @@
          "name":"suelo",
          "opacity":0.61,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":38,
          "x":0,
          "y":0
@@ -59,7 +92,7 @@
          "name":"pared",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":38,
          "x":0,
          "y":0
@@ -90,7 +123,7 @@
          "name":"puertas",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":38,
          "x":0,
          "y":0
@@ -121,7 +154,7 @@
          "name":"decoracion",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":38,
          "x":0,
          "y":0
@@ -152,7 +185,7 @@
          "name":"decoracion2",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":38,
          "x":0,
          "y":0
@@ -185,50 +218,6 @@
          "type":"tilelayer",
          "visible":false,
          "width":38,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":23,
-         "name":"triggers",
-         "objects":[
-                {
-                 "height":4,
-                 "id":15,
-                 "name":"pasillo_der",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":57.3333333333333,
-                 "x":1092,
-                 "y":159.333333333333
-                }, 
-                {
-                 "height":6.66666666666666,
-                 "id":17,
-                 "name":"pasillo_izq",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50.6666666666667,
-                 "x":73.3333333333333,
-                 "y":132
-                }, 
-                {
-                 "height":0,
-                 "id":37,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":852,
-                 "y":492
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
          "x":0,
          "y":0
         }],
