@@ -98,7 +98,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Pregunta a ChatGPT', 'Entrega Última Hora'],
+                habilidades: ['Ir a la Academia', 'Entrega Última Hora'],
                 objeto: ''
             },
         };
@@ -109,16 +109,6 @@ export default class GameManager {
         // ── Mochila / Inventario ──────────────────────────────────────────────
         // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
         this.backpack = [
-            { id: 'pincho_tortilla', name: 'Pincho de Tortilla', quantity: 5, type: 'consumable', heal: 50, description: 'Recupera 50 HP (Energía vital de la cafetería).' },
-            { id: 'monster', name: 'Monster', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP (Concentración extrema).' },
-            { id: 'menu_dia', name: 'Menú del Día', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP (El banquete del estudiante).' },
-            { id: 'tinto_verano', name: 'Tinto de Verano', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (Efecto euforia).' },
-            { id: 'palmera_chocolate', name: 'Palmera de Chocolate', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (Capa de grasa protectora).' },
-            { id: 'cafe', name: 'Café', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (Cafeína directa).' },
-            { id: 'cigarro', name: 'Cigarro', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo (Reduce el estrés).' },
-            { id: 'convalidacion_directa', name: 'Convalidación Directa', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje (Saltarse una asignatura).' },
-            { id: 'teclado_mecanico', name: 'Teclado Mecánico', quantity: 1, type: 'equipment', description: 'Arma periférica +5 daño (Switches Blue para más ruido).' },
-            { id: 'sudadera_facu', name: 'Sudadera de la Facu', quantity: 1, type: 'equipment', description: 'Prenda reglamentaria que ofrece +5 defensa.' },
         ];
 
         // ── Posición del jugador ──────────────────────────────────────────────

@@ -221,6 +221,7 @@ export default class MapaFuera extends Phaser.Scene {
                     mp: 10,
                     maxMp: 10,
                     expReward: 100,
+                    moneyReward: 25,
                     habilidades: []
                 }, " ¿Quien eres tu?, te vas a enterar.", null, null, 'primerencuentro', true);
                 this.player2.setVisible(false);

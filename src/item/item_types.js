@@ -8,23 +8,23 @@ export const ITEM_TYPES = {
         id: 'pincho_tortilla',
         name: 'Pincho de Tortilla',
         type: 'consumable',
-        heal: 10,
-        description: 'Recupera 10 HP (Energía vital de la cafetería).'
+        heal: 8,
+        description: 'Recupera 8 HP (Energía vital de la cafetería).'
     },
     'monster': {
         id: 'monster',
         name: 'Monster',
         type: 'consumable',
-        recMp: 10,
-        description: 'Restaura 10 MP (Concentración extrema).'
+        recMp: 5,
+        description: 'Restaura 5 MP (Concentración extrema).'
     },
     'menu_dia': {
         id: 'menu_dia',
         name: 'Menú del Día',
         type: 'consumable',
-        heal: 20,
-        recMp: 20,
-        description: 'Restaura 20 HP y 20 MP (El banquete del estudiante).'
+        heal: 10,
+        recMp: 10,
+        description: 'Restaura 10 HP y 10 MP (El banquete del estudiante).'
     },
     'tinto_verano': {
         id: 'tinto_verano',
@@ -61,21 +61,21 @@ export const ITEM_TYPES = {
         id: 'teclado_mecanico',
         name: 'Teclado Mecánico',
         type: 'equipment',
-        bonusStats: { damage: 3 },
+        bonusStats: { damage: 2 },
         description: 'Arma periférica +3 daño (Switches Blue para más ruido).'
     },
     'sudadera_facu': {
         id: 'sudadera_facu',
         name: 'Sudadera de la Facu',
         type: 'equipment',
-        bonusStats: { defense: 3 },
+        bonusStats: { defense: 2 },
         description: 'Prenda reglamentaria que ofrece +3 defensa.'
     },
     'pincho_tortilla_viejo': {
         id: 'pincho_tortilla_viejo',
         name: 'Pincho Frío',
         type: 'consumable',
-        heal: 5,
+        heal: 2,
         description: 'Un pincho que lleva demasiado tiempo en la barra. Cura 5 HP.'
     },
     'regla_lhopital': {
@@ -89,22 +89,23 @@ export const ITEM_TYPES = {
         id: 'compilador_amigable',
         name: 'Compilador Amigable',
         type: 'consumable',
-        recMp: 6,
-        description: 'Recupera 20 de Energía. Te lo dio el NPC de FP.'
+        recMp: 3,
+        buffSpd: 3,
+        description: 'Recupera 3 de Energía y aumenta la velocidad en 3 (Te lo dio el NPC de FP).'
     },
     'cerveza': {
         id: 'cerveza',
         name: 'Cerveza',
         type: 'consumable',
-        heal: 10,
-        recMp: 5,
+        heal: 5,
+        recMp: 3,
         description: 'Una Mahou bien fría. Recupera 10 HP y 5 MP.'
     },
     'apuntes_ansi': {
         id: 'apuntes_ansi',
         name: 'Apuntes de Ansiedad',
         type: 'consumable',
-        recMp: 8,
+        recMp: 6,
         description: 'Apuntes ilegibles. Restauran 8 Energía por el esfuerzo.'
     }
 };

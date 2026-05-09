@@ -105,7 +105,7 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 mp: getScaledStat(52, 1),
                 maxMp: getScaledStat(52, 1),
                 expReward: 100,
-                moneyReward: 50,
+                moneyReward: 40,
                 habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la academia']
             }, null, null, null, 'lanchares_', "salaLanchares");
         } else {

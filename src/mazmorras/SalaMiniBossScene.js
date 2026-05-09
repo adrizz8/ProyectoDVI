@@ -95,7 +95,7 @@ export default class SalaMiniBossScene extends Phaser.Scene {
                 mp: getScaledStat(15, 1),
                 maxMp: getScaledStat(15, 1),
                 expReward: 50,
-                moneyReward: 50,
+                moneyReward: 35,
                 habilidades: ['Funciona en mi PC', 'Ir a la academia']
             }, null, null, null, 'miniboss_', "salaMiniBoss");
         } else {
