@@ -34,6 +34,7 @@ import estrategiaUI2 from '../assets/images/estrategiaui2.png'
 import estrategiaUI3 from '../assets/images/estrategiaui3.png'
 import estrategiaUI4 from '../assets/images/estrategiaui4.png'
 import menuPrincipal from '../assets/images/menuprincipal.png'
+import matricula from '../assets/images/matricula.png'
 
 import formulario from '../assets/images/formulario.png'
 import bus from '../assets/sprites/bus_anim.png'
@@ -183,6 +184,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player4_battle', player4_battle);
     this.load.image('estudiantebattle', estudiantebattle);
     this.load.image('estudianteconplaca', estudianteconplaca);
+    this.load.image('matricula', matricula);
 
     this.load.image('menuPrincipal', menuPrincipal);
     this.load.image('estrategiaUI1', estrategiaUI1);
@@ -234,7 +236,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('cafeteria', { entrada: 'salida_autobus' });
+    this.scene.start('IntroScene', { entrada: 'salida_autobus' });
 
   }
 }
