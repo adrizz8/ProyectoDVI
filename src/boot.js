@@ -82,6 +82,8 @@ import cable_left_on from '../assets/images/cable_left_on.png';
 import cable_right_off from '../assets/images/cable_right_off.png';
 import cable_right_on from '../assets/images/cable_right_on.png';
 import boton from '../assets/images/boton.png';
+import bombilla_apagada from '../assets/images/bombilla_apagada.png';
+import bombilla_encendida from '../assets/images/bombilla_encendida.png';
 
 import completed from '../assets/music/completed.mp3'
 import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
@@ -152,6 +154,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('cable_right_off', cable_right_off);
     this.load.image('cable_right_on', cable_right_on);
     this.load.image('boton', boton);
+    this.load.image('bombilla_apagada',bombilla_apagada);
+    this.load.image('bombilla_encendida',bombilla_encendida);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
@@ -236,7 +240,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('IntroScene', { entrada: 'salida_autobus' });
+    this.scene.start('pasillo');
 
   }
 }

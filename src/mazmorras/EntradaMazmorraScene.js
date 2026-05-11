@@ -50,6 +50,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
+        const em = EventManager.getInstance();
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
 
@@ -114,6 +115,30 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
                 }
             }
         });
+
+        if(!em.puzleIzquierdaCompletado){
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_izq',
+                key:'bombilla_apagada'
+            })
+        }else{
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_izq',
+                key:'bombilla_encendida'
+            })
+        }
+
+        if(!em.puzleDerechaCompletado){
+            const bombilla2= map.createFromObjects('bombillas',{
+                name:'bombilla_der',
+                key:'bombilla_apagada'
+            })
+        }else{
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_der',
+                key:'bombilla_encendida'
+            })
+        }
 
 
 
