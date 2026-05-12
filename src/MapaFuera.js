@@ -87,16 +87,23 @@ export default class MapaFuera extends Phaser.Scene {
         });
 
         this.physics.add.overlap(this.salida_bus, this.player, () => {
-            this.scene.start('level3');
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('level3');
+            });
         });
         this.physics.add.overlap(this.entrada_der, this.player, () => {
-
-
-            this.scene.start('cafeteria', { entrada: 'puerta_der' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'puerta_der' });
+            });
         });
         this.physics.add.overlap(this.entrada_izq, this.player, () => {
-            this.scene.start('cafeteria', { entrada: 'puerta_izq' });
-            gm.CompleteNivel('entroCaf')
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'puerta_izq' });
+                gm.CompleteNivel('entroCaf')
+            });
         });
 
         if (!gm.estadoNivel('entroCaf')) {

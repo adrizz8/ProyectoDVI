@@ -80,6 +80,8 @@ export default class BattleScene extends Phaser.Scene {
             onReadyForNextTurn: (fn) => this._scheduleNextTurn(fn)
         });
 
+        this.cameras.main.fadeIn(500, 0, 0, 0);
+
         this._buildBackground(W, H);
         this._buildPlayerSprites();
         this._buildEnemiesSprites();
@@ -826,12 +828,20 @@ export default class BattleScene extends Phaser.Scene {
         if (this._typewriterEvent) { this._typewriterEvent.remove(false); this._typewriterEvent = null; }
         if (this._autoCloseEvent) { this._autoCloseEvent.remove(false); this._autoCloseEvent = null; }
 
-        const msg = result.winner === 'player' ? '¡VICTORIA!' : result.winner === 'enemy' ? 'DERROTA...' : 'Has huido.';
-        this._setMessage(msg);
-        this.time.delayedCall(2000, () => {
-            this.music_battle.stop();
-            this.scene.start(this._originScene);
-        });
+        if (result.winner === 'enemy') {
+            this._setMessage('DERROTA...');
+            this.time.delayedCall(2000, () => {
+                this.music_battle.stop();
+                this.scene.start('GameOverScene');
+            });
+        } else {
+            const msg = result.winner === 'player' ? '¡VICTORIA!' : 'Has huido.';
+            this._setMessage(msg);
+            this.time.delayedCall(2000, () => {
+                this.music_battle.stop();
+                this.scene.start(this._originScene);
+            });
+        }
     }
 
     // ── Updates ───────────────────────────────────────────────────────────────
