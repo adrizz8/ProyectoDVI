@@ -134,12 +134,12 @@ export const HABILITIES = {
     'Prácticas Wuolah': new Hability({
         id: 'attack_up',
         name: 'Prácticas Wuolah',
-        description: 'Sube tu propio ataque un 20% gracias a unos buenos apuntes.',
+        description: 'Sube tu propio ataque en 2 puntos gracias a unos buenos apuntes.',
         cost: 3,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDamage * 0.20);
+            const buffAmount = 2;
             source.damage += buffAmount;
             return {
                 buff: { stat: 'damage', amount: buffAmount },
@@ -151,12 +151,12 @@ export const HABILITIES = {
     'Sentarse Atrás': new Hability({
         id: 'defense_up',
         name: 'Sentarse Atrás',
-        description: 'Sube tu propia defensa un 20% evitando que te vean.',
+        description: 'Sube tu propia defensa en 2 puntos evitando que te vean.',
         cost: 3,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseDefense * 0.20);
+            const buffAmount = 2;
             source.defense += buffAmount;
             return {
                 buff: { stat: 'defense', amount: buffAmount },
@@ -168,12 +168,12 @@ export const HABILITIES = {
     'Código Fácil': new Hability({
         id: 'speed_up',
         name: 'Código Fácil',
-        description: 'Sube tu propia velocidad un 20% simplificando el trabajo.',
+        description: 'Sube tu propia velocidad en 2 puntos simplificando el trabajo.',
         cost: 2,
         type: 'buff',
         targetType: 'self',
         effectFn: (source, target) => {
-            const buffAmount = Math.floor(source.baseSpeed * 0.20);
+            const buffAmount = 2;
             source.speed += buffAmount;
             return {
                 buff: { stat: 'speed', amount: buffAmount },
@@ -185,12 +185,12 @@ export const HABILITIES = {
     'Correo Vacío': new Hability({
         id: 'attack_nerf',
         name: 'Correo Vacío',
-        description: 'Baja el ataque del enemigo un 20% por el error cometido.',
+        description: 'Baja el ataque del enemigo en 2 puntos por el error cometido.',
         cost: 2,
         type: 'nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
-            const nerfAmount = Math.floor(target.baseDamage * 0.20);
+            const nerfAmount = 2;
             target.damage = Math.max(1, target.damage - nerfAmount);
             return {
                 nerf: { stat: 'damage', amount: nerfAmount },
@@ -204,14 +204,14 @@ export const HABILITIES = {
     'Preguntar Duda': new Hability({
         id: 'weakening_strike',
         name: 'Preguntar Duda',
-        description: 'Ataca al enemigo y reduce su ataque un 10% al distraerlo.',
+        description: 'Ataca al enemigo y reduce su ataque en 1 punto al distraerlo.',
         cost: 4,
         type: 'damage+nerf',
         targetType: 'selectable',
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const nerfAmount = Math.floor(target.baseDamage * 0.10);
+            const nerfAmount = 1;
             target.damage = Math.max(1, Math.floor(target.damage - nerfAmount));
             return {
                 damage,
@@ -224,14 +224,14 @@ export const HABILITIES = {
     'Ir a la Academia': new Hability({
         id: 'invigorating_strike',
         name: 'Ir a la Academia',
-        description: 'Ataca al objetivo y sube tu propio ataque un 10% por lo aprendido.',
+        description: 'Ataca al objetivo y sube tu propio ataque en 1 punto por lo aprendido.',
         cost: 4,
         type: 'damage+buff',
         targetType: 'selectable',
         effectFn: (source, target) => {
             const potencia = 30;
             const damage = Math.floor(source.damage * potencia);
-            const buffAmount = Math.floor(source.baseDamage * 0.10);
+            const buffAmount = 1;
             source.damage += buffAmount;
             return {
                 damage,
@@ -248,7 +248,7 @@ export const HABILITIES = {
         cost: 3,
         type: 'all-damage',
         effectFn: (source, target) => {
-            const potencia = 12;
+            const potencia = 20;
             const damage = Math.floor(source.damage * potencia);
             return {
                 damage,

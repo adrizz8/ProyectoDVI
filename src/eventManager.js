@@ -36,5 +36,8 @@ export default class EventManager {
         // Puzles y Mazmorras
         this.puzleIzquierdaCompletado = false;
         this.puzleDerechaCompletado = false;
+
+        this.puzleIzquierdaFeedbackMostrado = false;
+        this.puzleDerechaFeedbackMostrado = false;
     }
 }

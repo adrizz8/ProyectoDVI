@@ -40,8 +40,8 @@ export default class GameManager {
         this.playerStats = {
             'Jugador1': {
                 displayName: 'J1',
-                hp: 20,
-                maxHp: 20,
+                hp: 22,
+                maxHp: 22,
                 mp: 10,
                 maxMp: 10,
                 damage: 10,
@@ -63,7 +63,7 @@ export default class GameManager {
                 maxHp: 30,
                 mp: 10,
                 maxMp: 10,
-                damage: 17,
+                damage: 15,
                 speed: 6,
                 defense: 17,
                 luck: 8,
@@ -77,9 +77,9 @@ export default class GameManager {
                 displayName: 'Angela',
                 hp: 27,
                 maxHp: 27,
-                mp: 25,
-                maxMp: 25,
-                damage: 15,
+                mp: 14,
+                maxMp: 14,
+                damage: 13,
                 speed: 25,
                 defense: 12,
                 luck: 15,
@@ -95,14 +95,14 @@ export default class GameManager {
                 maxHp: 20,
                 mp: 12,
                 maxMp: 12,
-                damage: 20,
+                damage: 16,
                 speed: 20,
-                defense: 17,
+                defense: 16,
                 luck: 8,
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Preguntar Duda', 'Entrega Última Hora'],
+                habilidades: ['Ir a la Academia', 'Entrega Última Hora'],
                 objeto: ''
             },
         };
@@ -113,16 +113,6 @@ export default class GameManager {
         // ── Mochila / Inventario ──────────────────────────────────────────────
         // Cada objeto: { id: string, name: string, quantity: number, type: 'consumable', heal?: number, recMp?: number, buffAtt?: number, buffDef?: number, buffSpd?: number }
         this.backpack = [
-            { id: 'pincho_tortilla', name: 'Pincho de Tortilla', quantity: 5, type: 'consumable', heal: 50, description: 'Recupera 50 HP (Energía vital de la cafetería).' },
-            { id: 'monster', name: 'Monster', quantity: 3, type: 'consumable', recMp: 20, description: 'Restaura 20 MP (Concentración extrema).' },
-            { id: 'menu_dia', name: 'Menú del Día', quantity: 1, type: 'consumable', heal: 100, recMp: 50, description: 'Restaura 100 HP y 50 MP (El banquete del estudiante).' },
-            { id: 'tinto_verano', name: 'Tinto de Verano', quantity: 2, type: 'consumable', buffAtt: 15, description: 'Aumenta el ataque en 15 (Efecto euforia).' },
-            { id: 'palmera_chocolate', name: 'Palmera de Chocolate', quantity: 2, type: 'consumable', buffDef: 10, description: 'Aumenta la defensa en 10 (Capa de grasa protectora).' },
-            { id: 'cafe', name: 'Café', quantity: 2, type: 'consumable', buffSpd: 10, description: 'Aumenta la velocidad en 10 (Cafeína directa).' },
-            { id: 'cigarro', name: 'Cigarro', quantity: 2, type: 'consumable', statusRecovery: true, description: 'Elimina estado anómalo (Reduce el estrés).' },
-            { id: 'convalidacion_directa', name: 'Convalidación Directa', quantity: 1, type: 'consumable', levelUp: true, description: 'Suma un nivel al personaje (Saltarse una asignatura).' },
-            { id: 'teclado_mecanico', name: 'Teclado Mecánico', quantity: 1, type: 'equipment', description: 'Arma periférica +5 daño (Switches Blue para más ruido).' },
-            { id: 'sudadera_facu', name: 'Sudadera de la Facu', quantity: 1, type: 'equipment', description: 'Prenda reglamentaria que ofrece +5 defensa.' },
         ];
 
         // ── Posición del jugador ──────────────────────────────────────────────
@@ -147,7 +137,7 @@ export default class GameManager {
         // Define el crecimiento por nivel y las habilidades que se aprenden.
         this.progression = {
             'Jugador1': {
-                hp: 3, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
+                hp: 4, mp: 2, damage: 2, speed: 2, defense: 2, luck: 0,
                 skills: { 2: 'Prácticas Wuolah' }
             },
             'Jugador2': {
@@ -163,6 +153,8 @@ export default class GameManager {
                 skills: {}
             }
         };
+
+        this.puzzleButtonStates = {};
 
     }
 
@@ -197,6 +189,16 @@ export default class GameManager {
 
     getDinero() {
         return this.dinero;
+    }
+
+    /**
+     * Formatea una cantidad de dinero (entero) a un string con formato "0,00€"
+     * @param {number} amount 
+     * @returns {string}
+     */
+    formatDinero(amount) {
+        // Dividimos por 100 para tratar los enteros como céntimos
+        return (amount / 100).toFixed(2).replace('.', ',') + '€';
     }
 
     addDinero(amount) {
@@ -447,5 +449,21 @@ export default class GameManager {
         if (index !== -1) {
             this.ActualPlayers[index] = newName;
         }
+    }
+
+    // ── Persistence for Puzzles ──────────────────────────────────────────────
+
+    setButtonState(sceneKey, buttonName, state) {
+        if (!this.puzzleButtonStates[sceneKey]) {
+            this.puzzleButtonStates[sceneKey] = {};
+        }
+        this.puzzleButtonStates[sceneKey][buttonName] = state;
+    }
+
+    getButtonState(sceneKey, buttonName) {
+        if (this.puzzleButtonStates[sceneKey] && this.puzzleButtonStates[sceneKey].hasOwnProperty(buttonName)) {
+            return this.puzzleButtonStates[sceneKey][buttonName];
+        }
+        return false; // Default state
     }
 }

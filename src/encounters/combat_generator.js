@@ -51,10 +51,10 @@ export default class CombatGenerator {
 
         // ── 4 Prototipos de Base (Arquetipos) ────────────────────────────────
         const prototypes = [
-            { type: 'Random1', hp: 28, mp: 5, damage: 21, speed: 14, defense: 18, luck: 5 },
-            { type: 'Random2', hp: 35, mp: 10, damage: 17, speed: 6, defense: 20, luck: 4 },
-            { type: 'Random3', hp: 31, mp: 7, damage: 14, speed: 12, defense: 26, luck: 8 },
-            { type: 'Random4', hp: 36, mp: 18, damage: 15, speed: 26, defense: 15, luck: 10 }
+            { type: 'Random1', hp: 25, mp: 5, damage: 13, speed: 14, defense: 17, luck: 5 },
+            { type: 'Random2', hp: 32, mp: 10, damage: 11, speed: 6, defense: 19, luck: 4 },
+            { type: 'Random3', hp: 28, mp: 7, damage: 9, speed: 12, defense: 22, luck: 6 },
+            { type: 'Random4', hp: 33, mp: 18, damage: 10, speed: 26, defense: 14, luck: 8 }
         ];
 
         const base = prototypes[Math.floor(Math.random() * prototypes.length)];
@@ -87,9 +87,9 @@ export default class CombatGenerator {
             defense: defense,
             baseDefense: defense,
             luck: base.luck,
-            // Recompensas escaladas
+            // Recompensas escaladas (Total combate entre 25 y 40)
             expReward: Math.floor(40 / groupSize),
-            moneyReward: Math.floor(20 / groupSize),
+            moneyReward: Math.floor((50 + Math.random() * 32) / groupSize),
             habilidades: this._getRandomSkills(2),
             objeto: this._getRandomItem(0.15) // 15% de probabilidad de soltar equipo
         };

@@ -34,6 +34,7 @@ import estrategiaUI2 from '../assets/images/estrategiaui2.png'
 import estrategiaUI3 from '../assets/images/estrategiaui3.png'
 import estrategiaUI4 from '../assets/images/estrategiaui4.png'
 import menuPrincipal from '../assets/images/menuprincipal.png'
+import matricula from '../assets/images/matricula.png'
 
 import formulario from '../assets/images/formulario.png'
 import bus from '../assets/sprites/bus_anim.png'
@@ -81,7 +82,10 @@ import cable_left_on from '../assets/images/cable_left_on.png';
 import cable_right_off from '../assets/images/cable_right_off.png';
 import cable_right_on from '../assets/images/cable_right_on.png';
 import boton from '../assets/images/boton.png';
+import bombilla_apagada from '../assets/images/bombilla_apagada.png';
+import bombilla_encendida from '../assets/images/bombilla_encendida.png';
 
+import completed from '../assets/music/completed.mp3'
 import tilesMazmorra from '../assets/images/tilesetmazmorra.png';
 import p1RightMazmorra from '../assets/images/p1derechadungeon.json';
 import p1LeftMazmorra from '../assets/images/p1izquierdadungeon.json';
@@ -150,6 +154,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('cable_right_off', cable_right_off);
     this.load.image('cable_right_on', cable_right_on);
     this.load.image('boton', boton);
+    this.load.image('bombilla_apagada',bombilla_apagada);
+    this.load.image('bombilla_encendida',bombilla_encendida);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
@@ -182,6 +188,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('player4_battle', player4_battle);
     this.load.image('estudiantebattle', estudiantebattle);
     this.load.image('estudianteconplaca', estudianteconplaca);
+    this.load.image('matricula', matricula);
 
     this.load.image('menuPrincipal', menuPrincipal);
     this.load.image('estrategiaUI1', estrategiaUI1);
@@ -202,6 +209,7 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('music_mazmorra', music_mazmorra);
     this.load.audio('music_mazmorra2', music_mazmorra2);
     this.load.audio('music_ambiente', music_ambiente);
+    this.load.audio('completed', completed);
 
     this.load.tilemapTiledJSON('pasillo', pasillo);
 
@@ -232,7 +240,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('salaMiniBoss');
+    this.scene.start('pasillo');
 
   }
 }

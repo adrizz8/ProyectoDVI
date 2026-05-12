@@ -8,6 +8,7 @@ import NotGate from '../gates/not_gate.js';
 import OrGate from '../gates/or_gate.js';
 import GameManager from '../manager.js';
 import trigger from '../trigger.js';
+import EventManager from '../eventManager.js';
 
 export default class P1RightMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -21,9 +22,13 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
         const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
-        map.createLayer('Suelo', tileset, 0, 0);
+        const suelo = map.createLayer('Suelo', tileset, 0, 0);
         const paredes = map.createLayer('Paredes', tileset, 0, 0);
         const decoracion = map.createLayer('Decoracion', tileset, 0, 0);
+
+        suelo.setDepth(0);
+        decoracion.setDepth(0.3);
+        paredes.setDepth(0.2);
 
         colisiones.setCollisionByExclusion([-1]);
         colisiones.setVisible(false);
@@ -63,6 +68,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
 
         if (savedPos) gm.clearPlayerPosition();
         this.player.setDepth(1);
+        this.puzleCompletadoLocal = false; // No se usa ya, pero lo dejamos por si acaso
+        this.puzleTimer = 0;
 
         // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -98,7 +105,9 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         const mkBoton = name => {
             const obj = byName(botonLayer, name);
             const p = tc(obj);
-            const b = new Boton(this, this.player, p.x, p.y);
+            const b = new Boton(this, this.player, p.x, p.y, name);
+            b.output = GameManager.getInstance().getButtonState(this.scene.key, name);
+            b.updateVisuals();
             b.setDisplaySize(obj.width, obj.height);
             b.setDepth(1);
             return b;
@@ -185,7 +194,7 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
             cab.angle = angle;
             cab.setFlip(fX, fY);
             cab.setDisplaySize(obj.width, obj.height);
-            cab.setDepth(0.5);
+            cab.setDepth(0.1);
             this.cables[obj.name] = cab;
         });
 
@@ -264,7 +273,10 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         c('cable11_g').connectInput(this.or_gate3);
         c('cable11_izq').connectInput(this.or_gate3);
         c('cable11_izq').connectOutput(this.and_gate3, 'inputB');
-        c('cable11_izq').setCompleted('puzleDerechaCompletado');
+
+        // cable12 (Salida final)
+        c('cable12_ini').connectInput(this.and_gate3);
+        c('cable12_izq').connectInput(this.and_gate3);
 
         // ── 7. Lista de componentes ───────────────────────────────────────────────
         this.circuitComponents = [
@@ -301,5 +313,25 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         this.circuitComponents.forEach(comp => {
             if (comp.updateLogic) comp.updateLogic();
         });
+
+        // Feedback de puzzle completado con retardo para evitar glitches
+        const em = EventManager.getInstance();
+        const cableFinal = this.cables['cable12_izq'];
+        
+        if (cableFinal && cableFinal.signal) {
+            this.puzleTimer += dt;
+            if (this.puzleTimer > 200) {
+                em.puzleDerechaCompletado = true;
+            }
+        } else {
+            this.puzleTimer = 0;
+            em.puzleDerechaCompletado = false;
+        }
+
+        if (!em.puzleDerechaFeedbackMostrado && em.puzleDerechaCompletado) {
+            em.puzleDerechaFeedbackMostrado = true;
+            this.sound.play('completed');
+            this.dialogueManager.showDialogue("Se ha desbloqueado un cerrojo.");
+        }
     }
 }

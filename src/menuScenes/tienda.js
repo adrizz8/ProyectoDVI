@@ -25,76 +25,93 @@ export default class TiendaUI {
         bg.setInteractive();
 
         const border = this.scene.add.rectangle(panelX, 0, panelW, 640, 0x0a0a0a, 0).setOrigin(0).setStrokeStyle(4, 0xf0c040);
-        
+
         this.container.add([bg, border]);
 
         // Título de la tienda
-        const title = this.scene.add.text(panelX + panelW / 2, 40, 'TIENDA', {
-            fontSize: '32px', fill: '#f5d442', fontFamily: 'Distant Galaxy', stroke: '#000', strokeThickness: 4
+        const title = this.scene.add.text(panelX + panelW / 2, 35, 'TIENDA', {
+            fontSize: '28px', fill: '#f5d442', fontFamily: 'Orbitron', stroke: '#000', strokeThickness: 3
         }).setOrigin(0.5);
 
-        this.dineroText = this.scene.add.text(panelX + panelW / 2, 90, `Dinero: ${this.gm.getDinero()}€`, {
-            fontSize: '22px', fill: '#ffffff', fontFamily: 'Courier', fontStyle: 'bold'
+        this.dineroText = this.scene.add.text(panelX + panelW / 2, 75, this.gm.formatDinero(this.gm.getDinero()), {
+            fontSize: '24px', fill: '#44ff44', fontFamily: 'Courier', fontStyle: 'bold'
         }).setOrigin(0.5);
 
         this.container.add([title, this.dineroText]);
 
         // Artículos a vender
         this.articulos = [
-            { id: 'pincho_tortilla', precio: 50 },
-            { id: 'monster', precio: 100 },
-            { id: 'cafe', precio: 40 },
-            { id: 'tinto_verano', precio: 80 }
+            { id: 'pincho_tortilla_viejo', precio: 50 },
+            { id: 'cafe', precio: 100 },
+            { id: 'monster', precio: 120 },
+            { id: 'pincho_tortilla', precio: 160 },
+            { id: 'tinto_verano', precio: 200 },
+            { id: 'palmera_chocolate', precio: 200 },
+            { id: 'cerveza', precio: 280 },
+            { id: 'menu_dia', precio: 800 }
         ];
 
-        let startY = 160;
+        let startY = 115;
+        let itemHeight = 58;
+        let spacing = 62;
+
         this.articulos.forEach((art, index) => {
             const itemData = ITEM_TYPES[art.id];
             if (!itemData) return;
 
-            const boxY = startY + index * 105;
-            
+            const boxY = startY + index * spacing;
+
             // Botón/Caja envolvente
-            const bgRect = this.scene.add.rectangle(panelX + panelW / 2, boxY, panelW - 40, 90, 0x222222, 1)
-                .setStrokeStyle(2, 0x555555).setInteractive();
+            const bgRect = this.scene.add.rectangle(panelX + panelW / 2, boxY, panelW - 30, itemHeight, 0x1a1a1a, 1)
+                .setStrokeStyle(1, 0x444444).setInteractive();
 
             // Nombre
-            const nameTxt = this.scene.add.text(panelX + 30, boxY - 25, itemData.name, { 
-                fontSize: '20px', fill: '#ffffff', fontStyle: 'bold' 
+            const nameTxt = this.scene.add.text(panelX + 25, boxY - 12, itemData.name, {
+                fontSize: '16px', fill: '#f5d442', fontStyle: 'bold', fontFamily: 'Outfit'
             }).setOrigin(0, 0.5);
-            
-            // Descripción corta
-            const descTxt = this.scene.add.text(panelX + 30, boxY, itemData.description, { 
-                fontSize: '12px', fill: '#aaaaaa', wordWrap: { width: panelW - 60 } 
+
+            // Descripción corta (más pequeña y truncada si es necesario)
+            const descTxt = this.scene.add.text(panelX + 25, boxY + 10, itemData.description, {
+                fontSize: '11px', fill: '#bbbbbb', fontFamily: 'Outfit', wordWrap: { width: panelW - 100 }
             }).setOrigin(0, 0.5);
 
             // Precio
-            const btnComprar = this.scene.add.text(panelX + panelW - 30, boxY + 25, `${art.precio}€`, { 
-                fontSize: '18px', fill: '#f5d442', fontStyle: 'bold' 
+            const btnComprar = this.scene.add.text(panelX + panelW - 25, boxY, this.gm.formatDinero(art.precio), {
+                fontSize: '18px', fill: '#ffffff', fontStyle: 'bold', fontFamily: 'Orbitron'
             }).setOrigin(1, 0.5);
 
             this.container.add([bgRect, nameTxt, descTxt, btnComprar]);
 
             // Funcionalidades del botón
-            bgRect.on('pointerover', () => { bgRect.setFillStyle(0x444444); bgRect.setStrokeStyle(2, 0xf5d442); btnComprar.setScale(1.1); });
-            bgRect.on('pointerout', () => { bgRect.setFillStyle(0x222222); bgRect.setStrokeStyle(2, 0x555555); btnComprar.setScale(1); });
+            bgRect.on('pointerover', () => {
+                bgRect.setFillStyle(0x333333);
+                bgRect.setStrokeStyle(1, 0xf5d442);
+                nameTxt.setStyle({ fill: '#ffffff' });
+                btnComprar.setStyle({ fill: '#f5d442' });
+            });
+            bgRect.on('pointerout', () => {
+                bgRect.setFillStyle(0x1a1a1a);
+                bgRect.setStrokeStyle(1, 0x444444);
+                nameTxt.setStyle({ fill: '#f5d442' });
+                btnComprar.setStyle({ fill: '#ffffff' });
+            });
             bgRect.on('pointerdown', () => this.pedirConfirmacion(art, itemData));
         });
 
         // Feedback Text (Oculto al inicio)
-        this.feedbackText = this.scene.add.text(panelX + panelW / 2, startY + this.articulos.length * 105, '', {
-            fontSize: '18px', fill: '#ffffff', fontStyle: 'bold', fontFamily: 'Outfit'
+        this.feedbackText = this.scene.add.text(panelX + panelW / 2, 570, '', {
+            fontSize: '16px', fill: '#ffffff', fontStyle: 'bold', fontFamily: 'Outfit'
         }).setOrigin(0.5).setAlpha(0);
 
         this.container.add([this.feedbackText]);
 
         // Botón salir
-        const btnSalir = this.scene.add.text(panelX + panelW / 2, 580, 'SALIR', {
-            fontSize: '26px', fill: '#ffffff', fontFamily: 'Orbitron', stroke: '#000', strokeThickness: 3
+        const btnSalir = this.scene.add.text(panelX + panelW / 2, 610, 'CERRAR', {
+            fontSize: '20px', fill: '#aaaaaa', fontFamily: 'Orbitron'
         }).setOrigin(0.5).setInteractive();
 
         btnSalir.on('pointerover', () => btnSalir.setStyle({ fill: '#ff4444' }));
-        btnSalir.on('pointerout', () => btnSalir.setStyle({ fill: '#ffffff' }));
+        btnSalir.on('pointerout', () => btnSalir.setStyle({ fill: '#aaaaaa' }));
         btnSalir.on('pointerdown', () => {
             this.cerrar();
         });
@@ -102,10 +119,10 @@ export default class TiendaUI {
         this.container.add([btnSalir]);
 
         // Tecla escape, espacio o CLICK DERECHO para salir
-        this.spaceListener = () => { if(this.container.active) this.cerrar(); };
-        this.escListener = () => { if(this.container.active) this.cerrar(); };
-        this.rightClickListener = (pointer) => { if(pointer.rightButtonDown() && this.container.active) this.cerrar(); };
-        
+        this.spaceListener = () => { if (this.container.active) this.cerrar(); };
+        this.escListener = () => { if (this.container.active) this.cerrar(); };
+        this.rightClickListener = (pointer) => { if (pointer.rightButtonDown() && this.container.active) this.cerrar(); };
+
         this.scene.input.keyboard.on('keydown-SPACE', this.spaceListener);
         this.scene.input.keyboard.on('keydown-ESC', this.escListener);
         this.scene.input.on('pointerdown', this.rightClickListener);
@@ -156,8 +173,8 @@ export default class TiendaUI {
     procesarCompra(art, itemData) {
         if (this.gm.gastarDinero(art.precio)) {
             this.gm.addItem(itemData, 1);
-            this.dineroText.setText(`Dinero: ${this.gm.getDinero()}€`);
-            
+            this.dineroText.setText(`Dinero: ${this.gm.formatDinero(this.gm.getDinero())}`);
+
             this.showFeedback(`¡Compraste ${itemData.name}!`, '#44ff44');
         } else {
             this.showFeedback('No hay dinero suficiente.', '#ff4444');

@@ -7,6 +7,7 @@ import Cable from '../gates/cable.js';
 import AndGate from '../gates/and_gate.js';
 import NotGate from '../gates/not_gate.js';
 import trigger from '../trigger.js';
+import EventManager from '../eventManager.js';
 
 export default class P1LeftMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -27,6 +28,10 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         const suelo = map.createLayer('Suelo', tileset, 0, 0);
         const paredes = map.createLayer('Paredes', tileset, 0, 0);
         const decoracionypuerta = map.createLayer('Decoracionypuerta', tileset, 0, 0);
+
+        suelo.setDepth(0);
+        decoracionypuerta.setDepth(0.3);
+        paredes.setDepth(0.2);
 
         // Colisiones
         colisiones.setCollisionByExclusion([-1]);
@@ -85,6 +90,8 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         if (savedPos) gm.clearPlayerPosition();
         this.player.setDepth(1);
         this.dialogueManager = new DialogueManager(this);
+        this.puzleCompletadoLocal = false;
+        this.puzleTimer = 0;
 
         // ── Helpers ───────────────────────────────────────────────────────────────
         const tc = obj => {
@@ -112,7 +119,9 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         const mkBoton = name => {
             const obj = byName(botonLayer, name);
             const p = tc(obj);
-            const b = new Boton(this, this.player, p.x, p.y);
+            const b = new Boton(this, this.player, p.x, p.y, name);
+            b.output = GameManager.getInstance().getButtonState(this.scene.key, name);
+            b.updateVisuals();
             b.setDisplaySize(obj.width, obj.height);
             if (b.body && b.body.updateFromGameObject) b.body.updateFromGameObject();
             b.setDepth(1);
@@ -182,7 +191,7 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
             cab.angle = angle;
             cab.setFlip(fX, fY);
             cab.setDisplaySize(obj.width, obj.height);
-            cab.setDepth(0.5);
+            cab.setDepth(0.1);
             this.cables[obj.name] = cab;
         });
 
@@ -232,23 +241,17 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         });
         if (c('cable7_izq_g')) c('cable7_izq_g').connectOutput(this.and_gate3, 'inputB');
 
-        // Cables de salida fijos (al no estar en el JSON los mantenemos instanciados manualmente)
-        this.cableSalida_right = new Cable(this, 908, 40, 'cable_right_off');
-        this.cableSalida_right.angle = 180;
-        this.cableSalida_right.connectInput(this.and_gate3);
-
-        this.cableSalida = new Cable(this, 1000, 32);
-        this.cableSalida.setDisplaySize(182, 10);
-        this.cableSalida.angle = 0;
-        this.cableSalida.connectInput(this.and_gate3);
-        this.cableSalida.setCompleted('puzleIzquierdaCompletado');
+        // cable8 (Salida final)
+        if (c('cable8_ini')) c('cable8_ini').connectInput(this.and_gate3);
+        if (c('cable8_der')) {
+            c('cable8_der').connectInput(this.and_gate3);
+        }
 
         this.circuitComponents = [
             ...Object.values(this.cables),
             this.and_gate1, this.and_gate2, this.and_gate3,
             this.not_gate1,
-            this.boton1, this.boton2, this.boton3, this.boton4,
-            this.cableSalida_right, this.cableSalida
+            this.boton1, this.boton2, this.boton3, this.boton4
         ];
 
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
@@ -278,5 +281,25 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.circuitComponents.forEach(component => {
             if (component.updateLogic) component.updateLogic();
         });
+
+        // Feedback de puzzle completado con retardo para evitar glitches
+        const em = EventManager.getInstance();
+        const cableFinal = this.cables['cable8_der'];
+        
+        if (cableFinal && cableFinal.signal) {
+            this.puzleTimer += dt;
+            if (this.puzleTimer > 200) {
+                em.puzleIzquierdaCompletado = true;
+            }
+        } else {
+            this.puzleTimer = 0;
+            em.puzleIzquierdaCompletado = false;
+        }
+
+        if (!em.puzleIzquierdaFeedbackMostrado && em.puzleIzquierdaCompletado) {
+            em.puzleIzquierdaFeedbackMostrado = true;
+            this.sound.play('completed');
+            this.dialogueManager.showDialogue("Se ha desbloqueado un cerrojo.");
+        }
     }
 }

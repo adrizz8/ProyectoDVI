@@ -38,7 +38,7 @@ export default class EnemyBattle {
         this.spriteKey = stats.spriteKey ?? 'toybatalla';
         this.scale = stats.scale;
         this.expReward = stats.expReward ?? 50;
-        this.moneyReward = stats.moneyReward ?? Math.floor(20 + Math.random() * 20);
+        this.moneyReward = stats.moneyReward ?? Math.floor(25 + Math.random() * 16);
         this.mp = stats.mp ?? 30;
         this.maxMp = stats.maxMp ?? 30;
         this.habilidades = stats.habilidades || [];

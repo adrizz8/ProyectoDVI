@@ -28,7 +28,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
             map.widthInPixels,
             map.heightInPixels
         );
-  
+
 
         // Capas
         const colisiones = map.createLayer('Colisiones', tileset, 0, 0);
@@ -42,7 +42,7 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         colisiones.setCollisionByExclusion([-1]);
         colisiones.setVisible(false);
         paredes.setCollisionByProperty({ collides: true });
-       
+
 
         // Spawn del jugador
         const posi = entradas.get(data.entrada) || entradas.get('desde_cafeteria');
@@ -50,10 +50,11 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
         const spawnY = posi.y;
         const direccion = posi.direccion;
 
+        const em = EventManager.getInstance();
         const gm = GameManager.getInstance();
         const savedPos = gm.getPlayerPosition();
 
-        const ev= EventManager.getInstance();
+        const ev = EventManager.getInstance();
 
         this.player = new Player(this, spawnX, spawnY, direccion, true);
         this.player.setDirection(direccion);
@@ -102,22 +103,44 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
             this.scene.start('p1LeftMazmorra', { entrada: 'lobby' });
         });
 
-         this.over=this.physics.add.overlap(this.player, this.entrada_jefe, () => {
-            this.scene.start('salaLanchares');
-            
-        });
-        /*
-        this.over=this.physics.add.overlap(this.player, this.entrada_jefe, () => {
-
-            if(ev.puzleDerechaCompletado&&ev.puzleIzquierdaCompletado){
+        this.lastBlockMessageTime = 0;
+        this.physics.add.overlap(this.player, this.entrada_jefe, () => {
+            if (ev.puzleDerechaCompletado && ev.puzleIzquierdaCompletado) {
                 this.scene.start('salaLanchares');
-            }else{
-                this.dialogueManager.showDialogue('Parece que la puerta esta bloqueada',this.player.name);
-                this.over.destroy();
+            } else {
+                const now = this.time.now;
+                if (!this.dialogueManager.dialogueBox.visible && (now - this.lastBlockMessageTime > 2000)) {
+                    this.lastBlockMessageTime = now;
+                    this.dialogueManager.showDialogue('La puerta está bloqueada.', this.player.displayName || this.player.name);
+                }
             }
-        });*/
+        });
 
-        
+        if(!em.puzleIzquierdaCompletado){
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_izq',
+                key:'bombilla_apagada'
+            })
+        }else{
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_izq',
+                key:'bombilla_encendida'
+            })
+        }
+
+        if(!em.puzleDerechaCompletado){
+            const bombilla2= map.createFromObjects('bombillas',{
+                name:'bombilla_der',
+                key:'bombilla_apagada'
+            })
+        }else{
+            const bombilla1= map.createFromObjects('bombillas',{
+                name:'bombilla_der',
+                key:'bombilla_encendida'
+            })
+        }
+
+
 
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
         const launchMenu = () => {
