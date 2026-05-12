@@ -5,6 +5,7 @@ import GameManager from '../manager.js';
 import trigger from '../trigger.js';
 import npcBattle from '../personajes/npc_battle.js'
 import npc from '../personajes/npc.js'
+import amigo1 from '../personajes/amigo1.js'
 
 export default class SalaMiniBossScene extends Phaser.Scene {
     constructor() {
@@ -39,6 +40,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, pared);
         this.physics.add.collider(this.player, maquinas);
+
+
 
         const savedPos = gm.getPlayerPosition();
 
@@ -107,7 +110,13 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
-
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, pared);
+            this.physics.add.collider(this.amigo1, maquinas);
+        }
     }
 
 

@@ -8,6 +8,7 @@ import AndGate from '../gates/and_gate.js';
 import NotGate from '../gates/not_gate.js';
 import trigger from '../trigger.js';
 import EventManager from '../eventManager.js';
+import amigo1 from '../personajes/amigo1.js';
 
 export default class P1LeftMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -271,6 +272,14 @@ export default class P1LeftMazmorraScene extends Phaser.Scene {
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            // Nota: colisiones, paredes y decoracionypuerta son locales de esta función create()
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, paredes);
+            this.physics.add.collider(this.amigo1, decoracionypuerta);
+        }
     }
 
     update(t, dt) {

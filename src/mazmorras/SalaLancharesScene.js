@@ -5,6 +5,7 @@ import GameManager from '../manager.js';
 import trigger from '../trigger.js';
 import npcBattle from '../personajes/npc_battle.js'
 import npc from '../personajes/npc.js'
+import amigo1 from '../personajes/amigo1.js'
 
 export default class SalaLancharesScene extends Phaser.Scene {
     constructor() {
@@ -37,6 +38,8 @@ export default class SalaLancharesScene extends Phaser.Scene {
         this.physics.add.collider(this.player, colisiones);
         this.physics.add.collider(this.player, paredes);
         this.physics.add.collider(this.player, decoracion);
+
+
 
 
         const savedPos = gm.getPlayerPosition();
@@ -111,8 +114,13 @@ export default class SalaLancharesScene extends Phaser.Scene {
         } else {
             this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "b", null, 'lanchares_', 'Lanchares');
         }
-
-
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, paredes);
+            this.physics.add.collider(this.amigo1, decoracion);
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

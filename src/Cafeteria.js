@@ -33,6 +33,25 @@ export default class Cafeteria extends Phaser.Scene {
         entradas.set('desde_pasillo_izq', { x: 80, y: 160, direccion: 'down' });
         entradas.set('desde_pasillo_der', { x: 1145, y: 160, direccion: 'down' });
 
+
+        // ── DEBUG KEYBINDS ──────────────────────────────────────────────────
+        // Presiona 'K' para añadir a Fernando (amigo1) al equipo instantáneamente
+        this.input.keyboard.on('keydown-K', () => {
+            const gm = GameManager.getInstance();
+            gm.AddCompañero('Jugador2');
+            console.log("DEBUG: Fernando añadido al equipo.");
+        });
+
+        // Presiona 'L' para completar la cafetería (boss derrotado)
+        this.input.keyboard.on('keydown-L', () => {
+            const gm = GameManager.getInstance();
+            gm.CompleteNivel('cafeteria');
+            gm.markDefeated('conserje_caf');
+            gm.markDefeated('npc_loco_caf');
+            console.log("DEBUG: Cafetería marcada como completada.");
+        });
+
+
         this.physics.world.setBounds(
             0,
             0,
@@ -108,15 +127,9 @@ export default class Cafeteria extends Phaser.Scene {
         }
 
 
-        // --- Lógica de Compañero (P1) ---
-        // Se asegura de que P1 aparezca si ya está en el equipo, evitando duplicados
-        if (this.gm.ActualPlayers.includes('Jugador2') && !this.amigo1) {
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (this.gm.ActualPlayers.includes('Jugador2')) {
             this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
-            this.physics.add.collider(this.amigo1, this.colisiones);
-        }
-
-        // Colisiones para los NPC que siguen al jugador (P1)
-        if (this.amigo1) {
             this.physics.add.collider(this.amigo1, this.colisiones);
         }
 
@@ -418,8 +431,10 @@ export default class Cafeteria extends Phaser.Scene {
         }, null, 'Enfermera Joy');
 
         // --- P1 (El Repetidor) sentado tranquilo en una mesa ---
-        // P1 es amigo1 pero con los diálogos del lore del GDD
-        this.amigo1 = new amigo1(this, this.player, 1040, 450, 'amigo1', 0, null, null, null, 'P1');
+        // Solo aparece si NO se ha unido al grupo
+        if (!this.gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, 1040, 450, 'amigo1', 0, null, null, null, 'P1');
+        }
 
     }
 
@@ -428,7 +443,7 @@ export default class Cafeteria extends Phaser.Scene {
      */
     _generarNPCsPostVictoria() {
 
-   
+
 
 
         this.physics.add.overlap(this.pasillo_der, this.player, () => {

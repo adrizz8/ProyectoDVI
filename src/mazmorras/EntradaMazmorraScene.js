@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 import GameManager from '../manager.js';
 import trigger from '../trigger.js';
 import EventManager from '../eventManager.js';
+import amigo1 from '../personajes/amigo1.js';
 
 export default class EntradaMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -138,6 +139,15 @@ export default class EntradaMazmorraScene extends Phaser.Scene {
                 name:'bombilla_der',
                 key:'bombilla_encendida'
             })
+        }
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga (estilo MapaFuera)
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, paredes);
+            this.physics.add.collider(this.amigo1, ordenador);
+            this.physics.add.collider(this.amigo1, limites);
         }
 
 

@@ -154,8 +154,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('cable_right_off', cable_right_off);
     this.load.image('cable_right_on', cable_right_on);
     this.load.image('boton', boton);
-    this.load.image('bombilla_apagada',bombilla_apagada);
-    this.load.image('bombilla_encendida',bombilla_encendida);
+    this.load.image('bombilla_apagada', bombilla_apagada);
+    this.load.image('bombilla_encendida', bombilla_encendida);
     this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
@@ -240,7 +240,8 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('pasillo');
+
+    this.scene.start('cafeteria', { entrada: 'puerta_izq' });
 
   }
 }
