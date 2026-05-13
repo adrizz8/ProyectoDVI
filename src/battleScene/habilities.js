@@ -118,7 +118,7 @@ export const HABILITIES = {
     'Pregunta a ChatGPT': new Hability({
         id: 'triple_strike',
         name: 'Pregunta a ChatGPT',
-        description: 'Tres preguntas que resuelven rápido.',
+        description: 'Lanza tres preguntas que resuelven rápido el problema y hacen un daño moderado.',
         cost: 2,
         type: 'damage',
         effectFn: (source, target) => {

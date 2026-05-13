@@ -5,6 +5,7 @@ import GameManager from '../manager.js';
 import trigger from '../trigger.js';
 import npcBattle from '../personajes/npc_battle.js'
 import npc from '../personajes/npc.js'
+import { ITEM_TYPES } from '../item/item_types.js';
 
 export default class SalaMiniBossScene extends Phaser.Scene {
     constructor() {
@@ -25,9 +26,6 @@ export default class SalaMiniBossScene extends Phaser.Scene {
 
         gm.addNivel("salaMiniBoss");
 
-        gm.AddCompañero('Jugador3');
-
-
         // Colisiones
         colisiones.setCollisionByExclusion([-1]);
         colisiones.setVisible(false);
@@ -47,6 +45,17 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             gm.clearPlayerPosition();
             this.player.setDirection(savedPos.direction);
             this.player.setPosition(savedPos.x, savedPos.y);
+
+            // Si el miniboss fue derrotado, mostrar recompensa
+            if (gm.isDefeated('miniboss_')) {
+                this.time.delayedCall(500, () => {
+                    const rewardItem = ITEM_TYPES['compilador_amigable'];
+                    gm.addItem(rewardItem, 1);
+                    this.showDialogue("¡Lo hicimos! ¡Derrotamos a este código monstruoso! ¡Incluso Lanchares estaría orgulloso!", "Angela", () => {
+                        this.showDialogue("¡Y miranos! Sobrevivimos juntos. Este compilador amigable es perfecto para celebrarlo. ¡Aunque después tendremos que enfrentar a Lanchares en persona!", "Victor", null);
+                    });
+                });
+            }
         }
 
         // Cámara
@@ -98,6 +107,15 @@ export default class SalaMiniBossScene extends Phaser.Scene {
                 moneyReward: 70,
                 habilidades: ['Funciona en mi PC', 'Ir a la academia']
             }, null, null, null, 'miniboss_', "salaMiniBoss");
+
+            // Crear NPCs de Angela y Victor para el evento introductorio
+            // Posicionados de espaldas a la puerta, mirando al miniboss (frame 12 = up)
+            this.angela = new npc(this, this.player, 550, 310, 'angelaow', 12, 'a', null, 'angela_', 'Angela');
+            
+            this.victor = new npc(this, this.player, 700, 310, 'victorow', 12, 'a', null, 'victor_', 'Victor');
+
+            // Mostrar diálogo inicial pidiendo ayuda
+            this._showInitialEvent();
         } else {
             this.miniboss = new npc(this, this.player, 625, 250, 'miniboss', 0, "b", null, 'miniboss_', "Miniboss");
         }
@@ -115,6 +133,56 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         if (this.dialogueManager) {
             this.dialogueManager.showDialogue(message, nombre, onFinish);
         }
+    }
+
+    _showInitialEvent() {
+        // Secuencia de diálogos: primero Angela y Victor hablan entre ellos, luego el miniboss, finalmente piden ayuda
+        this.time.delayedCall(1000, () => {
+            // Girar hacia el jugador (frame 0 = down)
+            this.angela.setFrame(0);
+            this.victor.setFrame(0);
+            
+            this.showDialogue("Este código es más complicado que los apuntes de Lanchares en octubre...", "Angela", () => {
+                this.showDialogue("¡Y es mucho más agresivo! Recuerda cuando Lanchares se enfadó por el envío mal formateado. ¡Esto es mil veces peor!", "Victor", () => {
+                    this.showDialogue("¿Creían que podrían derrotarme así como así? ¡Soy tan letal como un bug en el deploy a producción!", "Miniboss", () => {
+                        this.showDialogue("¡Este miniboss habla como si fuera profesor de facultad! ¡Primero Lanchares, ahora esto!", "Angela", () => {
+                            this.showDialogue("¡No nos quedan muchas opciones! Necesitamos ayuda URGENTE. ¿Dónde estabas cuando llegaste?", "Victor", () => {
+                                this._addCompañerosAndStartBattle();
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    _addCompañerosAndStartBattle() {
+        const gm = GameManager.getInstance();
+
+        // Agregar Angela y Victor al grupo si no estaban
+        if (!gm.ActualPlayers.includes('Jugador3')) {
+            gm.AddCompañero('Jugador3');
+        }
+        if (!gm.ActualPlayers.includes('Jugador4')) {
+            gm.AddCompañero('Jugador4');
+        }
+
+        // Pedir ayuda al jugador antes de iniciar la batalla
+        this.showDialogue("¡Por favor! ¡Necesitamos que te unas a nosotros! ¡Juntos podemos derrotar esto!", "Angela", () => {
+            this.showDialogue("¡Tienes que entender la gravedad de esto! Es como si Lanchares nos hubiera asignado un proyecto imposible. ¡Pero esta vez de verdad es imposible sin ti!", "Victor", () => {
+                // El jugador avanza dos pasos hacia el miniboss
+                this.player.setDirection('up');
+                this.tweens.add({
+                    targets: this.player,
+                    y: this.player.y - 80,
+                    duration: 400,
+                    ease: 'Linear',
+                    onComplete: () => {
+                        this.miniboss.startBattle();
+                    }
+                });
+            });
+        });
     }
 
     update(t, dt) {

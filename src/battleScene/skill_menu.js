@@ -48,6 +48,16 @@ export default class SkillMenu {
         }).setOrigin(0.5);
         this.container.add(this._descText);
 
+        // Tooltip flotante para la habilidad sobre la que se pasa el ratón
+        this._tooltipBg = this.scene.add.rectangle(0, 0, 320, 70, 0x111111, 0.92)
+            .setStrokeStyle(2, 0xffffff)
+            .setOrigin(0, 0)
+            .setVisible(false);
+        this._tooltipText = this.scene.add.text(8, 8, '', {
+            fontFamily: 'Orbitron', fontSize: '16px', fill: '#ffffff', wordWrap: { width: 304 }
+        }).setOrigin(0, 0).setVisible(false);
+        this.container.add([this._tooltipBg, this._tooltipText]);
+
         // Create 6 text placeholders
         const startX = -250;
         const startY = -80;
@@ -64,13 +74,18 @@ export default class SkillMenu {
                 fontFamily: 'SFDistantGalaxy', fontSize: '20px', fill: '#ffffff'
             }).setOrigin(0.5).setPadding(20).setInteractive({ useHandCursor: true });
 
-            text.on('pointerover', () => {
+            text.on('pointerover', (pointer) => {
                 text.setTint(0xffcc00);
                 this.updateDescription(i);
+                this._showTooltip(pointer, i);
+            });
+            text.on('pointermove', (pointer) => {
+                this._updateTooltipPosition(pointer);
             });
             text.on('pointerout', () => {
                 text.clearTint();
                 this._descText.setText('Pasa el ratón sobre una técnica para ver su descripción.');
+                this._hideTooltip();
             });
             text.on('pointerdown', () => this.onSelect(i));
 
@@ -96,9 +111,40 @@ export default class SkillMenu {
 
     hide(isCancel = false) {
         this.container.setVisible(false);
+        this._hideTooltip();
         if (isCancel && this.onCancel) {
             this.onCancel();
         }
+    }
+
+    _showTooltip(pointer, idx) {
+        const skillIdx = this._skillPage * 6 + idx;
+        if (skillIdx >= this._currentSkillsList.length) return;
+        const skillId = this._currentSkillsList[skillIdx];
+        const skillData = HABILITIES[skillId];
+        if (!skillData) return;
+
+        this._tooltipText.setText(skillData.description);
+        const bounds = this._tooltipText.getBounds();
+        this._tooltipBg.setSize(bounds.width + 16, bounds.height + 16);
+        this._tooltipBg.setVisible(true);
+        this._tooltipText.setVisible(true);
+        this._updateTooltipPosition(pointer);
+    }
+
+    _updateTooltipPosition(pointer) {
+        if (!this._tooltipBg.visible) return;
+        const offsetX = 20;
+        const offsetY = 10;
+        const localX = pointer.x - this.container.x + offsetX;
+        const localY = pointer.y - this.container.y + offsetY;
+        this._tooltipBg.setPosition(localX, localY);
+        this._tooltipText.setPosition(localX + 8, localY + 8);
+    }
+
+    _hideTooltip() {
+        this._tooltipBg.setVisible(false);
+        this._tooltipText.setVisible(false);
     }
 
     isVisible() {
