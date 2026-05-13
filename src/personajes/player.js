@@ -170,17 +170,26 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.frozen = true;
         this.body.setVelocity(0, 0);
 
-
-        //Mover a otro sitio
+        // Guardamos la posición y dirección antes de ir a batalla
         GameManager.getInstance().setPlayerPosition(this.x, this.y, this.lastDirection);
 
-
-        // Transición de cámara
-        this.scene.cameras.main.fadeOut(500, 0, 0, 0);
-
-        this.scene.cameras.main.once('camerafadeoutcomplete', () => {
-            // Solo pasamos la escena de origen para saber a dónde volver al terminar
-            this.scene.scene.start('battle_scene', { originScene: this.scene.scene.key });
+        // Transición intensa (Parpadeo/Flash)
+        const cam = this.scene.cameras.main;
+        
+        // Secuencia de parpadeo
+        this.scene.tweens.add({
+            targets: cam,
+            alpha: 0.5,
+            duration: 50,
+            yoyo: true,
+            repeat: 5,
+            onComplete: () => {
+                cam.flash(500, 255, 255, 255);
+                cam.fadeOut(500, 0, 0, 0);
+                cam.once('camerafadeoutcomplete', () => {
+                    this.scene.scene.start('battle_scene', { originScene: this.scene.scene.key });
+                });
+            }
         });
     }
 

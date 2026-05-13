@@ -243,9 +243,44 @@
          "width":38,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":12,
+         "name":"bombillas",
+         "objects":[
+                {
+                 "gid":1642,
+                 "height":32,
+                 "id":24,
+                 "name":"bombilla_izq",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":553.977272727273,
+                 "y":233.810606060606
+                }, 
+                {
+                 "gid":1642,
+                 "height":32,
+                 "id":25,
+                 "name":"bombilla_der",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":600.09255599473,
+                 "y":234.175889328063
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":11,
- "nextobjectid":16,
+ "nextlayerid":13,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -273,6 +308,10 @@
                         }]
                 }],
          "tilewidth":32
+        }, 
+        {
+         "firstgid":1641,
+         "source":"sky.tsx"
         }],
  "tilewidth":32,
  "type":"map",

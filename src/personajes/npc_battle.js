@@ -68,25 +68,44 @@ export default class NPCBattle extends NPC {
         // Guardamos la posición y dirección antes de ir a batalla
         GameManager.getInstance().setPlayerPosition(this.player.x, this.player.y, this.player.lastDirection);
 
-        this.scene.scene.start('battle_scene', {
-            enemyName: this.stats.name,
-            enemyHP: this.stats.hp,
-            enemyMaxHp: this.stats.maxHp,
-            enemyDamage: this.stats.damage,
-            enemySpriteKey: this.stats.spriteKey,
-            enemyScale: this.stats.scale,
-            enemySpeed: this.stats.speed,
-            enemyDefense: this.stats.defense,
-            enemyMp: this.stats.mp,
-            enemyMaxMp: this.stats.maxMp,
-            enemyHabilidades: this.stats.habilidades,
-            enemyObjeto: this.stats.objeto,
-            enemyExpReward: this.stats.expReward,
-            enemyMoneyReward: this.stats.moneyReward,
-            originScene: this.scene.scene.key, // Para saber a dónde volver tras el combate
-            npcid: this.id,
-            nivel: this.nivel,
-            Tutorial: this.Tutorial
+        this.player.frozen = true;
+
+        // Transición intensa (Parpadeo/Flash)
+        const cam = this.scene.cameras.main;
+        
+        // Secuencia de parpadeo
+        this.scene.tweens.add({
+            targets: cam,
+            alpha: 0.5,
+            duration: 50,
+            yoyo: true,
+            repeat: 5,
+            onComplete: () => {
+                cam.flash(500, 255, 255, 255);
+                cam.fadeOut(500, 0, 0, 0);
+                cam.once('camerafadeoutcomplete', () => {
+                    this.scene.scene.start('battle_scene', {
+                        enemyName: this.stats.name,
+                        enemyHP: this.stats.hp,
+                        enemyMaxHp: this.stats.maxHp,
+                        enemyDamage: this.stats.damage,
+                        enemySpriteKey: this.stats.spriteKey,
+                        enemyScale: this.stats.scale,
+                        enemySpeed: this.stats.speed,
+                        enemyDefense: this.stats.defense,
+                        enemyMp: this.stats.mp,
+                        enemyMaxMp: this.stats.maxMp,
+                        enemyHabilidades: this.stats.habilidades,
+                        enemyObjeto: this.stats.objeto,
+                        enemyExpReward: this.stats.expReward,
+                        enemyMoneyReward: this.stats.moneyReward,
+                        originScene: this.scene.scene.key, 
+                        npcid: this.id,
+                        nivel: this.nivel,
+                        Tutorial: this.Tutorial
+                    });
+                });
+            }
         });
     }
 }

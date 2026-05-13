@@ -20,6 +20,7 @@ import SalaLanchares from './mazmorras/SalaLancharesScene.js';
 import SalaMiniBoss from './mazmorras/SalaMiniBossScene.js';
 
 import TiendaScene from './menuScenes/tienda.js';
+import GameOverScene from './GameOverScene.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -42,7 +43,7 @@ let config = {
     },
     pixelArt: true,
 
-    scene: [Boot, TitleScene, Prematricula, IntroScene, level3, MenuPrincipal, EstrategiaScene, MochilaScene, Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss],
+    scene: [Boot, TitleScene, Prematricula, IntroScene, level3, MenuPrincipal, EstrategiaScene, MochilaScene, Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss, GameOverScene],
 
     physics: {
         default: 'arcade',

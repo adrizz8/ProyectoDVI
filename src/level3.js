@@ -73,13 +73,24 @@ export default class Level3 extends Phaser.Scene {
 
             this.carretera.play();
 
+            new NPC_en_camino(this, this.player, 600, 50, 'npc1', 380, "Otra vez que pierdo el U, este bus pasa cuando le sale de los cojones");
+
+
             gm.CompleteNivel('level3');
 
         } else {
             this.player.setPosition(map.widthInPixels / 2 - 10, 30);
+
+            if(!gm.estadoNivel('cafeteria')){
+                new npc(this,this.player,400,512,'npc1',0,'El siguiente viene en 20 minutos, me cago en todo',()=>{
+
+                    this.dialogueManager.showDialogue('¿Te sabes el chiste del autobus?','Estudiante');
+                    this.dialogueManager.showDialogue('¿No?','Estudiante');
+                    this.dialogueManager.showDialogue('Suele pasar','Estudiante');
+                },null,'Estudiante');
+            }
         }
 
-        new NPC_en_camino(this, this.player, 600, 50, 'npc1', 380, "Otra vez que pierdo el U, este bus pasa cuando le sale de los cojones");
 
         const trigger_pantalla = map.createFromObjects('triggers', {
             name: 'pantalla_nueva',
@@ -158,6 +169,10 @@ export default class Level3 extends Phaser.Scene {
         if (this.player && this.player.update) {
             this.player.update(t, dt);
         }
+    }
+
+    chiste(){
+
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

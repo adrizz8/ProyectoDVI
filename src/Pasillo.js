@@ -80,8 +80,10 @@ export default class Pasillo extends Phaser.Scene {
         });
 
         this.physics.add.overlap(this.player, this.entrada_mazmorra, () => {
-
-            this.scene.start('entradaMazmorra', { entrada: 'pasillo' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('entradaMazmorra', { entrada: 'pasillo' });
+            });
         });
 
         // --- NPCs del lore de la Planta 1 ---
@@ -100,14 +102,20 @@ export default class Pasillo extends Phaser.Scene {
         const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
         this.physics.world.enable(salidaCafeteriaDer, Phaser.Physics.Arcade.STATIC_BODY);
         this.physics.add.overlap(this.player, salidaCafeteriaDer, () => {
-            this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
+            });
         });
 
         // Zona de salida derecha: volver a la cafetería (por la puerta izq de cafetería)
         const salidaCafeteriaIzq = this.add.zone(map.widthInPixels - 16, map.heightInPixels / 2, 32, map.heightInPixels);
         this.physics.world.enable(salidaCafeteriaIzq, Phaser.Physics.Arcade.STATIC_BODY);
         this.physics.add.overlap(this.player, salidaCafeteriaIzq, () => {
-            this.scene.start('cafeteria', { entrada: 'desde_pasillo_der' });
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_pasillo_der' });
+            });
         });
 
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────

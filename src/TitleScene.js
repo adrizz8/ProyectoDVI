@@ -12,6 +12,7 @@ export default class TitleScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.fadeIn(500, 0, 0, 0);
         // Fondo ajustado a la pantalla (1216x640)
         const background = this.add.image(608, 320, 'finalFaculty').setOrigin(0.5);
         background.setDisplaySize(1216, 640);

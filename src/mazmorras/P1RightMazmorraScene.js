@@ -9,6 +9,7 @@ import OrGate from '../gates/or_gate.js';
 import GameManager from '../manager.js';
 import trigger from '../trigger.js';
 import EventManager from '../eventManager.js';
+import amigo1 from '../personajes/amigo1.js';
 
 export default class P1RightMazmorraScene extends Phaser.Scene {
     constructor() {
@@ -287,6 +288,8 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
             ...Object.values(this.cables)
         ];
 
+
+
         this.circuitComponents.forEach(comp => {
             if (comp.body && comp.body.updateFromGameObject) comp.body.updateFromGameObject();
         });
@@ -306,6 +309,14 @@ export default class P1RightMazmorraScene extends Phaser.Scene {
         this.music = this.sound.add('music_mazmorra', { loop: true, volume: 0.4 });
         this.music.play();
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
+
+        // Si P1 ya está en el grupo, lo spawneamos para que nos siga
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, paredes);
+            this.physics.add.collider(this.amigo1, decoracion);
+        }
     }
 
     update(t, dt) {

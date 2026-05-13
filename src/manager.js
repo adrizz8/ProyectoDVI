@@ -25,6 +25,10 @@ export default class GameManager {
         return GameManager._instance;
     }
 
+    static reset() {
+        GameManager._instance = null;
+    }
+
     constructor() {
         if (GameManager._instance) {
             throw new Error('Usa GameManager.getInstance()');
