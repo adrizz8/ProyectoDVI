@@ -124,6 +124,9 @@ export default class MochilaScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown-ESC', () => this.closeScene());
         this.input.keyboard.on('keydown-SPACE', () => this.closeScene());
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) this.closeScene();
+        });
 
         this.refreshView();
     }

@@ -11,6 +11,8 @@ import NPCBattle from './npc_battle';
 export default class cafeteria_loco extends NPCBattle {
 
     constructor(scene, player, x, y, texture,frame, stats = {}, message = null, onFinish = null, itemId = null,NpcId) {
+        if (!texture) texture = 'npc1';
+        if (frame === null || frame === undefined) frame = 0;
         super(scene, player, x, y, texture,frame, stats , message , onFinish , itemId,NpcId);
 
         this.ini_x=x;

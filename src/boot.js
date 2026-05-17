@@ -140,7 +140,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('toy', toy);
     this.load.spritesheet('carlos', carlos, { frameWidth: 68, frameHeight: 72 });
     this.load.spritesheet('ismael', ismael, { frameWidth: 64, frameHeight: 64 });
-    this.load.spritesheet('tiendacafe', tiendacafe, { frameWidth: 64, frameHeight: 64 });   
+    this.load.spritesheet('tiendacafe', tiendacafe, { frameWidth: 64, frameHeight: 64 });
     this.load.image('conserjebatalla', conserjebatalla);
     this.load.spritesheet('conserje', conserje, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('angelaow', angelaow, { frameWidth: 64, frameHeight: 72 });
@@ -244,7 +244,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('p1LeftMazmorra', { entrada: 'salida_autobus' });
+    this.scene.start('TitleScene');
 
 
   }
