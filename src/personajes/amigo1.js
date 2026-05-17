@@ -7,8 +7,12 @@ import GameManager from '../manager.js';
 export default class amigo1 extends NPC {
 
 
-    constructor(scene, player, x, y, texture, frame = 0, message = null, onFinish = null, itemId = null, name = '') {
+    constructor(scene, player, x, y, texture, frame = 0, message = null, onFinish = null, itemId = null, name = '', groupId = 'Jugador2', animTexture = texture) {
         super(scene, player, x, y, texture, frame, message, onFinish, itemId, name);
+
+        this.animTexture = animTexture;
+        this.groupId = groupId;
+        this.animKeyPrefix = `follow_${this.groupId}_${this.animTexture}`;
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
@@ -21,10 +25,11 @@ export default class amigo1 extends NPC {
 
         this.gm = GameManager.getInstance();
 
-        // ¿Ya se unió P1 al grupo?
-        this._unidoAlGrupo = this.gm.ActualPlayers.includes('Jugador2');
+        // ¿Ya se unió este compañero al grupo?
+        this._unidoAlGrupo = this.gm.ActualPlayers.includes(this.groupId);
 
         this.history = []; // Historial de posiciones del jugador
+        this.followDelay = this._getFollowDelay(groupId);
 
         if (this._unidoAlGrupo && this.body) {
             this.body.moves = true;
@@ -40,20 +45,23 @@ export default class amigo1 extends NPC {
         ];
 
         animsConfig.forEach(cfg => {
+            const walkKey = `${this.animKeyPrefix}_walk_${cfg.key}`;
+            const idleKey = `${this.animKeyPrefix}_idle_${cfg.key}`;
+
             // Animación de caminar
-            if (!this.scene.anims.exists(`walk5-${cfg.key}`)) {
+            if (!this.scene.anims.exists(walkKey)) {
                 this.scene.anims.create({
-                    key: `walk5-${cfg.key}`,
-                    frames: this.scene.anims.generateFrameNumbers('amigo1', { start: cfg.start, end: cfg.end }),
+                    key: walkKey,
+                    frames: this.scene.anims.generateFrameNumbers(this.animTexture, { start: cfg.start, end: cfg.end }),
                     frameRate: 10,
                     repeat: -1
                 });
             }
             // Animación de reposo (solo el primer frame de esa dirección)
-            if (!this.scene.anims.exists(`idle5-${cfg.key}`)) {
+            if (!this.scene.anims.exists(idleKey)) {
                 this.scene.anims.create({
-                    key: `idle5-${cfg.key}`,
-                    frames: this.scene.anims.generateFrameNumbers('amigo1', { start: cfg.start, end: cfg.start }),
+                    key: idleKey,
+                    frames: this.scene.anims.generateFrameNumbers(this.animTexture, { start: cfg.start, end: cfg.start }),
                     frameRate: 1,
                     repeat: -1
                 });
@@ -69,9 +77,27 @@ export default class amigo1 extends NPC {
      */
     setDirection(dir) {
         this.lastDirection = dir;
-        this.play(`idle5-${dir}`);
+        this.play(this._getIdleKey(dir));
     }
 
+    _getWalkKey(dir) {
+        return `${this.animKeyPrefix}_walk_${dir}`;
+    }
+
+    _getIdleKey(dir) {
+        return `${this.animKeyPrefix}_idle_${dir}`;
+    }
+
+    _getFollowDelay(groupId) {
+        switch (groupId) {
+            case 'Jugador3':
+                return 14;
+            case 'Jugador4':
+                return 21;
+            default:
+                return 7;
+        }
+    }
 
     /**
      * Métodos preUpdate de Phaser. Gestiona el seguimiento del jugador si está en el grupo.
@@ -115,9 +141,7 @@ export default class amigo1 extends NPC {
 
             // 2. Seguir el historial de posiciones
             // El seguidor se queda a una distancia de N puntos del historial
-            const followDelay = 7; // Ajustar para que vaya más o menos cerca
-
-            if (this.history.length > followDelay) {
+            if (this.history.length > this.followDelay) {
                 const target = this.history[0];
                 const distToTarget = Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y);
 
@@ -135,7 +159,7 @@ export default class amigo1 extends NPC {
                     else if (deg > 0) this.lastDirection = 'down';
                     else this.lastDirection = 'up';
 
-                    this.play(`walk5-${this.lastDirection}`, true);
+                    this.play(this._getWalkKey(this.lastDirection), true);
                 } else {
                     // Hemos llegado a este punto del historial, lo quitamos para ir al siguiente
                     this.history.shift();
@@ -143,19 +167,19 @@ export default class amigo1 extends NPC {
             } else {
                 // Si no hay suficiente historial, se queda quieto
                 this.body.setVelocity(0, 0);
-                this.play(`idle5-${this.lastDirection}`, true);
+                this.play(this._getIdleKey(this.lastDirection), true);
             }
         }
         else {
             // No unido: estático
             this.body.setVelocity(0, 0);
-            this.play(`idle5-${this.lastDirection}`, true);
+            this.play(this._getIdleKey(this.lastDirection), true);
         }
     }
 
 
     freeze() {
-        this.play('idle5-' + this.lastDirection, true);
+        this.play(this._getIdleKey(this.lastDirection), true);
         this.frozen = true;
     }
     unfreeze() {
@@ -166,27 +190,31 @@ export default class amigo1 extends NPC {
         // Mira al jugador
         this.lastDirection = this.contrario_player();
 
+        const showDialogue = typeof this.scene.showDialogue === 'function'
+            ? this.scene.showDialogue.bind(this.scene)
+            : (message, name, cb) => { this.say(message, cb); };
+
         if (this._unidoAlGrupo) {
             // Ya está en el grupo, pero puede hablar
-            this.scene.showDialogue(
+            showDialogue(
                 'Aguanta, novato. Cuando hayamos limpiado el Aula 1, descansamos.',
-                'Fernando'
+                this.name || 'Compañero'
             );
             return;
         }
 
         // --- Diálogo de presentación y reclutamiento de P1 ---
-        this.scene.showDialogue(
+        showDialogue(
             '¡Oye! ¡La facultad se ha vuelto loca, hay que salir!',
             this.player.name || 'Tú',
             () => {
-                this.scene.showDialogue(
+                showDialogue(
                     'Chill bro, cómo se nota que eres novato.',
-                    'Fernando',
+                    this.name || 'Compañero',
                     () => {
-                        this.scene.showDialogue(
+                        showDialogue(
                             'Me llamo Fernando, soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
-                            'Fernando',
+                            this.name || 'Compañero',
                             () => {
                                 // Reclutamiento de P1
                                 this.unirse();

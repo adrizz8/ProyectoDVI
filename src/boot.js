@@ -143,8 +143,8 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('tiendacafe', tiendacafe, { frameWidth: 64, frameHeight: 64 });   
     this.load.image('conserjebatalla', conserjebatalla);
     this.load.spritesheet('conserje', conserje, { frameWidth: 64, frameHeight: 64 });
-    this.load.spritesheet('angelaow', angelaow, { frameWidth: 64, frameHeight: 72 });
-    this.load.spritesheet('victorow', victorow, { frameWidth: 64, frameHeight: 72 });
+    this.load.spritesheet('angelaow', angelaow, { frameWidth: 68, frameHeight: 72 });
+    this.load.spritesheet('victorow', victorow, { frameWidth: 68, frameHeight: 72 });
     this.load.image('logo', logo);
     this.load.image('fondo', fondo);
     this.load.image('or_gate', or_gate);

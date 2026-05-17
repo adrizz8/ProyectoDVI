@@ -94,6 +94,14 @@ export default class Pasillo extends Phaser.Scene {
             this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
             this.physics.add.collider(this.amigo1, this.colisiones);
         }
+        if (this.gm.ActualPlayers.includes('Jugador3')) {
+            this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+            this.physics.add.collider(this.angela, this.colisiones);
+        }
+        if (this.gm.ActualPlayers.includes('Jugador4')) {
+            this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+            this.physics.add.collider(this.victor, this.colisiones);
+        }
 
         // --- NPC que cura ---
         //this._spawnHealer(30, 300);

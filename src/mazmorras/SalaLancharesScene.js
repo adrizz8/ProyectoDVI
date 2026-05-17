@@ -121,6 +121,18 @@ export default class SalaLancharesScene extends Phaser.Scene {
             this.physics.add.collider(this.amigo1, paredes);
             this.physics.add.collider(this.amigo1, decoracion);
         }
+        if (gm.ActualPlayers.includes('Jugador3')) {
+            this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+            this.physics.add.collider(this.angela, colisiones);
+            this.physics.add.collider(this.angela, paredes);
+            this.physics.add.collider(this.angela, decoracion);
+        }
+        if (gm.ActualPlayers.includes('Jugador4')) {
+            this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+            this.physics.add.collider(this.victor, colisiones);
+            this.physics.add.collider(this.victor, paredes);
+            this.physics.add.collider(this.victor, decoracion);
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {

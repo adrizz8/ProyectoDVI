@@ -61,17 +61,14 @@ export default class EstrategiaScene extends Phaser.Scene {
         // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
 
         const gm = GameManager.getInstance();
-        const playerIndex = gm.ActualPlayers.indexOf(nombre);
-        
-        // Mapeo de índice de jugador a tecla de coordenadas
-        const playerKeys = ['Jugador1', 'Jugador2', 'Jugador3', 'Jugador4'];
-        const playerKey = playerKeys[playerIndex] || 'Jugador1';
+        // Usar el identificador real del personaje para posicionarlo en la UI
+        const playerKey = nombre;
 
         const coordenadasNombres = {
             Jugador1: { x: 211, y: 15 },
-            Jugador3: { x: 720, y: 112 },
-            Jugador2: { x: 211, y: 250 },
-            Jugador4: { x: 720, y: 442 }
+            Jugador3: { x: 700, y: 15 },
+            Jugador2: { x: 150, y: 345 },
+            Jugador4: { x: 700, y: 345 }
         };
         const posNombre = coordenadasNombres[playerKey] || { x: 170, y: 112 };
 

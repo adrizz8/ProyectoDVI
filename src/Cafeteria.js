@@ -132,6 +132,14 @@ export default class Cafeteria extends Phaser.Scene {
             this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
             this.physics.add.collider(this.amigo1, this.colisiones);
         }
+        if (this.gm.ActualPlayers.includes('Jugador3')) {
+            this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+            this.physics.add.collider(this.angela, this.colisiones);
+        }
+        if (this.gm.ActualPlayers.includes('Jugador4')) {
+            this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+            this.physics.add.collider(this.victor, this.colisiones);
+        }
 
         // El mapa es 38x20 tiles de 32px = 1216x640px
 
@@ -309,8 +317,8 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Conserje BOSS en la salida ---
         this.conserj = new conserje(this, this.player, 1125, 140, 'conserje', null, {
             name: 'Conserje',
-            hp: 40,
-            maxHp: 40,
+            hp: 40,//40
+            maxHp: 40,//40
             damage: 13,
             speed: 8,
             defense: 16,
@@ -320,7 +328,6 @@ export default class Cafeteria extends Phaser.Scene {
             moneyReward: 60,
             habilidades: ['Preguntar a ChatGPT', 'Ir a la Academia'],
             spriteKey: 'conserjebatalla',
-            scale: 0.45
         }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
@@ -328,7 +335,7 @@ export default class Cafeteria extends Phaser.Scene {
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
 
-            this.showDialogue('¡No me toquéis más las narices ni imprimáis tonterías con las impresoras del labroatorio!', 'Conserje', () => {
+            this.showDialogue('¡No me toquéis más las narices ni imprimái   s tonterías con las impresoras del labroatorio!', 'Conserje', () => {
                 this.conserj.huir();
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
@@ -389,8 +396,8 @@ export default class Cafeteria extends Phaser.Scene {
         const loco = new cafeteria_loco(this, this.player, 550, 310, null, null, {
             spriteKey: 'estudiantebattle',
             name: 'Marcos',
-            hp: 30,
-            maxHp: 30,
+            hp: 30,//30
+            maxHp: 30,//30
             damage: 7,
             speed: 16,
             defense: 11,
@@ -486,6 +493,14 @@ export default class Cafeteria extends Phaser.Scene {
         if (this.gm.ActualPlayers.includes('Jugador2')) {
             this.amigo1 = new amigo1(this, this.player, this.player.x, this.player.y, 'amigo1', 0, null, null, null, 'P1');
             this.physics.add.collider(this.amigo1, this.colisiones);
+        }
+        if (this.gm.ActualPlayers.includes('Jugador3')) {
+            this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+            this.physics.add.collider(this.angela, this.colisiones);
+        }
+        if (this.gm.ActualPlayers.includes('Jugador4')) {
+            this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+            this.physics.add.collider(this.victor, this.colisiones);
         }
     }
 

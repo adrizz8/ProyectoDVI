@@ -90,6 +90,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         });
 
 
+        const bossDefeated = gm.isDefeated('miniboss_');
+
         if (!gm.estadoNivel("salaMiniBoss")) {
             const p1Name = gm.ActualPlayers[0];
             const p1Level = gm.playerStats[p1Name].level;
@@ -100,14 +102,14 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             this.miniboss = new npcBattle(this, this.player, 625, 250, 'miniboss', 0, {
                 spriteKey: 'minibossbatalla',
                 name: 'Miniboss',
-                hp: getScaledStat(70, 1.5),
-                maxHp: getScaledStat(70, 1.5),
-                damage: getScaledStat(16, 1.5),
-                speed: getScaledStat(16, 1.5),
-                defense: getScaledStat(18, 1.5),
-                mp: getScaledStat(15, 1),
-                maxMp: getScaledStat(15, 1),
-                expReward: 50,
+                hp:65, //getScaledStat(70, 1.5),
+                maxHp:65, //getScaledStat(70, 1.5),
+                damage:16, //getScaledStat(16, 1.5),
+                speed:10, //getScaledStat(16, 1.5),
+                defense:22, //getScaledStat(18, 1.5),
+                mp: 22,//getScaledStat(15, 1),
+                maxMp: 22,//getScaledStat(15, 1),
+                expReward: 80,
                 moneyReward: 70,
                 habilidades: ['Funciona en mi PC', 'Ir a la academia']
             }, null, null, null, 'miniboss_', "salaMiniBoss");
@@ -115,13 +117,25 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             // Crear NPCs de Angela y Victor para el evento introductorio
             // Posicionados de espaldas a la puerta, mirando al miniboss (frame 12 = up)
             this.angela = new npc(this, this.player, 550, 310, 'angelaow', 12, 'a', null, 'angela_', 'Angela');
-            
             this.victor = new npc(this, this.player, 700, 310, 'victorow', 12, 'a', null, 'victor_', 'Victor');
 
             // Mostrar diálogo inicial pidiendo ayuda
             this._showInitialEvent();
         } else {
-            this.miniboss = new npc(this, this.player, 625, 250, 'miniboss', 0, "b", null, 'miniboss_', "Miniboss");
+            if (!bossDefeated) {
+                this.miniboss = new npc(this, this.player, 625, 250, 'miniboss', 0, "b", null, 'miniboss_', "Miniboss");
+            }
+            if (bossDefeated) {
+                this.angela = new amigo1(this, this.player, 550, 310, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+                this.victor = new amigo1(this, this.player, 700, 310, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+
+                this.physics.add.collider(this.angela, colisiones);
+                this.physics.add.collider(this.angela, pared);
+                this.physics.add.collider(this.angela, maquinas);
+                this.physics.add.collider(this.victor, colisiones);
+                this.physics.add.collider(this.victor, pared);
+                this.physics.add.collider(this.victor, maquinas);
+            }
         }
 
         // Música de mazmorra
@@ -176,6 +190,35 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         if (!gm.ActualPlayers.includes('Jugador4')) {
             gm.AddCompañero('Jugador4');
         }
+
+        // Asegurar que Angela y Victor estén al menos en nivel 3 antes del combate
+        const ensureLevelAtLeast = (playerKey, targetLevel = 3) => {
+            const p = gm.playerStats[playerKey];
+            const prog = gm.progression[playerKey];
+            if (!p || !prog) return;
+            if (p.level >= targetLevel) return;
+            const oldLevel = p.level;
+            const delta = targetLevel - oldLevel;
+            p.level = targetLevel;
+            p.maxHp += (prog.hp || 0) * delta;
+            p.hp = p.maxHp;
+            p.maxMp += (prog.mp || 0) * delta;
+            p.mp = p.maxMp;
+            p.damage += (prog.damage || 0) * delta;
+            p.speed += (prog.speed || 0) * delta;
+            p.defense += (prog.defense || 0) * delta;
+            p.luck += (prog.luck || 0) * delta;
+            // Añadir habilidades desbloqueadas en esos niveles
+            if (prog.skills) {
+                for (let L = oldLevel + 1; L <= targetLevel; L++) {
+                    const skill = prog.skills[L];
+                    if (skill && !p.habilidades.includes(skill)) p.habilidades.push(skill);
+                }
+            }
+        };
+
+        ensureLevelAtLeast('Jugador3', 3);
+        ensureLevelAtLeast('Jugador4', 3);
 
         // Pedir ayuda al jugador antes de iniciar la batalla
         this.showDialogue("¡Por favor! ¡Necesitamos que te unas a nosotros! ¡Juntos podemos derrotar esto!", "Angela", () => {
