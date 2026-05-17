@@ -28,14 +28,13 @@ export default class EstrategiaScene extends Phaser.Scene {
         this.volumeValue = this.sound.volume ?? 1;
 
         this.textSpeedOptions = ['Lento', 'Medio', 'Rápido'];
-        this.textSpeedIndex = this.gm.TextIndex ;
+        this.textSpeedIndex = this.gm.TextIndex;
         this.textSpeed = this.gm.TextMode;
 
         this.isFullscreenChecked = this.scale.isFullscreen;
 
-        /*
         this.scale.on('enterfullscreen', this.handleEnterFullscreen, this);
-        this.scale.on('leavefullscreen', this.handleLeaveFullscreen, this);*/
+        this.scale.on('leavefullscreen', this.handleLeaveFullscreen, this);
 
 
         // Volumen
@@ -144,7 +143,6 @@ export default class EstrategiaScene extends Phaser.Scene {
             this.updateTextSpeed();
         });
 
-        /*
         const fullscreenY = 420;
 
         this.add.text(330, fullscreenY, 'Pantalla Completa', {
@@ -197,31 +195,29 @@ export default class EstrategiaScene extends Phaser.Scene {
             this.toggleFullscreen();
         });
 
-        */
-
-        this.add.text(centerX, sceneHeight - 20, 'Presiona ESPACIO para volver', {
+        this.add.text(centerX, sceneHeight - 20, 'Presiona ESPACIO o CLICK DERECHO para volver', {
             fontSize: '14px',
             fill: '#000000',
             fontFamily: 'Pixelify Sans',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        console.log(data);
-        if((!data || !Object.keys(data).length)){
-            this.input.keyboard.on('keydown-SPACE', () => {
+        const closeConfig = () => {
+            if ((!data || !Object.keys(data).length)) {
                 this.scene.stop();
                 this.scene.start('MenuPrincipal');
                 this.scene.bringToTop('MenuPrincipal');
-            });
-        }else{
-            this.input.keyboard.on('keydown-SPACE', () => {
+            } else {
                 this.scene.stop();
                 this.scene.start('TitleScene');
-               
-                
-            });
-        }
-        
+            }
+        };
+
+        this.input.keyboard.on('keydown-SPACE', closeConfig);
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.rightButtonDown()) closeConfig();
+        });
+
     }
 
     getTextSpeed() {

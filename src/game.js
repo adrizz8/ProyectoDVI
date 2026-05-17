@@ -38,8 +38,9 @@ let config = {
     },
 
     scale: {
-        //mode: Phaser.Scale.FIT,  
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
+        mode: Phaser.Scale.FIT,  
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        fullscreenTarget: 'juego'
     },
     pixelArt: true,
 
