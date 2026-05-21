@@ -133,6 +133,17 @@ export default class SalaLancharesScene extends Phaser.Scene {
             this.physics.add.collider(this.victor, paredes);
             this.physics.add.collider(this.victor, decoracion);
         }
+
+        // Si acabamos de derrotar a Lanchares, mostramos la escena final
+        if (gm.isJustDefeated && gm.isJustDefeated('lanchares_')) {
+            gm.setJustDefeated('');
+            if (this.music) this.music.stop();
+            if (this.player && this.player.freeze) this.player.freeze();
+            this.time.delayedCall(500, () => {
+                this.scene.start('end');
+            });
+            return;
+        }
     }
 
     showDialogue(message, nombre = '', onFinish = null) {
