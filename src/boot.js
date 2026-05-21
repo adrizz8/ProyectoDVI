@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import EventManager from './eventManager.js';
+import EventManager from './core/eventManager.js';
 
 
 import platform from '../assets/sprites/platform.png'
@@ -8,7 +8,6 @@ import star from '../assets/sprites/star.png'
 import player from '../assets/sprites/protaOW.png'
 import logo from '../assets/images/logo.png'
 import fondo from '../assets/images/fondo.png'
-import toy from '../assets/sprites/player.png'
 import battleUI from '../assets/images/battleui_vacio.png'
 import fondoCombate from '../assets/images/fondoCombate.png'
 import playerFace from '../assets/sprites/protanuevo.png'
@@ -27,7 +26,6 @@ import prota_battle from '../assets/sprites/prota_battle.png'
 import player2_battle from '../assets/sprites/player2_battle.png'
 import player3_battle from '../assets/sprites/player3_battle.png'
 import player4_battle from '../assets/sprites/player4_battle.png'
-import toybatalla from '../assets/sprites/toybatalla.png'
 
 import estrategiaUI1 from '../assets/images/estrategiaui1.png'
 import estrategiaUI2 from '../assets/images/estrategiaui2.png'
@@ -137,7 +135,6 @@ export default class Boot extends Phaser.Scene {
     this.load.spritesheet('miniboss', miniboss, { frameWidth: 68, frameHeight: 72 });
     this.load.image('lancharesbatalla', lancharesbatalla);
     this.load.image('minibossbatalla', minibossbatalla);
-    this.load.image('toy', toy);
     this.load.spritesheet('carlos', carlos, { frameWidth: 68, frameHeight: 72 });
     this.load.spritesheet('ismael', ismael, { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('tiendacafe', tiendacafe, { frameWidth: 64, frameHeight: 64 });
@@ -160,7 +157,6 @@ export default class Boot extends Phaser.Scene {
     this.load.image('boton', boton);
     this.load.image('bombilla_apagada', bombilla_apagada);
     this.load.image('bombilla_encendida', bombilla_encendida);
-    this.load.image('bombilla', toy);
     this.load.image('battleUI', battleUI);
     this.load.image('fondoCombate', fondoCombate);
     this.load.spritesheet('playerFace', playerFace, { frameWidth: 68, frameHeight: 72 });
@@ -171,7 +167,6 @@ export default class Boot extends Phaser.Scene {
     this.load.image('tilesinterior', tilesInterior);
     this.load.image('tilesInterior2', tilesInterior2);
     this.load.image('tilesCafeteria', tilesCafeteria);
-    this.load.image('toybatalla', toybatalla);
     this.load.image('configuracion', configuracion);
 
     this.load.spritesheet('tileset', tileset, {

@@ -1,26 +1,26 @@
 import Boot from './boot.js';
-import End from './end.js';
-import level3 from './level3.js'
+import End from './scenes/core/end.js';
+import level3 from './scenes/maps/level3.js'
 import Phaser from 'phaser';
-import TitleScene from './TitleScene.js';
-import IntroScene from './IntroScene.js';
-import MenuPrincipal from './menuScenes/menuprincipal.js';
-import EstrategiaScene from './menuScenes/EstrategiaScene.js';
-import MochilaScene from './menuScenes/mochilaScene.js';
-import Configuracion from './menuScenes/Configuracion.js';
-import BattleScene from './battleScene/battle_scene.js';
-import MapaFuera from './MapaFuera.js'
-import Cafeteria from './Cafeteria.js'
-import Prematricula from './prematricula_scene.js'
-import Pasillo from './Pasillo.js';
-import EntradaMazmorra from './mazmorras/EntradaMazmorraScene.js';
-import P1RightMazmorra from './mazmorras/P1RightMazmorraScene.js';
-import P1LeftMazmorra from './mazmorras/P1LeftMazmorraScene.js';
-import SalaLanchares from './mazmorras/SalaLancharesScene.js';
-import SalaMiniBoss from './mazmorras/SalaMiniBossScene.js';
+import TitleScene from './scenes/core/TitleScene.js';
+import IntroScene from './scenes/core/IntroScene.js';
+import MenuPrincipal from './scenes/menus/menuprincipal.js';
+import EstrategiaScene from './scenes/menus/EstrategiaScene.js';
+import MochilaScene from './scenes/menus/mochilaScene.js';
+import Configuracion from './scenes/menus/Configuracion.js';
+import BattleScene from './battle/battle_scene.js';
+import MapaFuera from './scenes/maps/MapaFuera.js'
+import Cafeteria from './scenes/maps/Cafeteria.js'
+import Prematricula from './scenes/core/prematricula_scene.js'
+import Pasillo from './scenes/maps/Pasillo.js';
+import EntradaMazmorra from './scenes/dungeons/EntradaMazmorraScene.js';
+import P1RightMazmorra from './scenes/dungeons/P1RightMazmorraScene.js';
+import P1LeftMazmorra from './scenes/dungeons/P1LeftMazmorraScene.js';
+import SalaLanchares from './scenes/dungeons/SalaLancharesScene.js';
+import SalaMiniBoss from './scenes/dungeons/SalaMiniBossScene.js';
 
-import TiendaScene from './menuScenes/tienda.js';
-import GameOverScene from './GameOverScene.js';
+import TiendaScene from './scenes/menus/tienda.js';
+import GameOverScene from './scenes/core/GameOverScene.js';
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
