@@ -140,7 +140,27 @@ export default class SalaLancharesScene extends Phaser.Scene {
             if (this.music) this.music.stop();
             if (this.player && this.player.freeze) this.player.freeze();
             this.time.delayedCall(500, () => {
-                this.scene.start('end');
+                const ismaelSprite = this.add.sprite(this.player.x + 80, this.player.y, 'ismael', 4).setDepth(50);
+                const carlosSprite = this.add.sprite(this.player.x - 100, this.player.y, 'carlos', 8).setDepth(50);
+
+                 const limpiarProfs = () => {
+                    carlosSprite.destroy();
+                    ismaelSprite.destroy();
+                    this.player.unfreeze();
+
+                };
+
+                // Encolamos TODOS los diálogos de golpe.
+                this.dialogueManager.showDialogue(
+                    'Increible has conseguido transformar a Lanchares de vuelta!!!',
+                    'Carlos'
+                );
+                this.dialogueManager.showDialogue(
+                    'Ya has terminado la carrera, vuelve al bus por el que viniste y disfruta tu libertad',
+                    'Ismael',
+                    limpiarProfs
+                );
+                //this.scene.start('end');
             });
             return;
         }

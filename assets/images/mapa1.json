@@ -133,6 +133,17 @@
                  "width":102.166666666667,
                  "x":542.333333333333,
                  "y":1
+                }, 
+                {
+                 "height":13.3449174630756,
+                 "id":15,
+                 "name":"regreso",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":27.8019113814075,
+                 "x":405.907906168549,
+                 "y":521.563857515204
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -141,7 +152,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":13,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

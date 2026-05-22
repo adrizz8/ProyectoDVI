@@ -123,6 +123,31 @@ export default class Level3 extends Phaser.Scene {
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
 
+        if(gm.estadoNivel('salaLanchares')){
+            const regreso= map.createFromObjects('triggers', {
+                name: 'regreso',
+                classType: trigger
+            });
+
+            this.physics.add.overlap(regreso, this.player, () => {
+                this.player.setDirection('down');
+                this.player.freeze();
+                this.bus = new Bus(this, 1800, 560, 'bus');
+
+                const parada = map.createFromObjects('triggers', {
+                    gid: 558,
+                    classType: Parada,
+                    key: 'tileset',
+                    frame: 557
+                });
+
+                this.bus.config(parada[0]);
+
+                this.carretera.play();
+                regreso[0].destroy();
+            });
+
+        }
     }
 
     parar_soni() {
@@ -134,6 +159,14 @@ export default class Level3 extends Phaser.Scene {
     }
     parar_carretera() {
         this.carre_join.stop();
+
+        const gm = GameManager.getInstance();
+        if(gm.estadoNivel('salaLanchares')){
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('end');
+            });
+        }
     }
     unfreeze() {
         this.player.unfreeze();
@@ -158,6 +191,18 @@ export default class Level3 extends Phaser.Scene {
         });
 
 
+    }
+    take_player() {
+        this.player.freeze();
+        this.player.setVisible(false);
+        this.time.addEvent({
+            delay: 2000, // ms
+            callback: () => {
+                this.bus.state = 'arrancar';
+                this.arrancar.play();
+                this.parar.stop();
+            }
+        });
     }
 
     update(t, dt) {

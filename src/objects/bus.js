@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GameManager from '../core/manager';
 
 export default class bus extends Phaser.GameObjects.Sprite {
 
@@ -15,7 +16,7 @@ export default class bus extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
-
+        this.gm = GameManager.getInstance();
 
         this.state = 'move';
         this.speed = 500; //ESTABA A 150
@@ -85,7 +86,13 @@ export default class bus extends Phaser.GameObjects.Sprite {
                     this.frenar();
                     this.body.setVelocityX(-this.speed);
                     if (this.speed <= 0 && !this.bajado) {
-                        this.scene.drop_player();
+
+                        if(this.gm.estadoNivel('salaLanchares')){
+                            this.scene.take_player();
+                        }else{
+                            this.scene.drop_player();
+                        }
+                        
                         this.bajado = true;
                     }
 

@@ -13,21 +13,56 @@ export default class End extends Phaser.Scene {
     super({ key: 'end' });
   }
 
-  /**
-   * Creación de la escena. Tan solo contiene el texto que indica que el juego se ha acabado
-   */
-  create() {
-    this.add.text(500, 250, 'Se acabó!\nPulsa cualquier tecla para volver a jugar')
-        .setOrigin(0.5, 0.5)  // Colocamos el pivote en el centro de cuadro de texto 
-        .setAlign('center');  // Centramos el texto dentro del cuadro de texto
+    create() {
 
-    // Añadimos el listener para cuando se haya pulsado una tecla. Es probable que no
-    // lleguemos a ver el mensaje porque veníamos con una tecla pulsada del juego (al 
-    // ir moviendo al jugador). Se puede mejorar añadiendo un temporizador que 
-    // añada este listener pasado un segundo
-    this.input.keyboard.on('keydown', function (_event) { 
-      this.scene.start('level');
-    }, this);
-  }
+        const centerX = this.scale.width / 2;
+
+        // Texto de créditos
+        this.creditsText = this.add.text(centerX, 220,
+            '\n\n' +
+            'Juego desarrollado por:\n\n' +
+            'Adrián Rodríguez Margallo\n' +
+            'Carla Acebes Montalvillo\n'+
+            'Ismael Lucas Parada\n'+
+            'Azazel Cabello Gómez\n',
+            
+            {
+                fontSize: '28px',
+                fill: '#ffffff',
+                align: 'center'
+            }
+        )
+        .setOrigin(0.5)
+        .setAlign('center');
+
+        // Texto para continuar, oculto al principio
+        this.continueText = this.add.text(centerX, 430,
+            'Pulsa cualquier tecla para volver a jugar',
+            {
+                fontSize: '22px',
+                fill: '#ffffff',
+                align: 'center'
+            }
+        )
+        .setOrigin(0.5)
+        .setAlign('center')
+        .setVisible(false);
+
+        // Al principio no se puede pasar
+        this.canSkip = false;
+
+        // Después de 3 segundos, dejamos pasar los créditos
+        this.time.delayedCall(3000, () => {
+            this.canSkip = true;
+            this.continueText.setVisible(true);
+        });
+
+        // Listener de teclado
+        this.input.keyboard.on('keydown', () => {
+            if (!this.canSkip) return;
+
+            this.scene.start('TitleScene');
+        });
+    }
 
 }
