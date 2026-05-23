@@ -86,7 +86,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Asentir sin entender', 'Ir a la academia'],
+                habilidades: ['Asentir sin entender', 'Ir a la Academia'],
                 objeto: ''
             },
             'Jugador4': {
@@ -155,7 +155,22 @@ export default class GameManager {
         };
 
         this.puzzleButtonStates = {};
+        this.persistentFlags = new Set();
 
+    }
+
+    // ── Flags persistentes ─────────────────────────────────────────────────────
+
+    markFlag(flagName) {
+        this.persistentFlags.add(flagName);
+    }
+
+    hasFlag(flagName) {
+        return this.persistentFlags.has(flagName);
+    }
+
+    clearFlag(flagName) {
+        this.persistentFlags.delete(flagName);
     }
 
     // ── Helpers de posición ───────────────────────────────────────────────────

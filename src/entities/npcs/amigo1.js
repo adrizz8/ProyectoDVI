@@ -206,15 +206,15 @@ export default class amigo1 extends NPC {
 
         // --- Diálogo de presentación y reclutamiento de P1 ---
         showDialogue(
-            '¡Oye! ¡La facultad se ha vuelto loca, hay que salir!',
+            '¡Oye! ¡La facultad se ha vuelto loca, hay que encargarse de esto! ¿Qué quieres que te ayude con el conserje?',
             this.player.name || 'Tú',
             () => {
                 showDialogue(
-                    'Chill bro, cómo se nota que eres novato.',
+                    'Está bien, pero tranquilo novato, esto es pan comido para mí, me conozco la facultad y a Lanchares como la palma de mi mano.',
                     this.name || 'Compañero',
                     () => {
                         showDialogue(
-                            'Me llamo Fernando, soy de la rama de Computadores. No esperes que corra, pero si ese bicho quiere tocarte, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. ¿Hacemos grupo?',
+                            'Me llamo Fernando, soy de la rama de Computadores, se la tengo jurada a Lanchares así que estaré encantado de ayudar. Eso sí, no esperes que corra, pero si encontramos algún peligro, tendrá que pasar por encima de mis 120 créditos aprobados en 6 años de carrera. No me juzgues, ¿vale? El lol es muy malo.',
                             this.name || 'Compañero',
                             () => {
                                 // Reclutamiento de P1

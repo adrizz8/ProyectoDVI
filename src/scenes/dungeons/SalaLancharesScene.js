@@ -109,7 +109,7 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 maxMp: getScaledStat(52, 1),
                 expReward: 100,
                 moneyReward: 80,
-                habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la academia']
+                habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la Academia']
             }, null, null, null, 'lanchares_', "salaLanchares");
         } else {
             this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "b", null, 'lanchares_', 'Lanchares');
@@ -152,11 +152,15 @@ export default class SalaLancharesScene extends Phaser.Scene {
 
                 // Encolamos TODOS los diálogos de golpe.
                 this.dialogueManager.showDialogue(
-                    'Increible has conseguido transformar a Lanchares de vuelta!!!',
+                    '¡Increible habéis conseguido transformar a Lanchares de vuelta! La facultad os lo agradece, de verdad, no sabéis el peligro que habéis evitado. Lanchares era un tío duro, pero vosotros habéis estado a la altura, sois unos cracks.',
                     'Carlos'
                 );
                 this.dialogueManager.showDialogue(
-                    'Ya has terminado la carrera, vuelve al bus por el que viniste y disfruta tu libertad',
+                    'Ya has terminado la carrera, vuelve al bus por el que viniste y disfruta tu libertad y oye, antes de irte, ¿te gustaría matricularte en el master de DVI? Sería un detalle por tu parte, en agradecimiento por la ayuda que prestada.',
+                    'Ismael',
+                );
+                this.dialogueManager.showDialogue(
+                    'Es broma, vete a celebrarlo con tus amigos, te lo has ganado.',
                     'Ismael',
                     limpiarProfs
                 );

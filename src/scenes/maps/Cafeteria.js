@@ -32,6 +32,8 @@ export default class Cafeteria extends Phaser.Scene {
         // Vuelta desde el pasillo
         entradas.set('desde_pasillo_izq', { x: 80, y: 160, direccion: 'down' });
         entradas.set('desde_pasillo_der', { x: 1145, y: 160, direccion: 'down' });
+        // Entrada por GameOver: sitúa al jugador cerca de la barra/centro
+        entradas.set('desde_gameover', { x: 600, y: 560, direccion: 'up' });
 
 
         // ── DEBUG KEYBINDS ──────────────────────────────────────────────────
@@ -82,7 +84,8 @@ export default class Cafeteria extends Phaser.Scene {
 
 
 
-        const posi = entradas.get(data.entrada);
+        // Resolver posición de spawn: usar entrada proporcionada o fallback
+        const posi = entradas.get(data.entrada) || entradas.get('desde_gameover') || entradas.get('puerta_izq');
         const spawnX = posi.x;
         const spawnY = posi.y;
         const direccion = posi.direccion;
@@ -317,8 +320,8 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Conserje BOSS en la salida ---
         this.conserj = new conserje(this, this.player, 1125, 140, 'conserje', null, {
             name: 'Conserje',
-            hp: 40,//40
-            maxHp: 40,//40
+            hp: 1,//40
+            maxHp: 1,//40
             damage: 13,
             speed: 8,
             defense: 16,
@@ -328,23 +331,23 @@ export default class Cafeteria extends Phaser.Scene {
             moneyReward: 60,
             habilidades: ['Preguntar a ChatGPT', 'Ir a la Academia'],
             spriteKey: 'conserjebatalla',
-        }, 'OS HE DICHO QUE INICIÉIS SESIÓN EN EL ORDENADOR DEL LABORATORIO', null, null, 'conserje_caf');
+        }, '¿Os atreveis a desafiar mi autoridad? Pues más os vale dar la talla porque sino os pienso sancionar. ¡Esto va por todos los que imprimís tonterías en la impresora del laboratorio!', null, null, 'conserje_caf');
 
         if (this.gm.isJustDefeated('conserje_caf')) {
             // Acabamos de derrotar al conserje boss → escena de victoria
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
 
-            this.showDialogue('¡No me toquéis más las narices ni imprimáis tonterías con las impresoras del labroatorio!', 'Conserje', () => {
+            this.showDialogue('¿Cómo, que hay unos alumnos que no han iniciado sesión en el laboratorio? ¡Voy para allá!', 'Conserje', () => {
                 this.conserj.huir();
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
                     this.showDialogue(
-                        '¡Acceso a la Planta 1 desbloqueado! Pero cuidado: Lanchares ha sellado el aula 1. Necesitaréis la "Llave Maestra de Hardware" y un equipo completo para derrotarle.',
+                        '¡Acceso a la Planta 1 desbloqueado! Pero cuidado: Lanchares ha sellado el aula 1, de ella sale una luz caótica. Tened cuidado si pasáis, necesitaréis la "Llave Maestra de Hardware" y un equipo completo para derrotarle a él y sus estudiantes esbirros.',
                         'Carlos'
                     );
                     this.showDialogue(
-                        'Lanchares se ha blindado con una armadura de placas base y solo deja pasar a los que tengan "espíritu de melé". Si no le vencéis, la planta seguirá bloqueada.',
+                        'Lanchares se ha blindado con una armadura de placas base y cables eléctricos y solo deja pasar a los que tengan "espíritu de melé". Si no le vencéis, la planta seguirá bloqueada y la facultad nunca volverá a la normalidad.',
                         'Ismael', () => {
                             this.player.unfreeze();
                             this._generarNPCsPostVictoria();
@@ -407,7 +410,7 @@ export default class Cafeteria extends Phaser.Scene {
             expReward: 50,
             moneyReward: 50,
             habilidades: ['Entrega Última Hora'],
-        }, 'AHHHHHHHH HAS HECHO PUSH ANTES QUE PULL TE VAS A ENTERAR', null, null, 'npc_loco_caf');
+        }, 'AHHHHHHHH DÉJAME EN PAZ ESTÁIS TODOS LOCOS', null, null, 'npc_loco_caf');
 
         if (this.gm.isJustDefeated('npc_loco_caf')) {
             const posi = this.getPosiPostComb(this.savedPos);

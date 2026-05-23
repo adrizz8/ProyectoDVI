@@ -79,11 +79,32 @@ export default class Pasillo extends Phaser.Scene {
             classType: trigger
         });
 
-        this.physics.add.overlap(this.player, this.entrada_mazmorra, () => {
+        this._entrandoMazmorra = false;
+
+        const entrarMazmorra = () => {
+            if (this._entrandoMazmorra) return;
+            this._entrandoMazmorra = true;
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('entradaMazmorra', { entrada: 'pasillo' });
             });
+        };
+
+        this.physics.add.overlap(this.player, this.entrada_mazmorra, () => {
+            if (this._entrandoMazmorra) return;
+            if (this.gm.ActualPlayers.includes('Jugador2') && !this.gm.hasFlag('fernandoWarnedMazmorra')) {
+                if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;
+                this.showDialogue(
+                    'Bueno, parece que está es la puerta del aula 1. Dentro nos esperan peligrosos estudiantes a las órdenes de Lanchares y posibles trampas aunque podemos salir para recuperarnos y comprar recursos, recuérdalo. ¡Espero que sepas de puertas lógicas, chaval!',
+                    'Fernando',
+                    () => {
+                        this.gm.markFlag('fernandoWarnedMazmorra');
+                        entrarMazmorra();
+                    }
+                );
+            } else {
+                entrarMazmorra();
+            }
         });
 
         // --- NPCs del lore de la Planta 1 ---

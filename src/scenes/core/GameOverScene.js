@@ -62,15 +62,23 @@ export default class GameOverScene extends Phaser.Scene {
             repeat: -1
         });
 
-        // Reiniciar al pulsar cualquier tecla
+        // Curar al equipo y volver a la cafetería al pulsar cualquier tecla o hacer clic
         this.input.keyboard.on('keydown', () => {
-            GameManager.reset();
-            this.scene.start('TitleScene'); 
+            const gm = GameManager.getInstance();
+            gm.healAllTeam();
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_gameover' });
+            });
         });
 
         this.input.on('pointerdown', () => {
-            GameManager.reset();
-            this.scene.start('TitleScene');
+            const gm = GameManager.getInstance();
+            gm.healAllTeam();
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_gameover' });
+            });
         });
     }
 }

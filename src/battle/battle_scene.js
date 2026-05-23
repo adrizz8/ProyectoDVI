@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import Phaser from 'phaser';
 import BattleManager from './battle_manager.js';
 import GameManager from '../core/manager.js';
@@ -122,11 +142,17 @@ export default class BattleScene extends Phaser.Scene {
         // Iniciar combate
         this.battle_manager.startBattle();
 
-        // Seleccionar música según la escena de origen
+
+
+        // Seleccionar música según la escena de origen y el miniboss
         let musicKey = 'music_battle'; // Música por defecto
-        
-        // Si vienes de una escena de mazmorra, usa la música de mazmorra
-        if (this._originScene && this._originScene.includes('Mazmorr')) {
+
+        const enemyName = this._enemiesStats?.[0]?.name?.toLowerCase();
+        const npcId = this.npcid?.toLowerCase();
+
+        if (this._originScene === 'salaMiniBoss' || enemyName?.includes('miniboss') || npcId?.includes('miniboss')) {
+            musicKey = 'music_battle2';
+        } else if (this._originScene && this._originScene.includes('Mazmorr')) {
             musicKey = 'music_battle2';
         }
 

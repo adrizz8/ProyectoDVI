@@ -55,8 +55,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
                 this.time.delayedCall(500, () => {
                     const rewardItem = ITEM_TYPES['compilador_amigable'];
                     gm.addItem(rewardItem, 1);
-                    this.showDialogue("¡Lo hicimos! ¡Derrotamos a este código monstruoso! ¡Incluso Lanchares estaría orgulloso!", "Angela", () => {
-                        this.showDialogue("¡Y miranos! Sobrevivimos juntos. Este compilador amigable es perfecto para celebrarlo. ¡Aunque después tendremos que enfrentar a Lanchares en persona!", "Victor", null);
+                    this.showDialogue("¡Lo hemos conseguido, todo gracias a mi gestión! Aunque bueno, vuestra ayuda también ha sido clave.", "Angela", () => {
+                        this.showDialogue("Sí, gracias chavales, os debo unas cervezas. Pero ahora debemos ir a por Lanchares y acabar con esta locura. Esa puerta debería poder abrirse cuando se activen los circuitos.", "Victor", null);
                     });
                 });
             }
@@ -104,14 +104,15 @@ export default class SalaMiniBossScene extends Phaser.Scene {
                 name: 'Miniboss',
                 hp:65, //getScaledStat(70, 1.5),
                 maxHp:65, //getScaledStat(70, 1.5),
-                damage:16, //getScaledStat(16, 1.5),
+                damage:50, //16 //getScaledStat(16, 1.5),a
+                
                 speed:10, //getScaledStat(16, 1.5),
                 defense:22, //getScaledStat(18, 1.5),
                 mp: 22,//getScaledStat(15, 1),
                 maxMp: 22,//getScaledStat(15, 1),
                 expReward: 80,
                 moneyReward: 70,
-                habilidades: ['Funciona en mi PC', 'Ir a la academia']
+                habilidades: ['Funciona en mi PC', 'Ir a la Academia']
             }, null, null, null, 'miniboss_', "salaMiniBoss");
 
             // Crear NPCs de Angela y Victor para el evento introductorio
@@ -166,11 +167,11 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             this.angela.setFrame(0);
             this.victor.setFrame(0);
             
-            this.showDialogue("Este código es más complicado que los apuntes de Lanchares en octubre...", "Angela", () => {
-                this.showDialogue("¡Y es mucho más agresivo! Recuerda cuando Lanchares se enfadó por el envío mal formateado. ¡Esto es mil veces peor!", "Victor", () => {
-                    this.showDialogue("¿Creían que podrían derrotarme así como así? ¡Soy tan letal como un bug en el deploy a producción!", "Miniboss", () => {
-                        this.showDialogue("¡Este miniboss habla como si fuera profesor de facultad! ¡Primero Lanchares, ahora esto!", "Angela", () => {
-                            this.showDialogue("¡No nos quedan muchas opciones! Necesitamos ayuda URGENTE. ¿Dónde estabas cuando llegaste?", "Victor", () => {
+            this.showDialogue("No podré aguantar mucho más, parece que es más fuerte de lo que pensábamos", "Angela", () => {
+                this.showDialogue("Sí, si no podemos con este lo llevamos claro con Lanchares, necesitamos ayuda urgentemente", "Victor", () => {
+                    this.showDialogue("¿Eso es todo lo que teneis chavales? ¡El balón de rugby es más duro que vosotros ja, ja, ja!", "Miniboss", () => {
+                        this.showDialogue("Oye que yo soy la presidenta del consejo estudiantil, lo mio es el papeleo, ¿vale?", "Angela", () => {
+                            this.showDialogue("Y yo soy metalero así que cuidado con lo que dices bro. No quieras tener problemas con mi banda.", "Victor", () => {
                                 this._addCompañerosAndStartBattle();
                             });
                         });
@@ -221,8 +222,8 @@ export default class SalaMiniBossScene extends Phaser.Scene {
         ensureLevelAtLeast('Jugador4', 3);
 
         // Pedir ayuda al jugador antes de iniciar la batalla
-        this.showDialogue("¡Por favor! ¡Necesitamos que te unas a nosotros! ¡Juntos podemos derrotar esto!", "Angela", () => {
-            this.showDialogue("¡Tienes que entender la gravedad de esto! Es como si Lanchares nos hubiera asignado un proyecto imposible. ¡Pero esta vez de verdad es imposible sin ti!", "Victor", () => {
+        this.showDialogue("¡Más gente! ¡Por favor! ¡Necesitamos que os unais a nosotros! ¡Juntos podemos derrotarle!", "Angela", () => {
+            this.showDialogue("Sí colegas, no nos vendría mal una ayudita, si no vencemos a este, no podremos contra Lanchares. No me gustaría perder contra él, además se la tengo jurada desde que me suspendió FC1 por las prácticas ", "Victor", () => {
                 // El jugador avanza dos pasos hacia el miniboss
                 this.player.setDirection('up');
                 this.tweens.add({

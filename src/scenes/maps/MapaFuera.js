@@ -248,7 +248,7 @@ export default class MapaFuera extends Phaser.Scene {
                     this.player2.setVisible(true);
                     this.player2.unfreeze();
                     this.player2.setDirection('right');
-                    this.dialogueManager.showDialogue("¡No me carga el repositorio, no me cargaaaa!", 'Estudiante con prisa');
+                    this.dialogueManager.showDialogue("¡Apartate yo me voy de aquí, hay dentro la cosa se ha puesto fea!", 'Estudiante con prisa');
 
                 });
                 this.physics.add.overlap(this.mov_abajo, this.player2, () => {
@@ -361,15 +361,15 @@ export default class MapaFuera extends Phaser.Scene {
             'Carlos'
         );
         this.dialogueManager.showDialogue(
-            'Te hemos instalado un módulo de combate en la mochila. Debes limpiar cada planta del servidor central mientras nosotros te guiamos.',
+            'Te hemos instalado un módulo de combate en la mochila. Te diría que eres el elegido y todas esas cosas, pero sinceramente eres el primero que ha pasado, así que supongo que te toca salvar el día, chaval.',
             'Ismael'
         );
         this.dialogueManager.showDialogue(
-            'Hemos visto tu pelea con ese chico, has luchado bien. Por cierto, te vamos a curar para que te recuperes y puedas realizar esta misión tan importante.',
+            'Pero no te preocupes, hemos visto tu pelea con ese chico y tienes madera de héroe. Por cierto, te vamos a curar para que estes a tope y puedas realizar esta misión tan importante.',
             'Carlos'
         );
         this.dialogueManager.showDialogue(
-            '¡Y no olvides el Pincho de Tortilla! Es el combustible del héroe en este motor. ¡Suerte, Beta Tester!',
+            '¡Y no olvides el Pincho de Tortilla! Es el combustible del héroe en esta facultad. ¡Suerte, Chaval!',
             'Ismael',
             limpiarProfs
         );
