@@ -335,7 +335,7 @@ export default class Cafeteria extends Phaser.Scene {
             this.player.freeze();
             this.gm.CompleteNivel('cafeteria');
 
-            this.showDialogue('¡No me toquéis más las narices ni imprimái   s tonterías con las impresoras del labroatorio!', 'Conserje', () => {
+            this.showDialogue('¡No me toquéis más las narices ni imprimáis tonterías con las impresoras del labroatorio!', 'Conserje', () => {
                 this.conserj.huir();
                 // Carlos comenta el logro desde el menú
                 this.time.delayedCall(800, () => {
@@ -364,7 +364,7 @@ export default class Cafeteria extends Phaser.Scene {
             { x: 170, y: 360, texture: 'npc1', frame: 0, message: 'Nos falta uno para un mus, ¿te vienes?.' },
             { x: 100, y: 580, texture: 'npc4', frame: 8, message: 'Bienvenido, esto parece un loquero. Yo mejor me quedo aqui quietita con una cerveza esperando a que se solucione solo, igual que hago con los códigos.' },
             { x: 800, y: 300, texture: 'npc2', frame: 8, message: 'Dicen que si gritas "¡No me compila!" tres veces en el baño, sale Ismael y te corrige los fallos.' },
-            { x: 560, y: 560, texture: 'npc4', frame: 4, message: 'Mírale que conento  en su primer día de carrera, me recuerda a mi cuando la empecé hace ocho años' },
+            { x: 560, y: 560, texture: 'npc4', frame: 4, message: 'Mírale que contento  en su primer día de carrera, me recuerda a mi cuando la empecé hace ocho años' },
             { x: 850, y: 300, texture: 'npc3', frame: 4, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //  { x: 900, y: 240, texture: 'npc4', frame: 8, message: 'Para un día que vengo y la gente se ha vuelto loca.' },
             //{ x: 800, y: 320, texture: 'npc3', frame: 8, message: 'He visto al conserje cargarse a tres estudiantes que intentaron salir corriendo.' },
@@ -403,6 +403,7 @@ export default class Cafeteria extends Phaser.Scene {
             defense: 11,
             mp: 8,
             maxMp: 8,
+            luck: 4,
             expReward: 50,
             moneyReward: 50,
             habilidades: ['Entrega Última Hora'],

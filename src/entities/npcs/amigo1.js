@@ -161,7 +161,8 @@ export default class amigo1 extends NPC {
 
                     this.play(this._getWalkKey(this.lastDirection), true);
                 } else {
-                    // Hemos llegado a este punto del historial, lo quitamos para ir al siguiente
+                    this.x = target.x;
+                    this.y = target.y;
                     this.history.shift();
                 }
             } else {
@@ -246,6 +247,10 @@ export default class amigo1 extends NPC {
             this.body.moves = true;
             this.body.setImmovable(false);
         }
+
+        this.x = this.player.x;
+        this.y = this.player.y;
+        this.history = [];
     }
 
 }  

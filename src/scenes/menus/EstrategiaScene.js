@@ -64,16 +64,18 @@ export default class EstrategiaScene extends Phaser.Scene {
         // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
 
         const gm = GameManager.getInstance();
-        // Usar el identificador real del personaje para posicionarlo en la UI
-        const playerKey = nombre;
+        // Usar el índice en ActualPlayers para determinar el "slot" visual (1 a 4)
+        const index = gm.ActualPlayers.indexOf(nombre);
+        const slots = ['Jugador1', 'Jugador2', 'Jugador3', 'Jugador4'];
+        const slotKey = slots[index] || 'Jugador1';
 
         const coordenadasNombres = {
-            Jugador1: { x: 211, y: 15 },
-            Jugador3: { x: 700, y: 15 },
-            Jugador2: { x: 150, y: 345 },
-            Jugador4: { x: 700, y: 345 }
+            Jugador1: { x: 212.5, y: 15 },
+            Jugador3: { x: 770, y: 15 },
+            Jugador2: { x: 212.5, y: 345 },
+            Jugador4: { x: 770, y: 345 }
         };
-        const posNombre = coordenadasNombres[playerKey] || { x: 170, y: 112 };
+        const posNombre = coordenadasNombres[slotKey] || { x: 212.5, y: 15 };
 
         const displayName = stats.displayName || `${nombre.replace(/Jugador/, 'P').toUpperCase()}`;
         this.add.text(posNombre.x, posNombre.y, displayName, {
@@ -84,7 +86,7 @@ export default class EstrategiaScene extends Phaser.Scene {
             stroke: '#000000',
             strokeThickness: 5,
             shadow: { offsetX: 2, offsetY: 2, color: '#000000', blur: 3, stroke: true, fill: true }
-        });
+        }).setOrigin(0.5, 0);
 
         // Nivel y experiencia restante
         const xpRestante = Math.max(0, stats.expNext - stats.exp);
@@ -98,7 +100,7 @@ export default class EstrategiaScene extends Phaser.Scene {
             Jugador4: { x: 675, y: 558 }
         };
 
-        const baseBar = coordenadasBarra[playerKey] || { x: 117.50, y: 227 };
+        const baseBar = coordenadasBarra[slotKey] || { x: 117.50, y: 227 };
         const barraX = baseBar.x;
         const barraY = baseBar.y;
         const barraWidth = 190;
@@ -144,7 +146,7 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 };
 
-const pos = coordenadasStats[playerKey] || coordenadasStats['Jugador1'];
+const pos = coordenadasStats[slotKey] || coordenadasStats['Jugador1'];
 
 const coordenadasNivel = {
     Jugador1: {
@@ -165,7 +167,7 @@ const coordenadasNivel = {
     }
 };
 
-const posNivel = coordenadasNivel[playerKey] || coordenadasNivel['Jugador1'];
+const posNivel = coordenadasNivel[slotKey] || coordenadasNivel['Jugador1'];
 
 const estiloNivel = {
     fontSize: '16px',
@@ -218,7 +220,7 @@ this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
             equipamiento: { x: 100, y: 225 }
         };
 
-        const configBotones = coordenadasBotones[playerKey] || defaultBotones;
+        const configBotones = coordenadasBotones[slotKey] || defaultBotones;
         const posHabilidades = configBotones.habilidades || defaultBotones.habilidades;
         const posEquipamiento = configBotones.equipamiento || defaultBotones.equipamiento;
 

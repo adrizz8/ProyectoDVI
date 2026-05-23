@@ -86,7 +86,7 @@ export default class GameManager {
                 level: 1,
                 exp: 0,
                 expNext: 100,
-                habilidades: ['Asentir sin entender', 'Correo Vacío', 'Código Fácil'],
+                habilidades: ['Asentir sin entender', 'Ir a la academia'],
                 objeto: ''
             },
             'Jugador4': {

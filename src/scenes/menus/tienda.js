@@ -48,7 +48,7 @@ export default class TiendaUI {
             { id: 'tinto_verano', precio: 200 },
             { id: 'palmera_chocolate', precio: 200 },
             { id: 'cerveza', precio: 280 },
-            { id: 'menu_dia', precio: 800 }
+            { id: 'menu_dia', precio: 600 }
         ];
 
         let startY = 115;

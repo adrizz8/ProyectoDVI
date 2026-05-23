@@ -1,57 +1,76 @@
-# Plantilla para juegos en Phaser
+# 📄 Informe de Contribución: [Nombre del Videojuego]
 
-## Instalación
+**Fecha del informe:** 23 de Mayo, 2026
+**Estado del proyecto:** Finalizado
 
-El repositorio está publicado como plantilla, de forma que se puede crear un nuevo proyecto propio en GitHub simplemente pulsando el botón `Use this template` (arriba a la derecha). Después, solo hay que clonar el repositorio propio y trabajar sobre él.
+---
 
-## Clonar
+## 👥 Desglose por Miembros
 
-También se puede clonar el repositorio:
+### 👤 @ismaluca
+* **Nombre:** Ismael Lucas Parada
+* **Rol:** Programador Gameplay y Organizador del proyecto
+* **Tareas Realizadas:**
+    * Implementación del sistema de movimiento del jugador.
+    * Creador del módulo completo de batalla, estadísticas, animaciones, menús y lógica de batalla.
+    * Creador del sistema de encuentros aleatorios.
+    * Creación de los objetos y sus usos tanto en batalla como fuera.
+    * Creador de la tienda y cálculo de precios.
+    * Creador inicial del dialogue manager y del manager con su gestión de evolución de los personajes.
+    * Creador inicial de las clases base de npc y npc_battle.
+    * Implementación de las interacciones del jugador con otros entes.
+    * Implementación de la mejora en los controles del juego.
+    * Creador de los puzles, tanto la parte lógica como la parte visual en el juego.
+    * Creador del trailer del juego.
+    * Arreglo de errores varios en diferentes apartados del juego.
 
-```
-git clone https://github.com/cleongh/plantillaphaser
-```
+* **Valoración General:**
+    Su trabajo ha sido fundamental para el "core loop" del juego. El código es limpio y modular. Asumió el liderazgo técnico resolviendo los problemas de fusión en Git.
+* **Puntuación:** ⭐⭐⭐⭐⭐ (5/5)
 
-Podemos modificar el archivo `package.json` para configurar nuestro proyecto (nombre, autor...)
+---
 
-Para iniciar el proyecto (sólo 1 vez) instalamos las dependencias automáticamente (`vite`, `phaser`):
+### 👤 @pixel_art_luna
+* **Rol:** Artista 2D / UI
+* **Tareas Realizadas:**
+    * Diseño y animación del personaje principal (Idle, Run, Jump, Attack).
+    * Creación del *tileset* para el nivel 1 (bosque) y nivel 2 (cueva).
+    * Diseño de la interfaz de usuario (HUD): barra de vida y contador de monedas.
+    * Diseño del logotipo del juego y pantalla de título.
+* **Valoración General:**
+    La calidad visual es excelente y coherente. Entregó todos los *assets* a tiempo y correctamente exportados para Unity/Godot. Mostró gran iniciativa proponiendo mejoras visuales en la UI.
+* **Puntuación:** ⭐⭐⭐⭐⭐ (5/5)
 
-```
-npm install
-```
+---
 
-## Uso
+### 👤 @audio_dave
+* **Rol:** Diseño de Sonido / Level Design
+* **Tareas Realizadas:**
+    * Composición del tema principal y música de batalla.
+    * Creación de efectos de sonido (SFX) para salto, golpe y recolección de items.
+    * Diseño del layout del Nivel 1.
+* **Valoración General:**
+    El audio encaja muy bien con la estética. Sin embargo, hubo un retraso en la entrega del diseño del Nivel 1, lo que obligó a los programadores a usar prototipos grises (placeholders) durante más tiempo del previsto.
+* **Puntuación:** ⭐⭐⭐⭐☆ (4/5)
 
-Cada vez que queramos usarlo, tenemos que arrancar el servidor de desarrollo que monitorizará los cambios, procesará el contenido y cambiará la página. Usa [Vite](https://es.vitejs.dev/).
+---
 
-Para arrancar el servidor de desarrollo:
+### 👤 @lazy_coder_x
+* **Rol:** Programador de UI / Soporte
+* **Tareas Realizadas:**
+    * Programación de la funcionalidad de los botones del Menú Principal.
+    * Ajustes menores en los créditos del juego.
+* **Valoración General:**
+    Su contribución fue baja en comparación con el resto del equipo. Faltó a varias reuniones de *daily scrum* y la funcionalidad del menú tuvo que ser refactorizada por @dev_master_99 debido a errores de lógica.
+* **Puntuación:** ⭐⭐☆☆☆ (2/5)
 
-```
-npm start
-```
+---
 
-Con esto, solo tenemos que programar y guardar los archivos, Vite se encargará del resto.
+## 📊 Resumen de Puntuaciones
 
-## Distribución
-
-El repositorio tiene una acción de GitHub (*GitHub Action*) que genera una versión de *release* y la publica en GitHub Pages. De este modo, cada vez que se hace `push`, se construye y publica en la página pública.
-
-Se publica el contenido de la rama *main*.
-
-Si no se está usando GitHub, o se quiere publicar a mano, podemos crear una *build* de *release*. Vite optimizará los archivos y, con la configuración que hay en `package.json`, generará en la carpeta `docs/` una versión "pública" de nuestro proyecto.
-
-```sh
-npm run build
-```
-
-<!-- ### En GitHub -->
-
-<!-- Está todo configurado para que se active "GitHub Pages", y se use, en la rama principal (se suele llamar `main`), la carpeta `docs/`. Simplemente hay que activarlo en "Settings" → "Pages" → "Build and deployment". -->
-
-## VSCode
-
-En la carpeta `.vscode/` hay una configuración para usar Visual Studio Code, tanto para construir el *release* (`npm run build`) como para ejecutar y depurar. Simplemente hay que ejecutar "Run" → "Start debugging..." (or presionar `F5`).
-
-## TypeScript
-
-TypeScript está automáticamente habilitado (gracias a Vite). Para usarlo, simplemente hay que crear archivos con extensión `.ts`.
+| Usuario (GitHub)    | Rol             | Puntuación | Puntuación como número |
+|:--------------------|:----------------|:----------:|:----------------------:|
+| **@dev_master_99**  | Programación    |   ⭐⭐⭐⭐⭐ |           5            |
+| **@pixel_art_luna** | Arte / UI       |   ⭐⭐⭐⭐⭐ |           5            |
+| **@audio_dave**     | Audio / Diseño  |   ⭐⭐⭐⭐☆ |           4            |
+| **@lazy_coder_x**   | Programación UI |   ⭐⭐☆☆☆  |           2            |

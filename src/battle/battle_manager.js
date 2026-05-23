@@ -643,7 +643,9 @@ export default class BattleManager {
     getEnemies() { return this.enemies; }
 
     _isPlayer1Dead() {
-        const p1 = this.players.find(p => p.name === 'Jugador1');
+        const gm = GameManager.getInstance();
+        const mainPlayerName = gm.ActualPlayers[0];
+        const p1 = this.players.find(p => p.name === mainPlayerName);
         return p1 ? p1.isDead : false;
     }
 }

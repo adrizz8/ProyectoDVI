@@ -18,19 +18,20 @@ export default class IntroScene extends Phaser.Scene {
         const nameInput = this.add.dom(400, 195, 'input', { type: 'text', fontSize: '40px', padding: '10px', width: '250px', fontFamily: 'Distant Galaxy', backgroundColor: 'transparent', color: '#ffffff', border: '2px solid #ffffff', outline: 'none' });
         const nameInputOriginalX = nameInput.x;
         const personalidadSelect = this.add.dom(405, 280, 'select', 
-            {     fontSize: '40px',
-    padding: '10px',
-    width: '255px',
-    fontFamily: 'Distant Galaxy',   // tu fuente personalizada
-    backgroundColor: 'transparent',
-    color: '#ffffff',               // color del texto
-    border: '2px solid #ffffff',    // opcional, para que se vea el borde
-    outline: 'none',
-    cursor: 'pointer',
-    appearance: 'none',             // quita el estilo nativo del navegador
-    WebkitAppearance: 'none',  
-    fontweight: 'bold',
-});
+            {     
+                fontSize: '40px',
+                padding: '10px',
+                width: '255px',
+                fontFamily: 'Distant Galaxy',   // tu fuente personalizada
+                backgroundColor: 'transparent',
+                color: '#ffffff',               // color del texto
+                border: '2px solid #ffffff',    // opcional, para que se vea el borde
+                outline: 'none',
+                cursor: 'pointer',
+                appearance: 'none',             // quita el estilo nativo del navegador
+                WebkitAppearance: 'none',  
+                fontweight: 'bold',
+            });
         const option1 = document.createElement('option');
         option1.value = 'informatica';
         option1.text = 'Informática';
@@ -60,15 +61,15 @@ export default class IntroScene extends Phaser.Scene {
         playButton.setInteractive();
 
         playButton.on('pointerover', () => {
-    this.tweens.add({
-        targets: playButton,
-        scaleX: 1.15,
-        scaleY: 1.15,
-        duration: 150,
-        ease: 'Power2'
-    });
-    playButton.setStyle({ fill: '#FFD700' });
-});
+                this.tweens.add({
+                targets: playButton,
+                scaleX: 1.15,
+                scaleY: 1.15,
+                duration: 150,
+                ease: 'Power2'
+            });
+            playButton.setStyle({ fill: '#FFD700' });
+        });
 
 playButton.on('pointerout', () => {
     this.tweens.add({
