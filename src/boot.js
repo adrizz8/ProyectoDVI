@@ -97,6 +97,7 @@ import finalFaculty from '../assets/images/FINAL FACULTY.png'
 import botonPrincipio from '../assets/images/boton principio.png'
 import configuracion from '../assets/images/configuracion.png'
 import tilesCafeteria from '../assets/images/tilesetinteriordvifinal.png'
+import diploma from '../assets/images/diploma.png'
 
 
 /**
@@ -223,6 +224,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('finalFaculty', finalFaculty);
     this.load.image('botonPrincipio', botonPrincipio);
 
+    this.load.image('diploma',diploma);
 
   }
 
@@ -239,7 +241,7 @@ export default class Boot extends Phaser.Scene {
       this.registry.set('horasJuego', 0);
     }
 
-    this.scene.start('pasillo');
+    this.scene.start('TitleScene');
 
 
   }

@@ -21,6 +21,7 @@ export default class Pasillo extends Phaser.Scene {
     create(data = {}) {
         const map = this.make.tilemap({ key: 'pasillo' });
 
+
         // Puntos de entrada al pasillo
         var entradas = new Map();
         // Desde la puerta derecha de la cafetería: aparece en el lado izquierdo del pasillo
@@ -79,6 +80,18 @@ export default class Pasillo extends Phaser.Scene {
             classType: trigger
         });
 
+        this.salida_der = map.createFromObjects('triggers', {
+            name: 'salida_der',
+            classType: trigger
+        });
+
+        this.salida_izq = map.createFromObjects('triggers', {
+            name: 'salida_izq',
+            classType: trigger
+        });
+
+        this._transitioning = false;
+
         this._entrandoMazmorra = false;
 
         const entrarMazmorra = () => {
@@ -107,6 +120,38 @@ export default class Pasillo extends Phaser.Scene {
             }
         });
 
+        this.physics.add.overlap(this.player, this.salida_der, () => {
+
+            if (this._transitioning) return;
+
+                this._transitioning = true;
+
+            if (this.player && this.player.freeze) {
+                this.player.freeze();
+            }
+
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_pasillo_der' });
+            });
+        });
+
+        this.physics.add.overlap(this.player, this.salida_izq, () => {
+
+            if (this._transitioning) return;
+
+                this._transitioning = true;
+
+            if (this.player && this.player.freeze) {
+                this.player.freeze();
+            }
+
+            this.cameras.main.fadeOut(300, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
+            });
+        });
+
         // --- NPCs del lore de la Planta 1 ---
         this._spawnNPCsPlanta1();
 
@@ -124,29 +169,7 @@ export default class Pasillo extends Phaser.Scene {
             this.physics.add.collider(this.victor, this.colisiones);
         }
 
-        // --- NPC que cura ---
-        //this._spawnHealer(30, 300);
-
-        // Zona de salida izquierda: volver a la cafetería (por la puerta der de cafetería)
-        const salidaCafeteriaDer = this.add.zone(16, map.heightInPixels / 2, 32, map.heightInPixels);
-        this.physics.world.enable(salidaCafeteriaDer, Phaser.Physics.Arcade.STATIC_BODY);
-        this.physics.add.overlap(this.player, salidaCafeteriaDer, () => {
-            this.cameras.main.fadeOut(300, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('cafeteria', { entrada: 'desde_pasillo_izq' });
-            });
-        });
-
-        // Zona de salida derecha: volver a la cafetería (por la puerta izq de cafetería)
-        const salidaCafeteriaIzq = this.add.zone(map.widthInPixels - 16, map.heightInPixels / 2, 32, map.heightInPixels);
-        this.physics.world.enable(salidaCafeteriaIzq, Phaser.Physics.Arcade.STATIC_BODY);
-        this.physics.add.overlap(this.player, salidaCafeteriaIzq, () => {
-            this.cameras.main.fadeOut(300, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('cafeteria', { entrada: 'desde_pasillo_der' });
-            });
-        });
-
+        
         // ── Abrir menú con ESPACIO o CLICK DERECHO ─────────────────────────────
         const launchMenu = () => {
             if (this.dialogueManager && this.dialogueManager.dialogueBox.visible) return;

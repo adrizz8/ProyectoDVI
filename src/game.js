@@ -18,6 +18,7 @@ import P1RightMazmorra from './scenes/dungeons/P1RightMazmorraScene.js';
 import P1LeftMazmorra from './scenes/dungeons/P1LeftMazmorraScene.js';
 import SalaLanchares from './scenes/dungeons/SalaLancharesScene.js';
 import SalaMiniBoss from './scenes/dungeons/SalaMiniBossScene.js';
+import DiplomaScene from './scenes/core/DiplomaScene.js';
 
 import TiendaScene from './scenes/menus/tienda.js';
 import GameOverScene from './scenes/core/GameOverScene.js';
@@ -44,7 +45,7 @@ let config = {
     },
     pixelArt: true,
 
-    scene: [Boot, TitleScene, Prematricula, IntroScene, level3, MenuPrincipal, EstrategiaScene, MochilaScene, Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss, GameOverScene],
+    scene: [Boot, TitleScene, Prematricula, IntroScene, level3, MenuPrincipal, EstrategiaScene, MochilaScene, Configuracion, End, BattleScene, MapaFuera, Cafeteria, Pasillo, EntradaMazmorra, P1RightMazmorra, P1LeftMazmorra, SalaLanchares, SalaMiniBoss, GameOverScene,DiplomaScene],
 
     physics: {
         default: 'arcade',

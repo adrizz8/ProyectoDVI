@@ -16,7 +16,7 @@
                  "visible":true,
                  "width":43.3082706766918,
                  "x":603.199665831245,
-                 "y":222.406015037594
+                 "y":225.406015037594
                 }, 
                 {
                  "height":0,
@@ -24,10 +24,32 @@
                  "name":"",
                  "rotation":0,
                  "type":"",
-                 "visible":true,
+                 "visible":false,
                  "width":0,
                  "x":944,
                  "y":280
+                }, 
+                {
+                 "height":219,
+                 "id":22,
+                 "name":"salida_izq",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5,
+                 "x":24,
+                 "y":239
+                }, 
+                {
+                 "height":231,
+                 "id":23,
+                 "name":"salida_der",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":6,
+                 "x":1194,
+                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -222,7 +244,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":22,
+ "nextobjectid":24,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

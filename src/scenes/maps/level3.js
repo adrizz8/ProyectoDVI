@@ -57,6 +57,30 @@ export default class Level3 extends Phaser.Scene {
 
         this.dialogueManager = new DialogueManager(this);
 
+
+        if (gm.ActualPlayers.includes('Jugador2')) {
+            this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
+            this.physics.add.collider(this.amigo1, colisiones);
+            this.physics.add.collider(this.amigo1, paredes);
+            this.physics.add.collider(this.amigo1, ordenador);
+            this.physics.add.collider(this.amigo1, limites);
+        }
+        if (gm.ActualPlayers.includes('Jugador3')) {
+            this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
+            this.physics.add.collider(this.angela, colisiones);
+            this.physics.add.collider(this.angela, paredes);
+            this.physics.add.collider(this.angela, ordenador);
+            this.physics.add.collider(this.angela, limites);
+        }
+        if (gm.ActualPlayers.includes('Jugador4')) {
+            this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
+            this.physics.add.collider(this.victor, colisiones);
+            this.physics.add.collider(this.victor, paredes);
+            this.physics.add.collider(this.victor, ordenador);
+            this.physics.add.collider(this.victor, limites);
+        }
+
+
         if (!gm.estadoNivel('level3')) {
 
             this.player.setVisible(false);
@@ -89,6 +113,9 @@ export default class Level3 extends Phaser.Scene {
                     this.dialogueManager.showDialogue('Suele pasar','Estudiante');
                 },null,'Estudiante');
             }
+
+            
+
         }
 
 

@@ -110,9 +110,9 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 expReward: 100,
                 moneyReward: 80,
                 habilidades: ['Entrega Última Hora', '¡A pelar cables!', 'Ir a la Academia']
-            }, null, null, null, 'lanchares_', "salaLanchares");
+            }, '¡Silencio en clase! ¡Ahora el examen se corrige con fuego, gritos y destrucción!', null,null, 'lanchares_', "salaLanchares");
         } else {
-            this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "b", null, 'lanchares_', 'Lanchares');
+            this.lanchares = new npc(this, this.player, 650, 150, 'lanchares', 0, "No entiendo qué ha pasado... Lo último que recuerdo es estar preparando la clase.", null, 'lanchares_', 'Lanchares');
         }
         // Si P1 ya está en el grupo, lo spawneamos para que nos siga
         if (gm.ActualPlayers.includes('Jugador2')) {
@@ -143,10 +143,12 @@ export default class SalaLancharesScene extends Phaser.Scene {
                 const ismaelSprite = this.add.sprite(this.player.x + 80, this.player.y, 'ismael', 4).setDepth(50);
                 const carlosSprite = this.add.sprite(this.player.x - 100, this.player.y, 'carlos', 8).setDepth(50);
 
-                 const limpiarProfs = () => {
-                    carlosSprite.destroy();
-                    ismaelSprite.destroy();
-                    this.player.unfreeze();
+                const diploma = () => {
+
+                    gm.addItem({ id: 'diploma', name: 'Diploma', type: 'key', description: '' }, 1);
+
+                    GameManager.getInstance().setPlayerPosition(this.player.x, this.player.y, this.player.lastDirection);
+                    this.scene.start('DiplomaScene');
 
                 };
 
@@ -160,9 +162,9 @@ export default class SalaLancharesScene extends Phaser.Scene {
                     'Ismael',
                 );
                 this.dialogueManager.showDialogue(
-                    'Es broma, vete a celebrarlo con tus amigos, te lo has ganado.',
+                    'Es broma, vete a celebrarlo con tus amigos, toma tu diploma, te lo has ganado.',
                     'Ismael',
-                    limpiarProfs
+                    diploma
                 );
                 //this.scene.start('end');
             });

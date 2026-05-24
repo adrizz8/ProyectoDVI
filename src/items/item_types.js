@@ -107,5 +107,10 @@ export const ITEM_TYPES = {
         type: 'consumable',
         recMp: 6,
         description: 'Apuntes ilegibles. Restauran 8 Energía por el esfuerzo.'
+    },
+    'diploma': {
+        id: 'diploma',
+        name: 'Diploma',
+        type: 'key'
     }
 };
