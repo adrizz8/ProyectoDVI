@@ -1,5 +1,8 @@
 # 📄 Informe de Contribución: [Nombre del Videojuego]
 
+Video sobre el juego:
+https://youtu.be/ze-tAS-A3TM
+
 **Fecha del informe:** 23 de Mayo, 2026
 **Estado del proyecto:** Finalizado
 
@@ -61,4 +64,22 @@
     * **Pantalla de Derrota (Game Over):** Creación e implementación completa de la pantalla de muerte/derrota que se muestra cuando el jugador pierde.
 
 ---
+### 👤 @azacabel
+* **Nombre:** Azazel Cabello Gómez
+* **Rol:** Programador Gameplay
+* **Tareas Realizadas:**
+    * Programacion de parte de la clase sobre los dialogos
+    * Creacion de parte de los triggers que comunican las pantallas
+    * Diseño del PixelArt del Bus y logica del bus junto a sus sonidos
+    * Implementacion de logica del primer enfrentamiento
+    * Programacion del tutorial
+    * Programacion de la logica del menu de configuracion, a expeccion de la pantalla completa
+    * Mejora de la mochila para que sea mas intuitiva
+    * Colocacion de NPCs en cafeteria pasillo y el mapa de Fuera
+    * Implementacion de las bombillas del jefe final
+    * Crear la escena del diploma (El dibujo del diploma no lo he hecho yo)
+    * Parte de la escena de creditos
+    * Arreglos varios durante el curso
 
+
+    
