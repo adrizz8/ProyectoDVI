@@ -218,7 +218,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('finalFaculty', finalFaculty);
     this.load.image('botonPrincipio', botonPrincipio);
 
-    this.load.image('diploma',diploma);
+    this.load.image('diploma', diploma);
 
   }
 

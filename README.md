@@ -24,9 +24,6 @@
     * Creador del trailer del juego.
     * Arreglo de errores varios en diferentes apartados del juego.
 
-* **Valoración General:**
-    Su trabajo ha sido fundamental para el "core loop" del juego. El código es limpio y modular. Asumió el liderazgo técnico resolviendo los problemas de fusión en Git.
-* **Puntuación:** ⭐⭐⭐⭐⭐ (5/5)
 
 ---
 
@@ -46,40 +43,22 @@
     * Gestión del repositorio
     * Creación de pantalla de inicio de matrícula y diploma final del juego
     * Elección de algunos temas musicales y acreditación de recursos públicos
-* **Valoración General:**
-    La calidad visual es buena y coherente. Entregó todos los *assets* a tiempo y correctamente exportados para Phaser. Mostró gran iniciativa proponiendo mejoras visuales en la UI de los menús y su implementación.
-* **Puntuación:** ⭐⭐⭐⭐☆ (4/5)
 
 ---
 
-### 👤 @audio_dave
-* **Rol:** Diseño de Sonido / Level Design
+### 👤 @cacmt4
+* **Nombre:** Carla Acebes Montalvillo
+* **Rol:** Diseñadora de Historia y Narrativa / Artista 2D (Assets) / Programadora
 * **Tareas Realizadas:**
-    * Composición del tema principal y música de batalla.
-    * Creación de efectos de sonido (SFX) para salto, golpe y recolección de items.
-    * Diseño del layout del Nivel 1.
-* **Valoración General:**
-    El audio encaja muy bien con la estética. Sin embargo, hubo un retraso en la entrega del diseño del Nivel 1, lo que obligó a los programadores a usar prototipos grises (placeholders) durante más tiempo del previsto.
-* **Puntuación:** ⭐⭐⭐⭐☆ (4/5)
+    * **Diseño Inicial de Mapas:** Conceptualización y trazado de los primeros mapas del juego, correspondientes a la zona exterior de la facultad, la cafetería y el pasillo (posteriormente adaptados, remapeados y optimizados por @adrizz8).
+    * **Ilustración de Assets Exclusivos:** Diseño y pintado a mano de objetos y consumibles personalizados que no se encontraban disponibles en los tilesets estándar (tales como botellines de cerveza, jarras de calimocho, cigarros sueltos y cajetillas de tabaco), integrándolos con éxito en el apartado visual del juego.
+    * **Desarrollo Web y Pantalla de Título:** Maquetación e implementación del código HTML para el sitio web del proyecto y desarrollo de la pantalla de inicio dentro del juego (con las opciones interactivas de "Jugar" y "Configuración").
+    * **Lógica Completa de la Cafetería:** Programación de la lógica integral del nivel de la cafetería, bloqueando la salida para obligar al jugador a explorar las interacciones disponibles antes de poder avanzar.
+    * **Mecánica de Compañeros e Interacción:** Desarrollo del sistema de interacción con el compañero ("j1" o primer amigo), programando el proceso para entablar amistad, la batalla obligatoria contra el conserje y el comportamiento dinámico por el cual este personaje pasa a seguir al protagonista.
+    * **Progresión Dinámica del Mundo y NPCs:** Programación de la evolución de la historia y del entorno tras vencer al conserje (desbloqueo del acceso al pasillo, aparición de nuevos NPCs interactivos en el exterior de la facultad y actualización dinámica de los diálogos de los personajes de la cafetería y el pasillo).
+    * **Hilo Narrativo del Videojuego:** Implementación completa del hilo conductor de la historia principal, incluyendo la aparición estructurada de los profesores para explicar el funcionamiento del juego.
+    * **Efectos de Transición a Batalla:** Diseño y programación de los efectos visuales y transiciones al iniciar un combate.
+    * **Pantalla de Derrota (Game Over):** Creación e implementación completa de la pantalla de muerte/derrota que se muestra cuando el jugador pierde.
 
 ---
 
-### 👤 @lazy_coder_x
-* **Rol:** Programador de UI / Soporte
-* **Tareas Realizadas:**
-    * Programación de la funcionalidad de los botones del Menú Principal.
-    * Ajustes menores en los créditos del juego.
-* **Valoración General:**
-    Su contribución fue baja en comparación con el resto del equipo. Faltó a varias reuniones de *daily scrum* y la funcionalidad del menú tuvo que ser refactorizada por @dev_master_99 debido a errores de lógica.
-* **Puntuación:** ⭐⭐☆☆☆ (2/5)
-
----
-
-## 📊 Resumen de Puntuaciones
-
-| Usuario (GitHub)    | Rol             | Puntuación | Puntuación como número |
-|:--------------------|:----------------|:----------:|:----------------------:|
-| **@dev_master_99**  | Programación    |   ⭐⭐⭐⭐⭐ |           5            |
-| **@adrizz8** | Arte / UI / Programación       |   ⭐⭐⭐⭐☆ |           4            |
-| **@audio_dave**     | Audio / Diseño  |   ⭐⭐⭐⭐☆ |           4            |
-| **@lazy_coder_x**   | Programación UI |   ⭐⭐☆☆☆  |           2            |

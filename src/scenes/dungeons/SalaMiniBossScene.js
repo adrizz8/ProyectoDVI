@@ -102,12 +102,12 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             this.miniboss = new npcBattle(this, this.player, 625, 250, 'miniboss', 0, {
                 spriteKey: 'minibossbatalla',
                 name: 'Miniboss',
-                hp:65, //getScaledStat(70, 1.5),
-                maxHp:65, //getScaledStat(70, 1.5),
-                damage:50, //16 //getScaledStat(16, 1.5),a
-                
-                speed:10, //getScaledStat(16, 1.5),
-                defense:22, //getScaledStat(18, 1.5),
+                hp: 65, //getScaledStat(70, 1.5),
+                maxHp: 65, //getScaledStat(70, 1.5),
+                damage: 16, //16 //getScaledStat(16, 1.5),
+
+                speed: 10, //getScaledStat(16, 1.5),
+                defense: 24, //getScaledStat(18, 1.5),
                 mp: 22,//getScaledStat(15, 1),
                 maxMp: 22,//getScaledStat(15, 1),
                 expReward: 80,
@@ -166,7 +166,7 @@ export default class SalaMiniBossScene extends Phaser.Scene {
             // Girar hacia el jugador (frame 0 = down)
             this.angela.setFrame(0);
             this.victor.setFrame(0);
-            
+
             this.showDialogue("No podré aguantar mucho más, parece que es más fuerte de lo que pensábamos", "Angela", () => {
                 this.showDialogue("Sí, si no podemos con este lo llevamos claro con Lanchares, necesitamos ayuda urgentemente", "Victor", () => {
                     this.showDialogue("¿Eso es todo lo que teneis chavales? ¡El balón de rugby es más duro que vosotros ja, ja, ja!", "Miniboss", () => {

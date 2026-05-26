@@ -7,6 +7,7 @@ import Bus from '../../objects/bus.js'
 import trigger from '../../objects/trigger.js'
 import npc from '../../entities/npcs/npc.js';
 import NPC_en_camino from '../../entities/npcs/NPC_en_camino.js';
+import amigo1 from '../../entities/npcs/amigo1.js';
 
 
 /**
@@ -60,24 +61,18 @@ export default class Level3 extends Phaser.Scene {
 
         if (gm.ActualPlayers.includes('Jugador2')) {
             this.amigo1 = new amigo1(this, this.player, this.player.x - 30, this.player.y, 'amigo1', 0, null, null, null, 'P1');
-            this.physics.add.collider(this.amigo1, colisiones);
-            this.physics.add.collider(this.amigo1, paredes);
-            this.physics.add.collider(this.amigo1, ordenador);
-            this.physics.add.collider(this.amigo1, limites);
+            this.physics.add.collider(this.amigo1, groundLayer);
+            this.physics.add.collider(this.amigo1, objectsLayer);
         }
         if (gm.ActualPlayers.includes('Jugador3')) {
             this.angela = new amigo1(this, this.player, this.player.x - 60, this.player.y, 'angelaow', 12, null, null, null, 'Angela', 'Jugador3', 'angelaow');
-            this.physics.add.collider(this.angela, colisiones);
-            this.physics.add.collider(this.angela, paredes);
-            this.physics.add.collider(this.angela, ordenador);
-            this.physics.add.collider(this.angela, limites);
+            this.physics.add.collider(this.angela, groundLayer);
+            this.physics.add.collider(this.angela, objectsLayer);
         }
         if (gm.ActualPlayers.includes('Jugador4')) {
             this.victor = new amigo1(this, this.player, this.player.x + 30, this.player.y, 'victorow', 12, null, null, null, 'Victor', 'Jugador4', 'victorow');
-            this.physics.add.collider(this.victor, colisiones);
-            this.physics.add.collider(this.victor, paredes);
-            this.physics.add.collider(this.victor, ordenador);
-            this.physics.add.collider(this.victor, limites);
+            this.physics.add.collider(this.victor, groundLayer);
+            this.physics.add.collider(this.victor, objectsLayer);
         }
 
 
@@ -105,16 +100,16 @@ export default class Level3 extends Phaser.Scene {
         } else {
             this.player.setPosition(map.widthInPixels / 2 - 10, 30);
 
-            if(!gm.estadoNivel('cafeteria')){
-                new npc(this,this.player,400,512,'npc1',0,'El siguiente viene en 20 minutos, me cago en todo',()=>{
+            if (!gm.estadoNivel('cafeteria')) {
+                new npc(this, this.player, 400, 512, 'npc1', 0, 'El siguiente viene en 20 minutos, me cago en todo', () => {
 
-                    this.dialogueManager.showDialogue('¿Te sabes el chiste del autobus?','Estudiante');
-                    this.dialogueManager.showDialogue('¿No?','Estudiante');
-                    this.dialogueManager.showDialogue('Suele pasar','Estudiante');
-                },null,'Estudiante');
+                    this.dialogueManager.showDialogue('¿Te sabes el chiste del autobus?', 'Estudiante');
+                    this.dialogueManager.showDialogue('¿No?', 'Estudiante');
+                    this.dialogueManager.showDialogue('Suele pasar', 'Estudiante');
+                }, null, 'Estudiante');
             }
 
-            
+
 
         }
 
@@ -150,8 +145,8 @@ export default class Level3 extends Phaser.Scene {
         this.events.on('shutdown', () => { if (this.music) this.music.stop(); });
 
 
-        if(gm.estadoNivel('salaLanchares')){
-            const regreso= map.createFromObjects('triggers', {
+        if (gm.estadoNivel('salaLanchares')) {
+            const regreso = map.createFromObjects('triggers', {
                 name: 'regreso',
                 classType: trigger
             });
@@ -188,7 +183,7 @@ export default class Level3 extends Phaser.Scene {
         this.carre_join.stop();
 
         const gm = GameManager.getInstance();
-        if(gm.estadoNivel('salaLanchares')){
+        if (gm.estadoNivel('salaLanchares')) {
             this.cameras.main.fadeOut(300, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('end');
@@ -243,7 +238,7 @@ export default class Level3 extends Phaser.Scene {
         }
     }
 
-    chiste(){
+    chiste() {
 
     }
 

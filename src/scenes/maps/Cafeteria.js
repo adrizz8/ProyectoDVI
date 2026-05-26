@@ -10,6 +10,7 @@ import GameManager from '../../core/manager.js';
 import amigo1 from '../../entities/npcs/amigo1.js';
 import conserje from '../../entities/npcs/conserje.js'
 import TiendaUI from '../menus/tienda.js';
+import { ITEM_TYPES } from '../../items/item_types.js';
 
 /**
  * Escena de la Cafetería.
@@ -516,7 +517,7 @@ export default class Cafeteria extends Phaser.Scene {
 
             this.showDialogue(msg, 'Andrés (Barra)', () => {
                 if (!this.gm.isDefeated('andres_dio_pincho')) {
-                    this.gm.addItem({ id: 'pincho_tortilla', name: 'Pincho de Tortilla', type: 'consumable', heal: 50, description: 'Recupera 50 HP.' }, 1);
+                    this.gm.addItem(ITEM_TYPES['pincho_tortilla'], 1);
                     this.gm.markDefeated('andres_dio_pincho');
                     this.time.delayedCall(300, () => {
                         this.showDialogue('Has recibido: [Pincho de Tortilla]', 'Andrés (Barra)', () => {
@@ -575,7 +576,7 @@ export default class Cafeteria extends Phaser.Scene {
             if (data.x === 178 && data.y === 495) {
                 onInteract = () => {
                     if (!this.gm.isDefeated('npc_cerveza_caf_dio')) {
-                        this.gm.addItem({ id: 'cerveza', name: 'Cerveza', type: 'consumable', heal: 20, recMp: 10, description: 'Una Mahou bien fría. Recupera 20 HP y 10 MP.' }, 1);
+                        this.gm.addItem(ITEM_TYPES['cerveza'], 1);
                         this.gm.markDefeated('npc_cerveza_caf_dio');
                         this.time.delayedCall(300, () => {
                             this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cerveza]', 'Estudiante de Fiesta');
@@ -589,7 +590,7 @@ export default class Cafeteria extends Phaser.Scene {
             if (data.x === 215 && data.y === 136) {
                 onInteract = () => {
                     if (!this.gm.isDefeated('npc_cigarro_caf_dio')) {
-                        this.gm.addItem({ id: 'cigarro', name: 'Cigarro', type: 'consumable', description: 'Reduce el estrés.' }, 1);
+                        this.gm.addItem(ITEM_TYPES['cigarro'], 1);
                         this.gm.markDefeated('npc_cigarro_caf_dio');
                         this.time.delayedCall(300, () => {
                             this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cigarro]', 'Estudiante Relajado');

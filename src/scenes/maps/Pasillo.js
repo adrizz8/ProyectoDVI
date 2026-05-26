@@ -6,6 +6,7 @@ import DialogueManager from '../../core/dialogueManager.js';
 import GameManager from '../../core/manager.js';
 import amigo1 from '../../entities/npcs/amigo1.js';
 import pasillo_loco from '../../entities/npcs/pasillo_loco.js';
+import { ITEM_TYPES } from '../../items/item_types.js';
 
 /**
  * Escena del Pasillo (Planta 1).
@@ -213,13 +214,7 @@ export default class Pasillo extends Phaser.Scene {
             'He intentado calcular el límite de mi paciencia cuando tiende a infinito, pero me sale una indeterminación. Toma esto, lo necesitarás para derivar la atención del enemigo.',
             () => {
                 if (!this.gm.isDefeated('npc_calculo_dio_item')) {
-                    this.gm.addItem({
-                        id: 'regla_lhopital',
-                        name: "Regla de L'Hôpital",
-                        type: 'consumable',
-                        statusRecovery: true,
-                        description: 'Elimina estados de aturdimiento binario.'
-                    }, 1);
+                    this.gm.addItem(ITEM_TYPES['regla_lhopital'], 1);
                     this.gm.markDefeated('npc_calculo_dio_item');
                     this.time.delayedCall(300, () => {
                         this.showDialogue("¡RECURSO OBTENIDO!\nHas recibido: [Regla de L'Hôpital]", 'Estudiante de Cálculo');
@@ -248,13 +243,7 @@ export default class Pasillo extends Phaser.Scene {
             '¡Un punto y coma! ¡He perdido toda mi energía mental por un punto y coma! Ten cuidado si entras aqui, está lleno de errores de sintaxis salvajes.',
             () => {
                 if (!this.gm.isDefeated('npc_fp1_dio_item')) {
-                    this.gm.addItem({
-                        id: 'compilador_amigable',
-                        name: 'Compilador Amigable',
-                        type: 'consumable',
-                        recMp: 20,
-                        description: 'Recupera 20 de Energía.'
-                    }, 1);
+                    this.gm.addItem(ITEM_TYPES['compilador_amigable'], 1);
                     this.gm.markDefeated('npc_fp1_dio_item');
                     this.time.delayedCall(300, () => {
                         this.showDialogue('¡Has recibido: Compilador Amigable!', '');
@@ -273,13 +262,7 @@ export default class Pasillo extends Phaser.Scene {
             "Ten estos Apuntes. No se entiende la letra porque los escribí durante un ataque de ansiedad, pero la intención es lo que cuenta.",
             () => {
                 if (!this.gm.isDefeated('npc_ansiedad_dio_item')) {
-                    this.gm.addItem({
-                        id: 'apuntes_ansi',
-                        name: 'Apuntes de Ansiedad',
-                        type: 'consumable',
-                        recMp: 15,
-                        description: 'Apuntes ilegibles. Restauran 15 Energía por el esfuerzo.'
-                    }, 1);
+                    this.gm.addItem(ITEM_TYPES['apuntes_ansi'], 1);
                     this.gm.markDefeated('npc_ansiedad_dio_item');
                     this.time.delayedCall(300, () => {
                         this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Apuntes de Ansiedad]', 'Estudiante Agobiado');
@@ -297,13 +280,7 @@ export default class Pasillo extends Phaser.Scene {
             "Toma este Tinto. Si el código no compila estando sobrio, quizá borracho le veas la lógica.",
             () => {
                 if (!this.gm.isDefeated('npc_tinto_dio_item')) {
-                    this.gm.addItem({
-                        id: 'tinto_verano',
-                        name: 'Tinto de Verano',
-                        type: 'consumable',
-                        buffAtt: 15,
-                        description: 'Aumenta el ataque temporalmente.'
-                    }, 1);
+                    this.gm.addItem(ITEM_TYPES['tinto_verano'], 1);
                     this.gm.markDefeated('npc_tinto_dio_item');
                     this.time.delayedCall(300, () => {
                         this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Tinto de Verano]', 'Estudiante de Fiesta');
@@ -332,12 +309,7 @@ export default class Pasillo extends Phaser.Scene {
             "Toma este Cigarro. Es para cuando el merge conflict en Git sea tan grande que prefieras borrar la carpeta y mudarte a otro país.",
             () => {
                 if (!this.gm.isDefeated('npc_git_dio_item')) {
-                    this.gm.addItem({
-                        id: 'cigarro',
-                        name: 'Cigarro',
-                        type: 'consumable',
-                        description: 'Reduce el estrés (Restaura 30 Energía).'
-                    }, 1);
+                    this.gm.addItem(ITEM_TYPES['cigarro'], 1);
                     this.gm.markDefeated('npc_git_dio_item');
                     this.time.delayedCall(300, () => {
                         this.showDialogue('¡RECURSO OBTENIDO!\nHas recibido: [Cigarro]', 'Estudiante de Git');
