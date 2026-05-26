@@ -1,7 +1,7 @@
 # 📄 Informe de Contribución: [Nombre del Videojuego]
 
 Video sobre el juego:
-https://youtu.be/ze-tAS-A3TM
+https://www.youtube.com/watch?v=cw9GZ_j33g8
 
 **Fecha del informe:** 23 de Mayo, 2026
 **Estado del proyecto:** Finalizado
