@@ -45,11 +45,7 @@ import pasillo from '../assets/images/pasillo.json'
 import music_battle from '../assets/music/vespidaze-upbeat-rpg-battle-460971.mp3'
 import music_battle2 from '../assets/music/psychronic-fight-for-the-future-336841.mp3'
 import music_boss from '../assets/music/batalla_boss_music.mp3'
-import music_exterior from '../assets/music/exterior_music.mp3'
-import music_interior from '../assets/music/interior_music_acreditar.mp3'
-//Puse 2 porque no me decidía
 import music_mazmorra from '../assets/music/interior_music_acreditar.mp3'
-import music_mazmorra2 from '../assets/music/mazmorra_music_2.mp3'
 import music_ambiente from '../assets/music/musicaambiente.mp3'
 import estudianteprimero from '../assets/sprites/estudianteprimero.png'
 import npc1 from '../assets/sprites/npc1.png';
@@ -201,13 +197,11 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('carretera', carretera);
     this.load.audio('carre_join', carre_join);
 
+
     this.load.audio('music_battle', music_battle);
     this.load.audio('music_battle2', music_battle2);
     this.load.audio('music_boss', music_boss);
-    this.load.audio('music_exterior', music_exterior);
-    this.load.audio('music_interior', music_interior);
     this.load.audio('music_mazmorra', music_mazmorra);
-    this.load.audio('music_mazmorra2', music_mazmorra2);
     this.load.audio('music_ambiente', music_ambiente);
     this.load.audio('completed', completed);
 

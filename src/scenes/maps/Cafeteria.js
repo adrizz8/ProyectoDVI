@@ -320,8 +320,8 @@ export default class Cafeteria extends Phaser.Scene {
         // --- Conserje BOSS en la salida ---
         this.conserj = new conserje(this, this.player, 1125, 140, 'conserje', null, {
             name: 'Conserje',
-            hp: 1,//40
-            maxHp: 1,//40
+            hp: 40,//40
+            maxHp: 40,//40
             damage: 13,
             speed: 8,
             defense: 16,

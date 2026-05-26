@@ -6,7 +6,7 @@ import { HABILITIES } from '../../battle/habilities.js';
  * EstrategiaScene
  * ---------------
  * Pantalla donde se visualizan los personajes con sus stats, habilidades,
- * PS (HP), PM (MP), estado y nivel.
+ * PS, PM, estado y nivel y habilidades.
  */
 export default class EstrategiaScene extends Phaser.Scene {
     constructor() {
@@ -18,21 +18,21 @@ export default class EstrategiaScene extends Phaser.Scene {
         this.scene.bringToTop('EstrategiaScene');
         const gm = GameManager.getInstance();
 
-        // Asegurar que no hay panel abierto al inicializar
+
         this.closePanel();
         this.panelActivo = null;
 
-        // Seleccionar fondo según el número de jugadores reales
+        // Seleccionamos el fondo según el número de jugadores reales
         const numPlayers = Math.min(4, Math.max(1, gm.ActualPlayers.length));
         const bgKey = `estrategiaUI${numPlayers}`;
         this.add.image(608, 320, bgKey).setDisplaySize(1216, 640);
 
-        // Iterar solo sobre los jugadores que tenemos realmente
+   
         gm.ActualPlayers.forEach((nombrePers) => {
             const stats = gm.playerStats[nombrePers];
             if (!stats) return;
 
-            // Las coordenadas ya están definidas por el nombre del jugador en crearCardPersonaje
+       
             this.crearCardPersonaje(0, 0, nombrePers, stats);
         });
 
@@ -61,10 +61,10 @@ export default class EstrategiaScene extends Phaser.Scene {
     }
 
     crearCardPersonaje(xIgnored, yIgnored, nombre, stats) {
-        // x e y se ignoran porque usamos las coordenadas absolutas definidas abajo para cada jugador
+
 
         const gm = GameManager.getInstance();
-        // Usar el índice en ActualPlayers para determinar el "slot" visual (1 a 4)
+        // Usamos el índice en ActualPlayers para determinar el "slot" visual (1 a 4)
         const index = gm.ActualPlayers.indexOf(nombre);
         const slots = ['Jugador1', 'Jugador2', 'Jugador3', 'Jugador4'];
         const slotKey = slots[index] || 'Jugador1';
@@ -94,9 +94,9 @@ export default class EstrategiaScene extends Phaser.Scene {
 
         // Coordinación con las barras de PS/PM dentro de estrategiaUI, bajo cada retrato
         const coordenadasBarra = {
-            Jugador1: { x: 117.50, y:  227}, // arriba izquierda
-            Jugador3: { x: 675, y: 227 }, // arriba derecha
-            Jugador2: { x: 117.50, y: 558 }, // abajo izquierda
+            Jugador1: { x: 117.50, y:  227}, 
+            Jugador3: { x: 675, y: 227 }, 
+            Jugador2: { x: 117.50, y: 558 }, 
             Jugador4: { x: 675, y: 558 }
         };
 
@@ -106,13 +106,13 @@ export default class EstrategiaScene extends Phaser.Scene {
         const barraWidth = 190;
         const barraHeight = 11;
 
-        // Barra de HP colocada exactamente bajo la barra PS del UI
+        // Colocación de la barra de vida
         this.add.rectangle(barraX, barraY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, barraY, Math.max(0.1, (stats.hp / stats.maxHp) * barraWidth), barraHeight, 0x1e7b1e).setOrigin(0, 0);
         this.add.text(barraX - 40, barraY - 1, '', { fontSize: '11px', fill: '#86efac', fontFamily: 'Outfit', fontStyle: 'bold' });
         this.add.text(barraX + barraWidth / 2, barraY + barraHeight + 2, `${stats.hp}/${stats.maxHp}`, { fontSize: '20px', fill: '#ffffff', fontFamily: 'Outfit', fontStyle: 'bold', justify: 'center' , stroke: '#000000', strokeThickness: 5 }).setOrigin(0.5, 0);
 
-        // Barra de MP colocada exactamente bajo la barra PM del UI
+        // Colocación de la barra de PM
         const mpY = barraY + barraHeight + 34;
         this.add.rectangle(barraX, mpY, barraWidth, barraHeight, 0x333333).setOrigin(0, 0);
         this.add.rectangle(barraX, mpY, Math.max(0.1, (stats.mp / stats.maxMp) * barraWidth), barraHeight, 0x1e4fbf).setOrigin(0, 0);
@@ -204,10 +204,10 @@ this.add.text(pos.defense.x, pos.defense.y, `${stats.defense}`, estiloStats);
 this.add.text(pos.speed.x, pos.speed.y, `${stats.speed}`, estiloStats);
 this.add.text(pos.luck.x, pos.luck.y, `${stats.luck}`, estiloStats);
 
-        // Botones interactivos en la UI
+
         const btnStyle = { fontSize: '20px', fill: '#ffffff', fontFamily: 'Orbitron', fontStyle: 'bold', stroke: '#000000', strokeThickness: 5 };
 
-        // Posiciones predefinidas por personaje (similar al estilo de coordenadasNivel)
+        // Posiciones predefinidas por personaje
         const coordenadasBotones = {
             Jugador1: { habilidades: { x: 373, y: 226 }, equipamiento: { x: 373, y: 270 } },
             Jugador2: { habilidades: { x: 373, y: 550 }, equipamiento: { x: 373, y: 594 } },

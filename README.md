@@ -30,16 +30,25 @@
 
 ---
 
-### 👤 @pixel_art_luna
-* **Rol:** Artista 2D / UI
+### 👤 @adrizz8
+* **Rol:** Artista 2D / UI / Programador
 * **Tareas Realizadas:**
-    * Diseño y animación del personaje principal (Idle, Run, Jump, Attack).
-    * Creación del *tileset* para el nivel 1 (bosque) y nivel 2 (cueva).
-    * Diseño de la interfaz de usuario (HUD): barra de vida y contador de monedas.
-    * Diseño del logotipo del juego y pantalla de título.
+    * Diseño y animación de los personajes principales y enemigos en batalla
+    * Creación del *tileset* de interiores y exteriores.
+    * Diseño de la interfaces de los menús y batalla.
+    * Implementación de las interfaces de estrategia y mochila
+    * Diseño e implementación de los mapas del juego (exteriores, mazmorras...)
+    * Diseño del logotipo del juego
+    * Implementación de algunas escenas de la historia e interacción de algunos personajes
+    * Revisión y refactorización de diálogos
+    * Arreglos y modificaciones en diferentes apartados del juego
+    * Pequeños arreglos en el apartado de combate
+    * Gestión del repositorio
+    * Creación de pantalla de inicio de matrícula y diploma final del juego
+    * Elección de algunos temas musicales y acreditación de recursos públicos
 * **Valoración General:**
-    La calidad visual es excelente y coherente. Entregó todos los *assets* a tiempo y correctamente exportados para Unity/Godot. Mostró gran iniciativa proponiendo mejoras visuales en la UI.
-* **Puntuación:** ⭐⭐⭐⭐⭐ (5/5)
+    La calidad visual es buena y coherente. Entregó todos los *assets* a tiempo y correctamente exportados para Phaser. Mostró gran iniciativa proponiendo mejoras visuales en la UI de los menús y su implementación.
+* **Puntuación:** ⭐⭐⭐⭐☆ (4/5)
 
 ---
 
@@ -71,6 +80,6 @@
 | Usuario (GitHub)    | Rol             | Puntuación | Puntuación como número |
 |:--------------------|:----------------|:----------:|:----------------------:|
 | **@dev_master_99**  | Programación    |   ⭐⭐⭐⭐⭐ |           5            |
-| **@pixel_art_luna** | Arte / UI       |   ⭐⭐⭐⭐⭐ |           5            |
+| **@adrizz8** | Arte / UI / Programación       |   ⭐⭐⭐⭐☆ |           4            |
 | **@audio_dave**     | Audio / Diseño  |   ⭐⭐⭐⭐☆ |           4            |
 | **@lazy_coder_x**   | Programación UI |   ⭐⭐☆☆☆  |           2            |

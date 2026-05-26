@@ -21,7 +21,7 @@ class MenuPrincipal extends Phaser.Scene {
             ease: 'Power1'
         });
 
-        // ── Stats del jugador ──────────────────────────────────────────
+        // Estadísticas del jugador
         // Recupera los datos guardados en el registro global del juego
         const horasJuego = this.registry.get('horasJuego') ?? 0;
         const gm = GameManager.getInstance();
@@ -89,7 +89,6 @@ class MenuPrincipal extends Phaser.Scene {
         const closeMenu = () => {
             if (!this.canClose) return;
 
-            // Ocultamos la imagen con un tween y solo entonces cerramos la escena
             const bg = this.children.getByName('menuPrincipal') || this.add.image(608, 320, 'menuPrincipal');
             this.tweens.add({
                 targets: bg,
@@ -113,12 +112,11 @@ class MenuPrincipal extends Phaser.Scene {
     }
 
     update(time, dt) {
-        // Mantener en cada frame un display preciso del tiempo real de juego
         const horasJuego = this.registry.get('horasJuego') ?? 0;
         this.horasText.setText(`Tiempo: ${this.formatearHoras(horasJuego)}`);
     }
 
-    // Convierte segundos totales → "Xh Ym"
+
     formatearHoras(segundosTotales) {
         const h = Math.floor(segundosTotales / 3600);
         const m = Math.floor((segundosTotales % 3600) / 60);
@@ -126,5 +124,5 @@ class MenuPrincipal extends Phaser.Scene {
     }
 }
 
-// Exportación para poder importarla desde game.js
+
 export default MenuPrincipal;
